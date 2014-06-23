@@ -8,3 +8,19 @@ git commit -a -m '项目名称'
 git push -u origin master
 
 git clone 地址
+
+
+　　使用文本编辑器打开文件%GIT_HOME%\etc\gitconfig，将下面显示的三个选项的字符集修改成如下：
+
+1
+[gui]
+2
+     encoding = utf-8
+3
+[i18n]
+4
+     commitencoding = gbk
+5
+[svn]
+6
+     pathnameencoding = gbk
