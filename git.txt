@@ -1,4 +1,4 @@
-touch README.md
+﻿touch README.md
 git init
 git add README.md
 git commit -m "first commit"
@@ -6,3 +6,5 @@ git remote add origin https://github.com/zkeyword/saogaUI
 git add .
 git commit -a -m '项目名称'
 git push -u origin master
+
+git clone 地址
