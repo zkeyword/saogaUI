@@ -7,4 +7,4 @@ git add .
 git commit -a -m '项目名称'
 git push -u origin master
 
-git clone 地址
+git clone 地址  
