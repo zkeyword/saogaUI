@@ -5,6 +5,29 @@ git commit -m "first commit"
 git remote add origin https://github.com/zkeyword/saogaUI
 git add .
 git commit -a -m '项目名称'
-git push -u origin master
+git push -u origin master/branch name
 
-git clone 地址  
+git clone 地址
+
+
+解决中文乱码
+	
+	使用文本编辑器打开文件%GIT_HOME%\etc\gitconfig，将下面显示的三个选项的字符集修改成如下：
+
+		[gui]
+			 encoding = utf-8
+			 
+		[i18n]
+			 commitencoding = gbk
+			 
+		[svn]
+			 pathnameencoding = gbk
+			 
+
+修改对比和合并工具     
+	git config --global diff.tool bc3
+	git config --global difftool.bc3.cmd "\"D:/Program Files/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\""
+	git config --global difftool.prompt false
+	git config --global merge.tool bc3
+	git config --global mergetool.bc3.cmd "\"D:/Program Files/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+	git config --global mergetool.bc3.trustExitCode true
