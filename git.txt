@@ -1,12 +1,31 @@
-touch README.md
+﻿touch README.md
 git init
 git add README.md
 git commit -m "first commit"
 git remote add origin https://github.com/zkeyword/saogaUI
 git add .
 git commit -a -m '项目名称'
-git push -u origin master  //将Git本地缓存提交到GitHub中
+git push -u origin master
+
+git clone 地址
 
 
+使用文本编辑器打开文件%GIT_HOME%\etc\gitconfig，将下面显示的三个选项的字符集修改成如下：
 
-git branch //查看分支
+[gui]
+     encoding = utf-8
+     
+[i18n]
+     commitencoding = gbk
+     
+[svn]
+     pathnameencoding = gbk
+     
+     
+git config --global diff.tool bc3
+git config --global difftool.bc3.cmd "\"D:/Program Files (x86)/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\""
+git config --global difftool.prompt false
+  
+git config --global merge.tool bc3
+git config --global mergetool.bc3.cmd "\"D:/Program Files (x86)/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+git config --global mergetool.bc3.trustExitCode true

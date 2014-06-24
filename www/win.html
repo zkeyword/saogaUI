@@ -5,15 +5,12 @@
 		<link rel="stylesheet/less" type="text/less" href="less/styles.less">
         <script data-main="js/common2" src="js/lib/require.js"></script>
         <script>
-			require(['lib/i18n!core/nls/str','app/main2'],function(str, m){
+			require(['app/main2'],function(m){
 			
 				'use strict';
 				
 				var $ = m.$,
 					T = m.T;
-				
-				
-				console.log(str.welcome)
 				
 				$(function (){
 					var data = {
