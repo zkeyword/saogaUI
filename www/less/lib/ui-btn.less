@@ -1,6 +1,26 @@
 
-/*floatCenter*/
-/*调用需要给ui-floatCenter重置高度、ui-floatCenter-item重置间距，否则就默认*/
-.ui-floatCenter{position:relative;width:100%;height:26px;overflow:hidden;z-index:999}
-	.ui-sl-floatCenter{float:left;position:relative;left:50%}
-		.ui-floatCenter-item{position:relative;right:50%;float:left;margin:0 5px}
+/*布局样式*/
+@import "app/layout.less";
+@import "app/mixins.less";
+
+.btn{cursor: pointer;.box-radius(3px);padding: 2px;}
+.btn-primary{
+	color:@col-428bca; 
+	&:hover{color:@col-3276b1; }
+}
+.btn-success{
+	color:@col-5cb85c; 
+	&:hover{color:@col-47a447; }
+}
+.btn-info{
+	color:@col-5bc0de; 
+	&:hover{color:@col-39b3d7; }
+}
+.btn-warning{
+	color:@col-f0ad4e; 
+	&:hover{color:@col-ed9c28; }
+}
+.btn-danger{
+	color:@col-d9534f; 
+	&:hover{color:@col-d2322d; }
+}
