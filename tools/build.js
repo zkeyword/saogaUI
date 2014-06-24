@@ -13,23 +13,15 @@
             name: '../common',
 
 			//列出顶层嵌套依赖关系
-			include: ['jquery']
-            /* include: ['jquery',
-                      'app/lib',
-                      'app/controller/Base',
-                      'app/model/Base'
-					]
-			*/
+			include: ['jquery',
+			          'core/saogaUI',
+			          'core/drag'
+			         ]
         },
 		
 		//编译时排除公共部分
         {
-            name: 'app/main1',
-            exclude: ['../common']
-        },
-
-        {
-            name: 'app/main2',
+            name: 'app/main',
             exclude: ['../common']
         }
 

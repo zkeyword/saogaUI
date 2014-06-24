@@ -16,7 +16,7 @@
 .icon- 图标
 注意：定义图标时使用.icon-作为前缀加上图标名字，如：icon-edit、icon-error
 
-.l- jquery UI 样式前缀
+.l- js UI 样式前缀
 注意：只要是以.l-开头的，命名都是直接在UI里面定义，如果要增删改请修改js
 
 .sl- 兼容解决方案前缀
@@ -37,8 +37,17 @@
 /*基本样式*/
 @import "lib/base.less";
 
-/*基本ui函数*/
-@import "lib/ui.less";
+/*基本函数*/
+@import "lib/mixins.less";
+
+/*js组件基本样式*/
+@import "lib/l-base.less";
+
+/*js组件*/
+@import "lib/l-dialog.less";
+
+/*图标样式*/
+@import "lib/ui-icon.less";
 
 /*公用样式*/
 @import "lib/common.less";

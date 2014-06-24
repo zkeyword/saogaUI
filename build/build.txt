@@ -9,16 +9,16 @@ less/lib/animate.css
 
 js/lib/../common.js
 ----------------
-js/lib/less-1.5.0.min.js
 js/lib/../common.js
 js/lib/jquery.js
 
-js/app/main1.js
+js/app/main.js
 ----------------
+js/core/saogaUI.js
 js/lib/template.js
-js/app/main1.js
-
-js/app/main2.js
-----------------
-js/lib/template.js
-js/app/main2.js
+js/core/drag.js
+js/lib/i18n.js
+js/core/nls/str.js
+i18n!core/nls/str
+js/core/dialog.js
+js/app/main.js

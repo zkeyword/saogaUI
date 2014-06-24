@@ -5,22 +5,62 @@ git commit -m "first commit"
 git remote add origin https://github.com/zkeyword/saogaUI
 git add .
 git commit -a -m '项目名称'
-git push -u origin master
+git push -u origin master/branch name
 
 git clone 地址
 
 
-　　使用文本编辑器打开文件%GIT_HOME%\etc\gitconfig，将下面显示的三个选项的字符集修改成如下：
+解决中文乱码
+	
+	使用文本编辑器打开文件%GIT_HOME%\etc\gitconfig，将下面显示的三个选项的字符集修改成如下：
 
-1
-[gui]
-2
-     encoding = utf-8
-3
-[i18n]
-4
-     commitencoding = gbk
-5
-[svn]
-6
-     pathnameencoding = gbk
+		[gui]
+			 encoding = utf-8
+			 
+		[i18n]
+			 commitencoding = gbk
+			 
+		[svn]
+			 pathnameencoding = gbk
+			 
+
+修改对比和合并工具     
+	git config --global diff.tool bc3
+	git config --global difftool.bc3.cmd "\"D:/Program Files/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\""
+	git config --global difftool.prompt false
+	git config --global merge.tool bc3
+	git config --global mergetool.bc3.cmd "\"D:/Program Files/Beyond Compare/BCompare.exe\" \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+	git config --global mergetool.bc3.trustExitCode true
+
+	
+如果希望用代码库中的文件完全覆盖本地工作版本. 方法如下:
+git reset --hard
+git pull
+
+
+如果希望保留生产服务器上所做的改动,仅仅并入新配置项, 处理方法如下:
+git stash
+git pull
+git stash pop
+然后可以使用git diff -w +文件名 来确认代码自动合并的情况.
+
+
+Git常用操作命令收集：
+1) 远程仓库相关命令
+检出仓库：$ git clone git://github.com/jquery/jquery.git
+查看远程仓库：$ git remote -v
+添加远程仓库：$ git remote add [name] [url]
+删除远程仓库：$ git remote rm [name]
+修改远程仓库：$ git remote set-url --push[name][newUrl]
+拉取远程仓库：$ git pull [remoteName] [localBranchName]
+推送远程仓库：$ git push [remoteName] [localBranchName]
+2）分支(branch)操作相关命令
+查看本地分支：$ git branch
+查看远程分支：$ git branch -r
+创建本地分支：$ git branch [name] ----注意新分支创建后不会自动切换为当前分支
+切换分支：$ git checkout [name]
+创建新分支并立即切换到新分支：$ git checkout -b [name]
+删除分支：$ git branch -d [name] ---- -d选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。如果想强制删除一个分支，可以使用-D选项
+合并分支：$ git merge [name] ----将名称为[name]的分支与当前分支合并
+创建远程分支(本地分支push到远程)：$ git push origin [name]
+删除远程分支：$ git push origin :heads/[name]
