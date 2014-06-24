@@ -64,3 +64,4 @@ Git常用操作命令收集：
 合并分支：$ git merge [name] ----将名称为[name]的分支与当前分支合并
 创建远程分支(本地分支push到远程)：$ git push origin [name]
 删除远程分支：$ git push origin :heads/[name]
+
