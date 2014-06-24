@@ -7,7 +7,7 @@ styles.less 样式总文件
 
 	base.less 基础样式
 	
-	ui.less ui通用函数
+	mixins.less 通用函数
 	
 		阴影
 		.box-shadow(@x: 0; @y: 0; @blur: 1px; @color: #000)

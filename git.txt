@@ -5,8 +5,8 @@ git commit -m "first commit"
 git remote add origin https://github.com/zkeyword/saogaUI
 git add .
 git commit -a -m '项目名称'
-git push -u origin master
+git push -u origin master  //将Git本地缓存提交到GitHub中
 
 
 
-git branch 查看分支
+git branch //查看分支
