@@ -8,31 +8,48 @@ define(['core/saogaUI'], function(saogaUI){
 		var data       = o.data,
 			target     = $(o.target),
 			height     = o.height ? o.height : 'auto',
+			selectedID = o.selected,
 			isMultiple = o.isMultiple || false;
 		
 		
 		var init = function(){
-				target.html( createHtml(data) );
+				target.html( createTreeHtml(data) );
+				target.find('.l-treeItem').on('click',function(){
+					var that = $(this);
+					target.find('.l-tree').attr({
+						'data-value': that.attr('data-value'),
+						'data-name': that.text()
+					});
+				});
 			},
-			refresh = function(){
-				
+			refresh = function(data){
+				target.html( createTreeHtml(data) );
 			},
-			createHtml = function(data){
-				var tree = function(data, isChlidren){
-						var i    = 0,
-							len  = data.length,
-							html = '';
+			createTreeHtml = function(data){
+				var depth = 0,
+					line  = '', 
+					tree  = function(data){
+						var i        = 0,
+							len      = data.length,
+							html     = '',
+							selected;
+
 						for(; i<len; i++){
-							html += '<div class="l-treeItem">'+
-										(isChlidren ? '<div class="l-treeExpandable"></div>' : '')+
+							html += '<div class="l-treeItemWrap fn-clear'+ (selectedID == data[i].val ? ' l-treeSelected' : '') +'">'+
+										//(isChlidren ? '<div class="l-treeExpandable"></div>' : '')+
 										(isMultiple ? '<div class="l-treeCheckbox"></div>' : '')+
-										'<div data-value='+ data[i].val +'>'+ data[i].name + '</div>'+ 
+										(line ? line : '')+
+										'<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name + '</div>'+ 
 									'</div>';
-							if( data[i].chlidren ){
-								html += '<div class="l-treeChildWrap">'+ tree(data[i].chlidren, true) +'</div>';
-							}
 							
+							if( data[i].chlidren ){
+								line += '<div class="l-line">d</div>';
+								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line) +'</div>';
+							}
 						}
+						
+						depth ++;
+						
 						return html;
 					};
 				
@@ -41,7 +58,8 @@ define(['core/saogaUI'], function(saogaUI){
 		
 		
 		return {
-			init: init
+			init: init,
+			refresh: refresh
 		};
 	};
 	

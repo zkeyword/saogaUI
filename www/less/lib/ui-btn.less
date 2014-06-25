@@ -1,67 +1,50 @@
+/* 公用按钮样式 */
 .ui-btn{
 	.border-radius(4px);
 	padding:3px 12px;
-	line-height:1.42857;
 	color:@col-fff;
 	text-align: center;
 	vertical-align: middle;
 	white-space: nowrap;
-	.border(1px,solid,@col-3276b1);
+	border:1px solid @col-3276b1;
 }
+
+/* 公用按钮背景颜色及边框样式 */
 .ui-btn-stauts(@col, @hoverCol){
 	background:@col;
-	.border(1px,solid,@col);
+	border:1px solid @col;
 	&:hover{
 		background:@hoverCol;
-		.border(1px,solid,@hoverCol);
+		border:1px solid @hoverCol;
 	}
 }
 	.ui-btn-primary{
-		background:@col-428bca;
-		.border(1px,solid,@col-428bca);
-		&:hover{
-			background:@col-3276b1;
-			.border(1px,solid,@col-3276b1);
-		}
+		.ui-btn-stauts(@col-428bca, @col-3276b1)
 	}
 	.ui-btn-success{
-		background:@col-5cb85c;
-		.border(1px,solid,@col-5cb85c);
-		&:hover{background:@col-47a447;
-			.border(1px,solid,@col-47a447);
-		}
+		.ui-btn-stauts(@col-5cb85c, @col-47a447)
 	}
 	.ui-btn-info{
-		background:@col-5bc0de;
-		.border(1px,solid,@col-5bc0de);
-		&:hover{background:@col-39b3d7;
-			.border(1px,solid,@col-39b3d7);
-		}
+		.ui-btn-stauts(@col-5bc0de, @col-39b3d7)
 	}
 	.ui-btn-warning{
-		background:@col-f0ad4e;
-		.border(1px,solid,@col-f0ad4e); 
-		&:hover{
-			background:@col-ed9c28;
-			.border(1px,solid,@col-ed9c28);
-		}
+		.ui-btn-stauts(@col-f0ad4e, @col-ed9c28)
 	}
 	.ui-btn-danger{
-		background:@col-d9534f;
-		.border(1px,solid,@col-d9534f);
-		&:hover{background:@col-d2322d;
-			.border(1px,solid,@col-d2322d);
-		}
+		.ui-btn-stauts(@col-d9534f, @col-d2322d)
 	}
 	.ui-btn-disabled{
 		background:@col-c3cdd9;
 		color:@col-000;
-		.border(1px,solid,@col-c3cdd9);
+		border:1px solid @col-c3cdd9;
 		cursor: default;
 	}
+	
+	/* 带有图标按钮 */
 	.ui-btn .icon{margin:0 2px;}
-
-.ui-btn-dropdown{display: inline-block;position:relative;vertical-align:middle;}
+	
+/* 下拉框按钮 */
+.ui-btn-dropdown{display:inline-block;position:relative;vertical-align:middle;}
 	.ui-btn-dropdown .btn{position:relative;}
 	.ui-btn-dropdown .dropdown-menu{
 		min-width:100%;
@@ -87,11 +70,12 @@
 		
 	}
 	
+/* 并排按钮样式 */
 .ui-btn-group{float:left;}
 	.ui-btn-group .ui-btn{
 		float:left;
 		.border-radius(0px);
 		border-right:1px solid @col-fff;
 	}
-	.ui-btn-group .ui-btn:first-child{border-bottom-left-radius: 4px;border-top-left-radius: 4px;}
-	.ui-btn-group .ui-btn:last-child{border-bottom-right-radius: 4px;border-top-right-radius: 4px;border-right:none;}
+	.ui-btn-group .ui-btn:first-child{.border-left-radius(4px)}
+	.ui-btn-group .ui-btn:last-child{.border-right-radius(4px);border-right:none;}
