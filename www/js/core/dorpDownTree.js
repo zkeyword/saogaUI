@@ -27,13 +27,16 @@ define(['core/saogaUI'], function(saogaUI){
 			},
 			createTreeHtml = function(data){
 				var depth = 0,
-					line  = '', 
 					tree  = function(data){
 						var i        = 0,
 							len      = data.length,
 							html     = '',
+							line = '',
 							selected;
-
+						
+						for(var j = 0; j<depth; j++){
+							line += '<div class="l-line">d</div>';
+						}
 						for(; i<len; i++){
 							html += '<div class="l-treeItemWrap fn-clear'+ (selectedID == data[i].val ? ' l-treeSelected' : '') +'">'+
 										//(isChlidren ? '<div class="l-treeExpandable"></div>' : '')+
@@ -43,12 +46,14 @@ define(['core/saogaUI'], function(saogaUI){
 									'</div>';
 							
 							if( data[i].chlidren ){
-								line += '<div class="l-line">d</div>';
+								depth ++;
 								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line) +'</div>';
+							}else{
+								//line = '';
 							}
 						}
 						
-						depth ++;
+						console.log(depth);
 						
 						return html;
 					};
