@@ -27,7 +27,8 @@ define(['core/saogaUI'], function(saogaUI){
 			},
 			createTreeHtml = function(data){
 				var depth = 0,
-					tree  = function(data){
+					tip = false,
+					tree  = function(data, isChildren){
 						var i        = 0,
 							len      = data.length,
 							html     = '',
@@ -38,22 +39,29 @@ define(['core/saogaUI'], function(saogaUI){
 							line += '<div class="l-line">d</div>';
 						}
 						for(; i<len; i++){
+						
+
 							html += '<div class="l-treeItemWrap fn-clear'+ (selectedID == data[i].val ? ' l-treeSelected' : '') +'">'+
 										//(isChlidren ? '<div class="l-treeExpandable"></div>' : '')+
 										(isMultiple ? '<div class="l-treeCheckbox"></div>' : '')+
 										(line ? line : '')+
 										'<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name + '</div>'+ 
 									'</div>';
-							
+									
 							if( data[i].chlidren ){
 								depth ++;
-								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line) +'</div>';
+								console.log(depth,'chlidren')
+								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line, true) +'</div>';
 							}else{
-								//line = '';
+								// if( depth  == 0 ){
+									// depth ++;
+								// }
+								// depth --;
 							}
+							console.log(depth + data[i].name)
 						}
 						
-						console.log(depth);
+						//console.log();
 						
 						return html;
 					};
