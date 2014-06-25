@@ -11,6 +11,11 @@
 	   -moz-box-radius: @size;
             box-radius: @size;
 }
+.border-radius (@radius) {
+    border-radius: @radius;
+    -moz-border-radius: @radius;
+    -webkit-border-radius: @radius;
+}
 .border-top-radius(@size: 5px) {
   border-top-right-radius: @size;
    border-top-left-radius: @size;
@@ -160,4 +165,10 @@
 .animation(@animation) {
   -webkit-animation: @animation;
           animation: @animation;
+}
+//border
+.border(@width:1px,@style:solid,@color){
+  border-width: @width;
+  border-style: @style;
+  border-color:@color; 
 }

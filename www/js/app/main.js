@@ -1,14 +1,11 @@
 define(function(require){
-	var saogaUI   = require('core/saogaUI'),
-		template  = require('template'),
-		drag      = require('core/drag'),
-		dialog    = require('core/dialog'),
-		validator = require('core/validator')
-	
-	saogaUI.ui.drag   = drag;
-	saogaUI.ui.dialog = dialog;
-	saogaUI.template  = template;
-	saogaUI.ui.validator = validator;
+	var saogaUI      = require('core/saogaUI');
+
+	saogaUI.template        = require('template');
+	saogaUI.ui.drag         = require('core/drag');
+	saogaUI.ui.dialog       = require('core/dialog');
+	saogaUI.ui.validator    = require('core/validator');
+	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
 	
 	return saogaUI;
 });
