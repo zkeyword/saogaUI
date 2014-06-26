@@ -1,4 +1,4 @@
-define(['saogaUI'], function(){
+define(['core/saogaUI'], function(){
 
 	var pop = {
 	

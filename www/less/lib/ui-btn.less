@@ -1,43 +1,52 @@
 /* 公用按钮样式 */
 .ui-btn{
-	.border-radius(4px);
+.border-radius(4px);
 	padding:3px 12px;
+	display:inline-block;
 	color:@col-fff;
 	text-align: center;
 	vertical-align: middle;
 	white-space: nowrap;
 	border:1px solid @col-3276b1;
+	cursor:pointer;
 }
 
 /* 公用按钮背景颜色及边框样式 */
-.ui-btn-stauts(@col, @hoverCol){
+.ui-btn-stauts(@fontCol, @col, @hoverCol){
 	background:@col;
 	border:1px solid @col;
+	color:@fontCol;
 	&:hover{
 		background:@hoverCol;
 		border:1px solid @hoverCol;
+		color:@fontCol;
+		text-decoration:none;
 	}
 }
 	.ui-btn-primary{
-		.ui-btn-stauts(@col-428bca, @col-3276b1)
+		.ui-btn-stauts(@col-fff, @col-428bca, @col-3276b1)
 	}
 	.ui-btn-success{
-		.ui-btn-stauts(@col-5cb85c, @col-47a447)
+		.ui-btn-stauts(@col-fff, @col-5cb85c, @col-47a447)
 	}
 	.ui-btn-info{
-		.ui-btn-stauts(@col-5bc0de, @col-39b3d7)
+		.ui-btn-stauts(@col-fff, @col-5bc0de, @col-39b3d7)
 	}
 	.ui-btn-warning{
-		.ui-btn-stauts(@col-f0ad4e, @col-ed9c28)
+		.ui-btn-stauts(@col-fff, @col-f0ad4e, @col-ed9c28)
 	}
 	.ui-btn-danger{
-		.ui-btn-stauts(@col-d9534f, @col-d2322d)
+		.ui-btn-stauts(@col-fff, @col-d9534f, @col-d2322d)
 	}
 	.ui-btn-disabled{
 		background:@col-c3cdd9;
 		color:@col-000;
 		border:1px solid @col-c3cdd9;
 		cursor: default;
+			&:hover{
+				color:@col-000;
+				text-decoration:none;
+			}
 	}
 	
 	/* 带有图标按钮 */

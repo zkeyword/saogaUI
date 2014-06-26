@@ -12,61 +12,54 @@ define(['core/saogaUI'], function(saogaUI){
 			isMultiple = o.isMultiple || false;
 		
 		
-		var init = function(){
+		var init = function(fn){
 				target.html( createTreeHtml(data) );
 				target.find('.l-treeItem').on('click',function(){
-					var that = $(this);
+					var that = $(this),
+						name = that.text(),
+						val  = that.attr('data-value');
 					target.find('.l-tree').attr({
-						'data-value': that.attr('data-value'),
-						'data-name': that.text()
+						'data-name': name,
+						'data-value': val
 					});
+					if( fn && saogaUI.base.isFunction(fn) ){
+						fn(name, val);
+					}
 				});
 			},
 			refresh = function(data){
 				target.html( createTreeHtml(data) );
 			},
 			createTreeHtml = function(data){
-				var depth = 0,
-					tip = false,
-					tree  = function(data, isChildren){
+				var line = '',
+					tree  = function(data, line, isOrigin){
 						var i        = 0,
 							len      = data.length,
 							html     = '',
-							line = '',
 							selected;
-						
-						for(var j = 0; j<depth; j++){
-							line += '<div class="l-line">d</div>';
-						}
-						for(; i<len; i++){
-						
 
-							html += '<div class="l-treeItemWrap fn-clear'+ (selectedID == data[i].val ? ' l-treeSelected' : '') +'">'+
-										//(isChlidren ? '<div class="l-treeExpandable"></div>' : '')+
-										(isMultiple ? '<div class="l-treeCheckbox"></div>' : '')+
-										(line ? line : '')+
-										'<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name + '</div>'+ 
-									'</div>';
+						for(; i<len; i++){
+							html += '<div class="l-treeItemWrap fn-clear'+ (selectedID == data[i].val ? ' l-treeSelected' : '') +'">';
+								if( isOrigin ){
+									html += '<div class="l-treeBox l-treeExpandable-open"></div>';
+								}else{
+									html += '<div class="l-treeBox l-treeLine"></div>';
+								}
+								html += (isMultiple ? '<div class="l-treeCheckbox"></div>' : '');
+								html +=	(line ? line : '');
+								html += '<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name + '</div>';
+							
+							html += '</div>';
 									
 							if( data[i].chlidren ){
-								depth ++;
-								console.log(depth,'chlidren')
-								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line, true) +'</div>';
-							}else{
-								// if( depth  == 0 ){
-									// depth ++;
-								// }
-								// depth --;
+								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line+'<div class="l-treeBox l-treeLine"></div>', false) +'</div>';
 							}
-							console.log(depth + data[i].name)
 						}
-						
-						//console.log();
-						
+												
 						return html;
 					};
 				
-				return '<div class="l-tree">'+ tree(data) +'</div>';
+				return '<div class="l-tree">'+ tree(data, line, true) +'</div>';
 			};
 		
 		
