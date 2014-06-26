@@ -1,4 +1,4 @@
-define(['core/saogaUI'], function(saogaUI){
+define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 	var BaseGrid = function(){
 		var g       = this,
 		
@@ -161,11 +161,18 @@ define(['core/saogaUI'], function(saogaUI){
 						* @param {Number} 当前位置
 						*/
 						_getCount   = function(pageSize, count, index){
-							var s = '';
+							var start = (index-1)*pageSize + 1,
+								end   = index*pageSize,
+								str   = lang.countFont+'';
 							
-							s += '显示从'+ ( (index-1)*pageSize + 1 ) +'到'+ index*pageSize;
-							s += '，总 '+ count +' 条 。每页显示：'+ pageSize;
-							return s;
+							console.log(lang)
+								
+							str = str.replace('{{start}}', start);
+							str = str.replace('{{end}}', end);
+							str = str.replace('{{count}}', count);
+							str = str.replace('{{size}}', pageSize);
+							
+							return str;
 						},
 						
 						/**
@@ -185,7 +192,7 @@ define(['core/saogaUI'], function(saogaUI){
 							if(index > 1){
 								s += _getLink(index - 1, itemNum, '上一页');
 							}else{
-								s += '<span>上一页</span>';
+								s += '<span>'+ lang.prevPage +'</span>';
 							}
 							if(index - itemNum > 1){
 								s += _getLink(1, index) + '<em>...</em>';
@@ -202,9 +209,9 @@ define(['core/saogaUI'], function(saogaUI){
 								s += '<em>...</em>' + _getLink(pageNum, index);
 							}
 							if(index < pageNum){
-								s += _getLink(index + 1, pageNum, '下一页');
+								s += _getLink(index + 1, pageNum, lang.nextPage);
 							}else{
-								s += '<span>下一页</span> ';
+								s += '<span>'+ lang.nextPage +'</span> ';
 							}
 							return s;
 						},
@@ -262,15 +269,18 @@ define(['core/saogaUI'], function(saogaUI){
 								dataType: "json",
 								data: (options.pageAjax.data).replace('{{index}}',index),
 								beforeSend: function(){
-									//that.html('同步中...')
-								},
-								success: function(msg){
-									if( saogaUI.base.isFunction(options.pageAjax.callback) ){
-										options.pageAjax.callback();
+									if( saogaUI.base.isFunction(options.pageAjax.beforeSend) ){
+										options.pageAjax.beforeSend();
+										console.log('d')
 									}
-									//that.html('同步宝贝')
+								},
+								success: function(data){
+									if( saogaUI.base.isFunction(options.pageAjax.success) ){
+										options.pageAjax.success(data);
+									}
+									options.data.Rows = data;
 								}
-							}); 
+							});
 						}
 						
 						/*重载html*/
