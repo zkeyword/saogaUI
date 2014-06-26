@@ -34,7 +34,8 @@ body,button,input,select,textarea{
 input,select,textarea{
 	font-size:100%;
 }
-
+/* 按钮鼠标已过去为受刑 */
+button{cursor: pointer;}
 /* 去掉各Table  cell 的边距并让其边重合 */
 table{
 	border-collapse:collapse;border-spacing:0;
@@ -121,7 +122,6 @@ ins,a {
 .fn-clear {
 	zoom:1; /* for IE6 IE7 */
 }
-
 /* 隐藏, 通常用来与 JS 配合 */
 body .fn-hide {
 	display:none;
@@ -137,3 +137,4 @@ body .fn-hide {
 .fn-right {
 	float:right;
 }
+ .full-width { clear: both; float: left;margin: 2px 0; width: 100%;}

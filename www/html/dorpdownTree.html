@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+
+<script type="text/javascript">
+	var root="/ecrp";
+</script>
+</head>
+<body>
+	<div id="lt-wrap" class="page-index">
+		
+<div id="lt-header">
+	<div id="logoBar" class="fn-clear">
+		<div id="logo" class="fn-left">
+			logo
+		</div>
+		<div class="fn-right">
+			adsdf
+		</div>
+	</div>
+	<div id="navBar" class="fn-clear">
+		<div id="nav" class="fn-left">
+			客户分层
+			客户服务
+			事务中心
+			数据管理
+			知识库
+			工具箱
+		</div>
+		<div class="fn-right">
+			adsdf
+		</div>
+	</div>
+</div>
+		<div id="lt-main" class="fn-clear">
+			<div id="lt-left" class="fn-clear">
+				
+菜单
+			</div>
+			<div id="lt-right">
+				<div id="lt-sl-right" class="fn-clear">
+				<!-- your code -->
+				
+					<div id="down"></div>
+					<div id="down2"></div>
+					
+				<!-- your code end -->	
+				</div>
+			</div> 
+		</div>
+		
+<div id="lt-footer" class="fn-clear">
+	尾部
+</div>
+	</div>
+	<script>
+		require(['app/main'], function(saogaUI){
+		
+			'use strict';
+			
+			
+			
+			$(function (){
+				var data = [
+					{
+						"id" : "1",
+						"name": "一级菜单",
+						"val":"1",
+						"chlidren": [
+							{
+								"id": "12",
+								"name": "二级菜单11",
+								"val": "12"
+							},
+							{
+								"id": "13",
+								"name": "二级菜单12",
+								"val": "13",
+								"chlidren": [
+									{
+										"id": "131",
+										"name": "三级菜单131",
+										"val": "131",
+										"chlidren": [
+											{
+												"id": "1311",
+												"name": "四级菜单1311",
+												"val": "1311"
+											},
+											{
+												"id": "1312",
+												"name": "四级菜单1312",
+												"val": "1312"
+											}
+										]
+									},
+									{
+										"id": "132",
+										"name": "三级菜单132",
+										"val": "132"
+									}
+								]
+							},
+							{
+								"id": "14",
+								"name": "二级菜单13",
+								"val": "14"
+							}
+						]
+					},
+					/*{
+						"id" : "1",
+						"name": "一级菜单",
+						"val":"1",
+						"chlidren": [
+							{
+								"id": "12",
+								"name": "二级菜单11",
+								"val": "12"
+							},
+							{
+								"id": "13",
+								"name": "二级菜单12",
+								"val": "13",
+								"chlidren": [
+									{
+										"id": "131",
+										"name": "三级菜单131",
+										"val": "131",
+										"chlidren": [
+											{
+												"id": "1311",
+												"name": "四级菜单1311",
+												"val": "1311"
+											},
+											{
+												"id": "1312",
+												"name": "四级菜单1312",
+												"val": "1312",
+												"chlidren": [
+													{
+														"id": "1311",
+														"name": "四级菜单1311",
+														"val": "1311"
+													},
+													{
+														"id": "1312",
+														"name": "四级菜单1312",
+														"val": "1312"
+													}
+												]
+											}
+										]
+									},
+									{
+										"id": "132",
+										"name": "三级菜单132",
+										"val": "132"
+									}
+								]
+							},
+							{
+								"id": "14",
+								"name": "二级菜单13",
+								"val": "14"
+							}
+						]
+					},
+					 */{
+						"id" : "2",
+						"name": "一级菜单2",
+						"val":"2",
+						"chlidren": [{
+							"id": "21",
+							"name": "二级菜单21",
+							"val": "21",
+							"chlidren": [{
+								"id": "21",
+								"name": "二级菜单21",
+								"val": "21",
+								"chlidren": [{
+									"id": "21",
+									"name": "二级菜单21",
+									"val": "21",
+									"chlidren": [{
+										"id": "21",
+										"name": "二级菜单21",
+										"val": "21"
+									}]
+								}]
+							}]
+						},
+						{
+							"id": "22",
+							"name": "二级菜单22",
+							"val": "22"
+						},
+						{
+							"id": "22",
+							"name": "二级菜单22",
+							"val": "22"
+						},
+						{
+							"id": "22",
+							"name": "二级菜单22",
+							"val": "22"
+						}]
+					},
+					{
+						"id" : "3",
+						"name": "一级菜单2",
+						"val":"3",
+						"chlidren": [{
+							"id": "31",
+							"name": "二级菜单31",
+							"val": "31"
+						},
+						{
+							"id": "32",
+							"name": "二级菜单32",
+							"val": "32"
+						}]
+					}
+				];
+				
+				var data3 = [
+					{
+						"id" : "3",
+						"name": "一级菜单2",
+						"val":"3",
+						"chlidren": [{
+							"id": "31",
+							"name": "二级菜单31",
+							"val": "31"
+						},
+						{
+							"id": "32",
+							"name": "二级菜单32",
+							"val": "32",
+							"chlidren": [{
+								"id": "31",
+								"name": "二级菜单31",
+								"val": "31"
+							},
+							{
+								"id": "32",
+								"name": "二级菜单32",
+								"val": "32"
+							}]
+						}]
+					},
+					{
+						"id" : "3",
+						"name": "一级菜单2",
+						"val":"3",
+						"chlidren": [{
+							"id": "31",
+							"name": "二级菜单31",
+							"val": "31"
+						},
+						{
+							"id": "32",
+							"name": "二级菜单32",
+							"val": "32"
+						}]
+					}]
+				
+				var options = {
+					data: data,
+					target: '#down',
+					selected: '22'
+				}
+				
+				var options2 = {
+						data: data,
+						target: '#down2'
+					}
+				var dorpDownTree = saogaUI.ui.dorpDownTree(options);
+				dorpDownTree.init();
+				
+				//var dorpDownTree2 = saogaUI.ui.dorpDownTree(options2);
+				//dorpDownTree2.init();
+				
+				/* var ss = saogaUI.ui.validator({
+					text: 'dd'
+				});
+				ss.init();
+				
+				saogaUI.ui.dialog.alert({
+					text: 'asdfadf'
+				}); */
+								
+			});
+		});
+	</script>
+</body>
+</html>

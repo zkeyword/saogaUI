@@ -7,9 +7,42 @@
 .font-normal{font-weight:normal}
 .font-bold{font-weight:bold}
 
+/*全局字體顏色*/
+.col-428bca{color:#428bca;}
+.col-3276b1{color:#3276b1;}
+.col-5cb85c{color:#5cb85c;}
+.col-47a447{color:#47a447;}
+.col-5bc0de{color:#5bc0de;}
+.col-39b3d7{color:#39b3d7;}
+.col-f0ad4e{color:#f0ad4e;}
+.col-ed9c28{color:#ed9c28;}
+.col-d9534f{color:#d9534f;}
+.col-d2322d{color:#d2322d;}
+.col-c3cdd9{color:#c3cdd9;}
+.col-fff{color:#fff;}
+.col-000{color:#000;}
+
+@col-428bca:#428bca;
+@col-3276b1:#3276b1;
+@col-5cb85c:#5cb85c;
+@col-47a447:#47a447;
+@col-5bc0de:#5bc0de;
+@col-39b3d7:#39b3d7;
+@col-f0ad4e:#f0ad4e;
+@col-ed9c28:#ed9c28;
+@col-d9534f:#d9534f;
+@col-d2322d:#d2322d;
+@col-c3cdd9:#c3cdd9;
+@col-fff:#fff;
+@col-000:#000;
+/* 表单边框样式 */
+@col-d5d5d5:#d5d5d5;
+@col-f59942:#f59942;
+
 
 /*初始化默认设置*/
-body{font:12px/1.5em Microsoft YaHei,~"\5fae\8f6f\96c5\9ed1,\5b8b\4f53",Arial;color:#444;background:#fff}
+html{height:100%;background:url(../images/bg.jpg)}
+body{font:12px/1.5em Microsoft YaHei,~"\5fae\8f6f\96c5\9ed1,\5b8b\4f53",Arial;color:#444;}
 textarea,input,select,table{font-size:12px}
 select,input{vertical-align:middle}
 fieldset,img{border:0 none}
@@ -23,37 +56,41 @@ a{
 	}
 }
 table{margin:0;border-collapse:collapse;border-spacing:0}
-
+button[disabled],html input[disabled] {cursor:default}
 /*布局设设置*/
 /*
 @media (min-width:1003px){
 	body{color:#f00;}
 }
 */
-#lt-wrap{min-width:1003px}
+#lt-wrap{min-width:943px;padding:30px}
 
 	/*头部*/
 	#lt-header{
 		width:100%;
 		
 		#logo{
-			width:300px;
+			width:106px;
+			height:40px;
 			display:block;
+			background:url(../images/app/logo.png) no-repeat
 		}
 	}
 
 	/*内容*/
-	#lt-mian{width:100%}
+	#lt-main{width:100%;height:100%;background:#fff url(../images/app/leftBg.gif) repeat-y}
 
 		/*左侧*/
-		#lt-left{float:left;position:relative;z-index:1;width:125px;}
+		#lt-left{float:left;position:relative;z-index:1;width:196px;height:100%;background:#4d4d65}
 
 		/*右侧*/
-		#lt-right{width:100%;float:left;margin-left:-125px;overflow:hidden}
-				#lt-sl-right{min-width:878px;margin-left:125px}
+		#lt-right{width:100%;float:left;margin-left:-196px;overflow:hidden}
+			#lt-sl-right{min-width:747px;margin-left:196px;}
+				#navBar{height:58px;font-size:18px;background:#e76c00;}
+				#lt-rightMain{padding:18px;}
 				
 	/*尾部*/
-	#lt-footer{width:100%}
+	#lt-footer{width:100%;height:38px;background:#e9eef5}
 	
 	
 	

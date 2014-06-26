@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common3" src="../js/lib/require.js"></script>
+<script src="../testData/CustomersData2.js"></script>
+</head>
+<body>
+	<div id="grid1"></div>
+	<script>
+		require(['app/main'], function(saogaUI){
+			var grid = saogaUI.ui.grid({
+				wrap:'#grid1',
+				data: CustomersData,
+				columns: [
+					{ display: '表头0', name: 'OrderID', width: 120, render: function(rdata, rindex, value){
+							var h = '<span style="color:#ddd">'+ value +'</span>';
+							return h;
+						}
+					},
+					{ display: '表头1', name: 'CustomerID', width: 100},
+					{ display: '表头2', name: 'EmployeeID', width: 100},
+					{ display: '表头3', name: 'ShipCity', width: 100},
+					{ display: '表头4', name: 'ShipRegion', width: 100},
+					{ display: '表头5', name: 'ShippedDate', width: 100},
+					{ display: '表头6', name: 'ShipName', width: 100}
+				]
+			});
+		});
+	</script>
+</body>
+</html>
