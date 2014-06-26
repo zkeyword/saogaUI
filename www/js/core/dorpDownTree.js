@@ -32,7 +32,8 @@ define(['core/saogaUI'], function(saogaUI){
 			},
 			createTreeHtml = function(data){
 				var line = '',
-					tree  = function(data, line, isOrigin){
+					node = '<div class="l-treeNode"></div>',
+					tree = function(data, line, isOrigin){
 						var i        = 0,
 							len      = data.length,
 							html     = '',
@@ -46,8 +47,12 @@ define(['core/saogaUI'], function(saogaUI){
 									html += '<div class="l-treeBox l-treeLine"></div>';
 								}
 								html += (isMultiple ? '<div class="l-treeCheckbox"></div>' : '');
-								html +=	(line ? line : '');
-								html += '<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name + '</div>';
+								
+								//替换字符串，考虑修改
+								html +=	(line ? line + node : '');
+								html = html.replace('"></div><div class="l-treeNode"></div>', ' l-treeNode"></div>');
+								
+								html += '<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name +'</div>';
 							
 							html += '</div>';
 									
@@ -55,7 +60,7 @@ define(['core/saogaUI'], function(saogaUI){
 								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(data[i].chlidren, line+'<div class="l-treeBox l-treeLine"></div>', false) +'</div>';
 							}
 						}
-												
+											
 						return html;
 					};
 				
