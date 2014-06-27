@@ -1,4 +1,5 @@
 define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
+	
 	var BaseGrid = function(){
 		var g       = this,
 		
@@ -89,13 +90,15 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
 							}
 							for(var h = 0; h < columns.length; h++){
-								var colWidth = '';
+								var colWidth,innerWidth;
 								if( columns[h].width === tmpWidth ){
+									innerWidth = '';
 									colWidth = 'auto';
 								}else{
+									innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
 									colWidth = columns[h].width + 'px';
 								}
-								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner">';
+								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ (innerWidth ? innerWidth : '') +'>';
 								if( columns[h].render !== undefined ){
 									s += columns[h].render(data[pageStar], pageStar, data[pageStar][columns[h].name]);
 								}else{
@@ -139,18 +142,17 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						/**
 						* 获取数字连接
 						* @private
-						* @param {Number} 当前位置
 						* @param {Number} 
 						* @param {String} 上下翻页的文本
 						*/
-						_getLink    = function(index, pageNum, txt){
-							var s       = '',
-								current = index === pageNum ? ' class="on"' : '',
-								txt     = txt || index;
+						_getLink    = function(index, txt){
+							var pagerStr = pager.attr('data-page'),
+								current  = pagerStr ? Number(pagerStr) : 1,
+								txt      = txt || index;
+							
+								console.log(current, index);
 								
-							s += '<a href="#p'+ index +'" page="'+ index +'"' 
-								 + current + '>'+ txt +'</a>';
-							return s;
+							return '<a href="javascript:;" data-page="'+ index +'"'+ (current === index ? ' class="on"' : '') + '>'+ txt +'</a>';
 						},
 						
 						/**
@@ -164,8 +166,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							var start = (index-1)*pageSize + 1,
 								end   = index*pageSize,
 								str   = lang.countFont+'';
-							
-							console.log(lang)
 								
 							str = str.replace('{{start}}', start);
 							str = str.replace('{{end}}', end);
@@ -190,12 +190,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								pageNum = Math.ceil(count / pageSize);
 								
 							if(index > 1){
-								s += _getLink(index - 1, itemNum, '上一页');
+								s += _getLink(index - 1,'上一页');
 							}else{
 								s += '<span>'+ lang.prevPage +'</span>';
 							}
 							if(index - itemNum > 1){
-								s += _getLink(1, index) + '<em>...</em>';
+								s += _getLink(1) + '<em>...</em>';
 								begin = index - itemNum;
 							}
 							end = Math.min(pageNum, begin + itemNum * 2);
@@ -203,13 +203,13 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								end = pageNum;
 							}
 							for(i = begin; i <= end; i++) {
-								s += _getLink(i, pageNum);
+								s += _getLink(i);
 							}
 							if(end < pageNum){
-								s += '<em>...</em>' + _getLink(pageNum, index);
+								s += '<em>...</em>' + _getLink(index);
 							}
 							if(index < pageNum){
-								s += _getLink(index + 1, pageNum, lang.nextPage);
+								s += _getLink(index + 1, lang.nextPage);
 							}else{
 								s += '<span>'+ lang.nextPage +'</span> ';
 							}
@@ -242,12 +242,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					_setMemory();
 					
 					/*分页事件*/
-					pager.find('.l-grid-footer-pager-btn').on('click','a',function(){
+					pager.on('click','a',function(){
 					
 						var gridpageMsg = pager.find('.l-grid-footer-pager-msg'),
 							gridpageBtn = pager.find('.l-grid-footer-pager-btn'),
-							index       = Number( $(this).attr('page') ); // attr返回 string
-															
+							index       = Number( $(this).attr('data-page') ); // attr返回 string
+																					
 						/*修改全局g.o的 pageIndex 成员*/
 						options.pageIndex = index;
 						
@@ -271,7 +271,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								beforeSend: function(){
 									if( saogaUI.base.isFunction(options.pageAjax.beforeSend) ){
 										options.pageAjax.beforeSend();
-										console.log('d')
 									}
 								},
 								success: function(data){
@@ -287,6 +286,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						gridBody.html( _core.tBodyFn(options) );
 						gridpageMsg.html( _getCount(pageSize, count, index) );
 						gridpageBtn.html( _getBtn(pageSize, count, index) );
+						pager.attr({'data-pager':index});
 						
 						/*全部选上时给表头全选*/
 						if( gridBody.find('.l-checkbox-selected').length == pageSize ){

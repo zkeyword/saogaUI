@@ -13,40 +13,42 @@
 		border:1px solid @activeCol;
 	}
 }
-	input{
-		box-sizing: border-box;
-		display:inline-block;
-		font-size: 14px;
-		line-height: 1.42857;
-		padding:3px 12px;
-		vertical-align: middle;
-		.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-		.border-radius(4px);
-	}
-	textarea {
-		padding:6px;
-		.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-		.border-radius(4px);
-	}
-	select{
-		.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-		.border-radius(4px);
-		padding:2px 3px;
-		text-align:left;
-	}
-	/* 公共表单input样式 */
-	input[type="checkbox"],input[type="radio"] {vertical-align:middle;margin:-2px 2px 1px;height:auto;}
-	input[type="file"]{border:none;height:auto;padding:0;}
+input{
+	box-sizing: border-box;
+	display:inline-block;
+	font-size: 14px;
+	line-height: 1.42857;
+	padding:3px 12px;
+	vertical-align: middle;
+	.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
+	.border-radius(4px);
+}
+textarea {
+	padding:6px;
+	.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
+	.border-radius(4px);
+}
+select{
+	.ui-input-stauts(@col-d5d5d5, @col-d5d5d5, @col-f59942, @col-d5d5d5);
+	.border-radius(4px);
+	padding:2px 3px;
+	text-align:left;
+}
+
+/* 公共表单input样式 */
+input[type="checkbox"],input[type="radio"] {vertical-align:middle;margin:-2px 2px 1px;height:auto;}
+input[type="file"]{border:none;height:auto;padding:0;}
+
+/* 表单块区域 */
+.ui-form{float:left;line-height:32px;}
+	.ui-form span{float:left;display:inline-block;margin-right:2px;}
 	
-	/* 表单块区域 */
-	.ui-form{float:left;line-height:32px;}
-		.ui-form span{float:left;display:inline-block;margin-right:2px;}
-	/* 表单列表区域样式 */
-	.ui-forms{width:400px;}
-		.ui-forms li{float:left;width:100%;display:inline;margin:2px 0;}
-		.ui-forms li span{display:inline-block;margin-right:2px;}
-		.ui-forms li .form-title{text-align:right;width:60px;}
-		.ui-forms li .ui-btn{display:inline-block;margin-right:5px;}
+/* 表单列表区域样式 */
+.ui-forms{width:400px;}
+	.ui-forms li{float:left;width:100%;display:inline;margin:2px 0;}
+	.ui-forms li span{display:inline-block;margin-right:2px;}
+	.ui-forms li .form-title{text-align:right;width:60px;}
+	.ui-forms li .ui-btn{display:inline-block;margin-right:5px;}
 		
 
 

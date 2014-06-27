@@ -49,7 +49,8 @@ define(['jquery'], function($){
 				window.saogaUI = saogaUI;
 			},
 			base: {}, //基础层,所有的基础函数库,如cookie等
-			ui: {}    //前端显示层,用来重构和回流DOM,前端的特效显示处理
+			ui: {},   //前端显示层,用来重构和回流DOM,前端的特效显示处理
+			app:{}    //应用层，挂载一些应用的通用类。
 		};
 		
 		saogaUI._INSTALL();

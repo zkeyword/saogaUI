@@ -13,5 +13,17 @@ define(function(require){
 	saogaUI.ui.selectArea   = require('core/selectArea');
 	saogaUI.ui.grid         = require('core/gird');
 	
+	$(function () {
+		SetCopyrightWidth();
+		$(window).resize(function () {
+			SetCopyrightWidth();
+		});
+	});
+	
+	//版权中间块宽度
+	function SetCopyrightWidth() {
+		$("#copyright").css({ "width": $('#lt-footer').outerWidth() - $('#footer-left').outerWidth()-$('#footer-right').outerWidth()});
+	}
+	
 	return saogaUI;
 });

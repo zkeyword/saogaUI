@@ -22,6 +22,7 @@
 .col-fff{color:#fff;}
 .col-000{color:#000;}
 
+
 @col-428bca:#428bca;
 @col-3276b1:#3276b1;
 @col-5cb85c:#5cb85c;
@@ -40,19 +41,26 @@
 @col-f59942:#f59942;
 
 
+.title-width-55{width:55px;}
+.align-left{text-align:left;}
+.align-right{text-align:right}
+align-center{text-align:center;}
+
+
 /*初始化默认设置*/
 html{height:100%;background:url(../images/bg.jpg)}
-body{font:12px/1.5em Microsoft YaHei,~"\5fae\8f6f\96c5\9ed1,\5b8b\4f53",Arial;color:#444;}
+body{font:12px/1.5em Microsoft YaHei,~"\5fae\8f6f\96c5\9ed1,\5b8b\4f53",Arial; background:url(../images/app/bg.jpg) repeat;width:100%;height:100%;color:#000;}
 textarea,input,select,table{font-size:12px}
 select,input{vertical-align:middle}
 fieldset,img{border:0 none}
 a{
-	color:#444;
+	color:#000;
 	text-decoration:none;
+	cursor:pointer;
 	
 	&:hover{
-		color:#f00;
-		text-decoration:underline;
+		color:#000;
+		text-decoration:none;
 	}
 }
 table{margin:0;border-collapse:collapse;border-spacing:0}
@@ -63,34 +71,107 @@ button[disabled],html input[disabled] {cursor:default}
 	body{color:#f00;}
 }
 */
-#lt-wrap{min-width:943px;padding:30px}
+
+/* 超过宽度部分文字用省略号显示 */
+.show-ellipsis{overflow: hidden;text-overflow: ellipsis;display: inline-block;vertical-align: bottom; white-space:nowrap; word-wrap:normal;}
+#lt-wrap{min-width:943px;padding:40px 53px 20px;}
 
 	/*头部*/
 	#lt-header{
 		width:100%;
-		
+		margin-bottom:10px;
 		#logo{
 			width:106px;
 			height:40px;
 			display:block;
+			text-indent:-9999px;
 			background:url(../images/app/logo.png) no-repeat
 		}
+		#status .progress p{height:15px;line-height:15px;}
+			#status .progress p span{display:inline-block;margin-right:3px;}
+				#status .progress p span label{
+					display:inline-block;
+					height:5px;
+					.border-radius(5px);
+				}
+				#status .progress .progress-bar{background:#5fb0d8;
+					width:115px;
+					height:5px;
+					.border-radius(5px);
+				}
+				#status .progress .progress-bar.progress-bar1 label{background:#ffbb00;}
+				#status .progress .progress-bar.progress-bar2 label{background:#e74f8a;}
+		#status .state-tip li{float:left;border-right:1px solid #9a9a9a;}
+		#status .state-tip li:last-child{border-right:none;}
+			#status .state-tip li p{float:left;width:100%;font-size:14px;text-align:center;}
+			#status .state-tip li .text-tip{font-size:16px;font-weight:bold;line-height:25px;}
+	   .circle-tip{display:inline-block;
+			positon:relative;
+			width:45px;
+			height:45px;
+			line-height:45px;
+			margin-right:5px;
+			background:#5daede;
+			color:#fff;
+			text-align:center;
+			.border-radius(45px);
+	   }
+	   .circle-tip .iconfont{font-size:30px;color:#fff;}
 	}
 
 	/*内容*/
 	#lt-main{width:100%;height:100%;background:#fff url(../images/app/leftBg.gif) repeat-y}
 
 		/*左侧*/
-		#lt-left{float:left;position:relative;z-index:1;width:196px;height:100%;background:#4d4d65}
-
+		#lt-left{float:left;position:relative;z-index:1;width:196px;height:100%;background:#4d4d65;color:#fff;}
+			#lt-left a{color:#fff;}
+			#lt-left .login-user{height:125px;background:#5f5269;}
+				#lt-left .login-user .user-intro{position:relative;height:125px;width:100%;}
+					#lt-left .login-user .user-intro .user-img{
+						position:absolute;
+						top:-12px;
+						left:55px;
+						z-index:10;
+						width:85px;
+						height:85px;
+						background:#fff;
+						border:2px #fff double;
+						overflow:hidden;
+						.border-radius(88px);
+						
+					}
+					#lt-left .login-user .user-intro .user-img img{width:100%;height:100px;}
+			 	    #lt-left .login-user .user-intro .user-name{position:absolute;top:78px;width:100%;text-align:center;}
+			 	    #lt-left .login-user .user-intro .user-name .show-ellipsis{width:150px;margin:0 auto;}
+			 	    #lt-left .login-user .user-intro .dropdown-toggle.icon{position:absolute;bottom:10px;right:10px;font-size:8px;color:#fff;cursor:pointer;}
+				
+			#lt-left .sidebar{background:#4d4e65;}
+				#lt-left .sidebar .nav-list li{float:left;padding:0 15px;}
+				#lt-left .sidebar .nav-list .dropdown-toggle{display:block;background:#4d4e65;color:#fff;border-bottom:1px solid #616279;font-size:14px;height:48px;line-height:48px;}
+				#lt-left .sidebar .nav-list .dropdown-toggle .icon{font-size:14px;color:#fff;}
+				#lt-left .sidebar .nav-list .dropdown-toggle .icon:first-child{margin-right:3px;}
+				#lt-left .sidebar .nav-list .dropdown-toggle .icon:first-child{margin-left:3px;}
+				
+				
+			
 		/*右侧*/
 		#lt-right{width:100%;float:left;margin-left:-196px;overflow:hidden}
 			#lt-sl-right{min-width:747px;margin-left:196px;}
-				#navBar{height:58px;font-size:18px;background:#e76c00;}
+				#navBar{height:58px;background:#e76e00;}
+					#nav{margin-left:3.8%;}
+						#nav li{float:left;display:inline-block;}
+							#nav li a{display:block;padding:0 30px;height:58px;line-height:58px;color:#fff;font-size:16px;background:#e76e00;}
+							#nav li a:hover,#nav li a.cur{background:#ee9b50;font-weight:bold;}
 				#lt-rightMain{padding:18px;}
 				
 	/*尾部*/
-	#lt-footer{width:100%;height:38px;background:#e9eef5}
+	#lt-footer{height:38px;line-height:38px;background:#e8eff5;border:1px solid #cecece;padding:0 20px; }
+		#lt-footer .footer-box{width:100%;}
+			#lt-footer .footer-box .foot-advisor{width:210px;}
+			#lt-footer .footer-box .foot-logo{display:block;background:url(../images/app/foot-logo.jpg) no-repeat;width:73px;height:33px;}
+			#lt-footer .footer-box .copyright{text-align:center;}
+			#lt-footer .footer-box .copyright span{display:inline-block;margin:0 2px;}
+			
 	
 	
 	

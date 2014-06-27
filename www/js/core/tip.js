@@ -138,7 +138,7 @@ define(function(){
 		if( isInitShow ){
 			tipFn.position();
 		}else{
-			tipItem.live(event,function(){
+			tipItem.on(event, function(){
 				if( isArrow ){
 					tipFn.arrow();
 				}else if( isTrack ){
@@ -146,11 +146,11 @@ define(function(){
 				}else{
 					tipFn.defaultPositon();
 				}
-			}).live('mousemove',function(){
+			}).on('mousemove',function(){
 				if( isTrack ){
 					tipFn.track();
 				}
-			}).live('mouseout',function(){
+			}).on('mouseout',function(){
 				tipFn.remove();
 			});
 			
