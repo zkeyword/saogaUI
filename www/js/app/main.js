@@ -13,17 +13,31 @@ define(function(require){
 	saogaUI.ui.selectArea   = require('core/selectArea');
 	saogaUI.ui.grid         = require('core/gird');
 	
-	$(function () {
-		SetCopyrightWidth();
-		$(window).resize(function () {
-			SetCopyrightWidth();
-		});
-	});
 	
-	//版权中间块宽度
-	function SetCopyrightWidth() {
-		$("#copyright").css({ "width": $('#lt-footer').outerWidth() - $('#footer-left').outerWidth()-$('#footer-right').outerWidth()});
+	saogaUI.app.d = function(){
+	      alert('d');
 	}
 	
+	$(function () {
+		var win             = $(window),
+			footerHeight    = $('#lt-footer').outerHeight(),
+			rightMain       = $('#lt-rightMain'),
+			rightMainOffset = rightMain.offset(),
+			rightMainTop    = rightMainOffset.top,
+			rightMainHeight = function(){
+				var winHeight = win.height();
+				if( winHeight > 750 ){
+					rightMain.height(winHeight - rightMainTop - footerHeight - 36 - 20 );
+				}
+			};
+		
+		rightMainHeight();
+		win.resize(function(){
+			rightMainHeight();
+		});
+		
+		
+	});
+
 	return saogaUI;
 });

@@ -18,15 +18,39 @@
 .l-grid-body table{border-collapse:collapse;border-spacing:0;border:1px solid #ddd;font-size:14px;color:#333;background-color:#fff}
 	.l-grid-body td{border:solid 1px #ddd;padding:5px 8px;}
 		/*单元格*/
-		.l-grid-row-cell-inner{}
+		.l-grid-row-cell-inner{width:100%}
 		/*明细*/
 		.l-grid-row-cell-detail{display:none;}
 	
 /*表格尾部*/
-.l-grid-footer{height:30px}
+.l-grid-footer{height:40px;border:1px solid #d7d5d6}
 	/*按钮*/
 	.l-grid-footer-btns{float:left;}
 	/*分页*/
 	.l-grid-footer-pager{float:right;}
 		.l-grid-footer-pager-btn{float:left;}
-		.l-grid-footer-pager-msg{float:left;}
+			.l-grid-footer-pager-btn{
+				padding:0 10px 0 0;
+				em{
+					display:block;
+					height:16px;
+					float:left;
+					padding:3px 5px;
+					margin:8px 0 0 5px;
+				}
+				a, span{
+					display:block;
+					height:16px;
+					float:left;
+					border:1px solid #d7d5d6;
+					padding:3px 5px;
+					margin:8px 0 0 5px;
+				}
+				span{
+					color:#ddd
+				}
+				a.on{
+					border:1px solid #000;
+				}
+			}
+		.l-grid-footer-pager-msg{float:left;line-height:40px;}
