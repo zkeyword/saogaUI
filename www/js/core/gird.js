@@ -45,12 +45,15 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						s += '<th style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
 					}
 					for(; i < len; i++){
+						var colWidth, innerWidth;
 						if( columns[i].width === tmpWidth ){
+							innerWidth = '';
 							colWidth = 'auto';
 						}else{
+							innerWidth = ' style="width:'+ (columns[i].width - 10) +'px"';
 							colWidth = columns[i].width + 'px';
 						}
-						s += '<th style="width:'+ colWidth +'"><div class="l-grid-hd-cell-inner">'+ columns[i].display +'</div></th>';
+						s += '<th style="width:'+ colWidth +'"><div class="l-grid-hd-cell-inner"'+ innerWidth +'>'+ columns[i].display +'</div></th>';
 					}
 					s += '</tr>';
 					s += '</table></div>';
@@ -98,7 +101,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 									innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
 									colWidth = columns[h].width + 'px';
 								}
-								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner">';
+								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
 								if( columns[h].render !== undefined ){
 									s += columns[h].render(data[pageStar], pageStar, data[pageStar][columns[h].name]);
 								}else{
@@ -501,11 +504,18 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				};
 			
 			
-			tmpPage = Math.ceil(options.data.Total / options.pageSize);
+			var tmpPage = Math.ceil(options.data.Total / options.pageSize),
+				tmpPageSize = options.pageSize,
+				tmpData = options.data.Rows
+				
+				
 			var tmpArr = [];
 			for(var tm = 0; tm<tmpPage; tm++){
-				tmpArr[tm] = {'{{tmpObj}}':tm};
+				tmpArr[tm] = tmpData[tmpPageSize*tm];
 			}
+			
+			
+			
 			options.tmpData = tmpArr;
 			console.log(tmpArr,options.data.Rows);
 			
