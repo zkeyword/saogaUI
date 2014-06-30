@@ -81,6 +81,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					}
 						
 					s += '<table style="width:100%">';
+					
 					for(var i = 0; i<pageSize; i++){
 						if( tmpData[index][i] ){
 							if( detail ){
@@ -90,6 +91,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
 							}
 							for(var h = 0; h < columns.length; h++){
+														//console.log(columns[h].name,tmpData[index][i][i])
+
 								var colWidth, innerWidth;
 								if( columns[h].width === tmpWidth ){
 									innerWidth = '';
@@ -239,7 +242,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					
 					/*初始化records.rowselected*/
 					_setMemory();
-					
+										
 					/*分页事件*/
 					pager.on('click','a',function(){
 					
@@ -262,6 +265,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						
 						/*重新获取数据*/
 						options.tmpData[index] = _core.splitData(options, index);
+						console.log(options)
 						
 						/*重载html*/
 						current = index;
@@ -469,11 +473,15 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* @param {number}
 				*/
 				splitData: function(options, index){
+				
+					//需优化
+					
 					var splitData = [];
 					if( options.pageAjax ){
 						_core.ajaxGetData(options, index, function(data){
-							splitData[index] = data.rows[0];
-							console.log(splitData);
+							g.o.data       = {};
+							g.o.data.rows  = data.rows;
+							g.o.data.total = data.total;
 						});
 					}else{
 						var i         = 0,
@@ -489,9 +497,13 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							}
 							i++;
 						}
+						
+						g.o.data = {};
+						g.o.data.rows = data;
+						g.o.data.total = dataLen;
+
 					}
-					
-					return splitData;
+					return g.o.data;
 				}
 				
 			};
@@ -543,22 +555,29 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				tmpPage = 0,
 				tm      = 1;
 			
-			tmpArr[0] = _core.splitData(options, 0);
-			tmpPage   = Math.ceil(options.data.total / options.pageSize);
-			
+			//需要优化
+			options.data = _core.splitData(options, 0);
+			tmpArr[0]    = options.data.rows;
+			tmpPage      = Math.ceil(options.data.total / options.pageSize);
 			//tm = 1是因为splitData初始化的时候已经为0
 			for(; tm<tmpPage; tm++){
-				tmpArr[tm] = _core.splitData(options, tm);
+				if( !options.pageAjax ){
+					options.data = _core.splitData(options, tm);
+					tmpArr[tm]   = options.data;
+				}else{
+					tmpArr[tm] = [];
+				}
 			}
-						
+
 			options.tmpData = tmpArr;
-			
+
 			/*复制options共享g.o对象*/
 			for(var key in options){
 				if( options.hasOwnProperty(key) ){
 					g.o[key] = options[key];
 				}
 			}
+			
 			
 			/*生成表格*/
 			
