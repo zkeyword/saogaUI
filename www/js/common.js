@@ -1,7 +1,7 @@
 requirejs.config({
     baseUrl: '/resources/saogaUI/www/js/lib',
     paths: {
-    	jquery: 'jquery-2.1.1.min',
+    	jquery: 'jquery-1.8.3.min',
 		core: '../core',
         app:  '../app'
     }

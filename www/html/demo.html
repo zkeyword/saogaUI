@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<title>組件頁面</title>
     <link rel="stylesheet/less" type="text/less" href="/resources/saogaUI/www/less/styles.less">
-    <script src="/resources/saogaUI/www/js/lib/less-1.5.0.min.js"></script>
+	<script data-main="../js/common2" src="../js/lib/require.js"></script>
 </head>
 <body>
 <!-- 按鈕模塊 button标签 -->
-<div class="full-width">
+<div class="fn-clear">
       <button class="ui-btn ui-btn-primary" type="button">主要</button>
       <button class="ui-btn ui-btn-success" type="button">成功</button>
       <button class="ui-btn ui-btn-info" type="button">信息</button>
@@ -16,7 +16,7 @@
       <button class="ui-btn ui-btn-danger" type="button">危险</button>
       <button class="ui-btn ui-btn-disabled" type="button" disabled="disabled">禁用</button>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<button class="ui-btn ui-btn-primary">
 		<i class="iconfont icon iconfont_10 col-fff" data-iconid="982" data-rid="10" data-uid="983093" >&#983093</i>成功
 	</button>
@@ -28,7 +28,7 @@
 		<p>新手上路</p>	
 	</button>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 <div class="ui-btn-dropdown">
 	<button class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown">
 		操作
@@ -50,7 +50,7 @@
 	</ul>
 </div>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<div class="ui-btn-group" data-toggle="buttons">
 		<button class="ui-btn ui-btn-primary" type="button">新增</button>
 		<button class="ui-btn ui-btn-primary" type="button">删除</button>
@@ -59,7 +59,7 @@
 	</div>
 </div>
 <!-- 按鈕模塊 a标签 -->
-<div class="full-width">
+<div class="fn-clear">
       <a class="ui-btn ui-btn-primary" href="javascript:;">主要</a>
       <a class="ui-btn ui-btn-success" href="javascript:;">成功</a>
       <a class="ui-btn ui-btn-info" href="javascript:;">信息</a>
@@ -67,7 +67,7 @@
       <a class="ui-btn ui-btn-danger" href="javascript:;">危险</a>
       <a class="ui-btn ui-btn-disabled" href="javascript:;" disabled="disabled">禁用</a>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<a class="ui-btn ui-btn-primary" href="javascript:;">
 		<i class="iconfont icon iconfont_10 col-fff" data-iconid="982" data-rid="10" data-uid="983093" >&#983093</i>成功
 	</a>
@@ -79,7 +79,7 @@
 		<p>新手上路</p>	
 	</a>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 <div class="ui-btn-dropdown">
 	<a class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown" href="javascript:;">
 		操作
@@ -101,7 +101,7 @@
 	</ul>
 </div>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<div class="ui-btn-group" data-toggle="buttons">
 		<a class="ui-btn ui-btn-primary" href="javascript:;">新增</a>
 		<a class="ui-btn ui-btn-primary" href="javascript:;">删除</a>
@@ -110,7 +110,7 @@
 	</div>
 </div>
 <!-- 按鈕模塊 span标签 -->
-<div class="full-width">
+<div class="fn-clear">
       <span class="ui-btn ui-btn-primary" href="javascript:;">主要</span>
       <span class="ui-btn ui-btn-success" href="javascript:;">成功</span>
       <span class="ui-btn ui-btn-info" href="javascript:;">信息</span>
@@ -118,7 +118,7 @@
       <span class="ui-btn ui-btn-danger" href="javascript:;">危险</span>
       <span class="ui-btn ui-btn-disabled" href="javascript:;" disabled="disabled">禁用</span>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<span class="ui-btn ui-btn-primary" href="javascript:;">
 		<i class="iconfont icon iconfont_10 col-fff" data-iconid="982" data-rid="10" data-uid="983093" >&#983093</i>成功
 	</span>
@@ -130,7 +130,7 @@
 		<p>新手上路</p>	
 	</span>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 <div class="ui-btn-dropdown">
 	<span class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown" href="javascript:;">
 		操作
@@ -152,7 +152,7 @@
 	</ul>
 </div>
 </div>	
-<div class="full-width">
+<div class="fn-clear">
 	<div class="ui-btn-group" data-toggle="buttons">
 		<span class="ui-btn ui-btn-primary" href="javascript:;">新增</span>
 		<span class="ui-btn ui-btn-primary" href="javascript:;">删除</span>
@@ -160,5 +160,93 @@
 		<span class="ui-btn ui-btn-primary" href="javascript:;">更新成功</span>
 	</div>
 </div>
+<!-- tab标签 -->
+<div class="ui-wrap fn-clear">
+	<ul id="tab" class="fn-clear">
+		<li class="on">标签1<a href="#">更多</a></li>
+		<li>标签2</li>
+		<li>标签3</li>
+	</ul>
+	<div class="tab-main">标签1标签1标签1标签1标签1标签1标签1</div>
+	<div class="tab-main">标签2标签2标签2标签2标签2标签2标签2</div>
+	<div class="tab-main">标签3标签3标签3标签3标签3标签3标签3</div>
+</div>
+<!-- 弹出框 -->
+<a class="fn-clear" id="btn-alert" href="javascript:;">点击弹出弹窗</a>
+<!-- <div id="l-ui-wrap">
+    <div id="l-dialog-1404093880795" class="l-ui l-dialog-wrap l-ui-mask">
+        <table class="l-dialog-table">
+            <tbody>
+                <tr>
+                    <td class="l-dialog-border l-dialog-border-top" colspan="3">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="l-dialog-border l-dialog-border-left">
+                    </td>
+                    <td class="l-dialog-main">
+                        <div class="l-dialog-close"> x </div>
+                        <div id="l-dialog-title1404093880795" class="l-dialog-title">标题</div>
+                        <div style="width:200px;height:50px" class="l-dialog-content l-dialog-alert">内容</div>
+                        <div class="ui-floatCenter l-dialog-btnWrap">
+                            <div class="ui-sl-floatCenter">
+                                <a class="ui-btn ui-btnMain ui-floatCenter-item l-dialog-ok" href="javascript:;">
+                                    <span>确定</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="l-dialog-border l-dialog-border-right"></td>
+                </tr>
+                <tr>
+                    <td class="l-dialog-border l-dialog-border-bottom" colspan="3"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    [if lte IE 6.5]>
+        <iframe src="javascript:false;" style="width:0;height:0;">
+        </iframe>
+    <![endif]
+</div> -->
+<!-- 提示标签 -->
+<span id="tip" title="title模拟控件">title模拟控件</div></span>
+
+<div class="n-clear">
+	<div class="l-ui l-tip">
+		<div class="l-tipMain">
+			<div class="l-tipMain-text">3333</div>
+		</div>
+		<span class="l-tipArrow l-tipArrow-topBottom l-tipArrow-topLeft"></span>
+	</div>
+</div>
+<script type="text/javascript">
+require(['app/main2'], function(saogaUI){	
+	//tab标签选项
+	saogaUI.ui.tab({
+		tabItem:'#tab li',
+		tabWrap:'.tab-main',
+		tabEvent:'click',
+		isAuto:true
+	});
+	//点击弹出弹出框
+	$("#btn-alert").click(function() {
+		saogaUI.ui.dialog.alert({
+			title:'表单进程',
+			text:'更新成功',
+			ok:function(){
+				alert('确定')
+			}
+		});
+	});
+	//tip鼠标已过去 提示标签
+	saogaUI.ui.tip({
+		tipItem:'#tip',
+		isArrow: true
+	});
+});
+
+
+   </script>
 </body>
 </html>

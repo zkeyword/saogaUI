@@ -8,7 +8,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			* @private
 			*/
 			_records = {
-				rowSelected: [],
+				rowselected: [],
 				detailSelected: []
 			},
 			
@@ -59,33 +59,30 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					s += '</table></div>';
 					return s;
 				},
+				
 				/**
 				* 内部表格主体内容
 				* @param {object} init 和 reflash共享的对象
 				*/
-				tBodyFn: function(options){
+				tBodyFn: function(options, index){
 					var columns   = options.columns,
-						data      = options.data.Rows,
 						pageSize  = options.pageSize,
-						pageIndex = options.pageIndex,
 						width     = options.width,
 						checkbox  = options.checkbox,                      //选择框
-						dataLen   = options.data.Total,                    //记录总数
-						pageStar  = (pageIndex-1)*pageSize,                //当前记录的起始
-						pageEnd   = Math.min(pageIndex*pageSize, dataLen), //当前记录的结束
 						detail    = options.detail,                        //行明细
-						s         = '';
+						s         = '',
+						tmpData   = options.tmpData,
+						index     = index !== undefined ? index - 1  : 0;
 					
 					//取出宽度最大的列
 					var tmpWidth = 0;
 					for(var h = 0; h < columns.length; h++){
 						tmpWidth = Math.max(columns[h].width, tmpWidth);
 					}
-	
+						
 					s += '<table style="width:100%">';
-					for(; pageStar < pageEnd; pageStar++){
-						if( data[pageStar] ){
-							s += '<tr>';
+					for(var i = 0; i<pageSize; i++){
+						if( tmpData[index][i] ){
 							if( detail ){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
 							}
@@ -103,16 +100,16 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								}
 								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
 								if( columns[h].render !== undefined ){
-									s += columns[h].render(data[pageStar], pageStar, data[pageStar][columns[h].name]);
+									s += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name]);
 								}else{
-									s += data[pageStar][columns[h].name];
+									s += tmpData[index][i][columns[h].name];
 								}
 								s += '</div></td>';
 								
 							}
 							s += '</tr>';
 							if( detail.render !== undefined ){
-								var str    = detail.render(data[pageStar], pageStar),
+								var str    = detail.render(tmpData[index], pageStar),
 									colLen = columns.length + (checkbox ? 1 : 0) + 1;
 								s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
 							}
@@ -131,7 +128,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						id          = options.id,                        //表格ID
 						pageSize    = options.pageSize,                  //每页显示多少个
 						pageIndex   = options.pageIndex,                 //起始位置
-						count       = options.data.Total || 0,           //记录总个数
+						count       = options.data.total || 0,           //记录总个数
 						onPageFn    = options.onPageFn,                  //记录总个数
 						isMemory    = options.isMemory,                  //翻页是否记住选择记录
 						isPageCache = options.isPageCache,               //翻页是否缓存
@@ -224,9 +221,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						*/
 						_setMemory  = function(){
 							if( !isMemory ){
-								_records.rowSelected = []; //修改选中的数组值
+								_records.rowselected = []; //修改选中的数组值
 							}else{
-								_core.initCheckbox(options, _records.rowSelected); //初始化选中状态
+								_core.initCheckbox(options, _records.rowselected); //初始化选中状态
 							}
 						};
 						
@@ -240,7 +237,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					/*生成分页*/
 					pager.html(html);
 					
-					/*初始化records.rowSelected*/
+					/*初始化records.rowselected*/
 					_setMemory();
 					
 					/*分页事件*/
@@ -263,34 +260,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							}
 						}
 						
-						/*以ajax形式获取数据*/
-						if( options.pageAjax ){
-							$.ajax({
-								type: "POST",
-								url: options.pageAjax.url,
-								cache: false,
-								dataType: "json",
-								data: (options.pageAjax.data).replace('{{index}}',index),
-								beforeSend: function(){
-									if( saogaUI.base.isFunction(options.pageAjax.beforeSend) ){
-										options.pageAjax.beforeSend();
-									}
-								},
-								success: function(data){
-									if( saogaUI.base.isFunction(options.pageAjax.success) ){
-										options.pageAjax.success(data);
-									}
-									options.data.Rows = data;
-								},
-								error: function(data){
-									console.log(data);
-								}
-							});
-						}
+						/*重新获取数据*/
+						options.tmpData[index] = _core.splitData(options, index);
 						
 						/*重载html*/
 						current = index;
-						gridBody.html( _core.tBodyFn(options) );
+						gridBody.html( _core.tBodyFn(options, index) );
 						gridpageMsg.html( _getCount(pageSize, count, index) );
 						gridpageBtn.html( _getBtn(pageSize, count, index) );
 						
@@ -301,7 +276,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
 						}
 						
-						/*修改records.rowSelected*/
+						/*修改records.rowselected*/
 						_setMemory();
 					});
 				},
@@ -312,7 +287,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* @param {Number} 记录的索引值
 				*/
 				getRowData: function(options, index){
-					var	data      = options.data.Rows; //表格数据
+					var	data      = options.data.rows; //表格数据
 						
 					if( index === -1 ){
 						return false;
@@ -378,14 +353,14 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 											
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
-							_records.rowSelected[i] = _core.getRowData(options, i);
+							_records.rowselected[i] = _core.getRowData(options, i);
 	
 							/*全部选上时给表头全选*/
 							if( gridBody.find('.l-checkbox-selected').length === selected ){
 								gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
 							}
 						}else{
-							_records.rowSelected.splice(i, 1, null); //赋一个null值，站位，防bug
+							_records.rowselected.splice(i, 1, null); //赋一个null值，站位，防bug
 							self.removeClass('l-checkbox-selected');
 							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
 						}
@@ -416,13 +391,13 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							self.addClass('l-checkbox-selected');
 							checkbox.addClass('l-checkbox-selected');
 							for(; i < len; i++){
-								_records.rowSelected[i] = _core.getRowData(options, i);
+								_records.rowselected[i] = _core.getRowData(options, i);
 							}
 						}else{
 							self.removeClass('l-checkbox-selected');
 							checkbox.removeClass('l-checkbox-selected');
 							for(; j > -1; j--){
-								_records.rowSelected.splice(j, 1);
+								_records.rowselected.splice(j, 1);
 							}
 						}
 						
@@ -456,8 +431,70 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							next.hide();
 						}
 					});
-				}// _core.detailBtnFn end
-			}
+				},
+				
+				ajaxGetData: function(options, index, callback){
+					var index = index !== undefined ? index : 0;
+					$.ajax({
+						type: "get",
+						url: options.pageAjax.url,
+						cache: false,
+						async: false,
+						dataType: "json",
+						data: (options.pageAjax.data).replace('{{index}}',index),
+						beforeSend: function(){
+							if( saogaUI.base.isFunction(options.pageAjax.beforeSend) ){
+								options.pageAjax.beforeSend();
+							}
+						},
+						success: function(data){
+							if( saogaUI.base.isFunction(options.pageAjax.success) ){
+								options.pageAjax.success(data);
+							}
+							if( saogaUI.base.isFunction(callback) ){
+								callback(data);
+							}
+						},
+						error: function(data){
+							//console.log(data);
+						}
+					});
+					
+					
+				},
+				
+				
+				/**
+				* 分割数据
+				* @param {number}
+				*/
+				splitData: function(options, index){
+					var splitData = [];
+					if( options.pageAjax ){
+						_core.ajaxGetData(options, index, function(data){
+							splitData[index] = data.rows[0];
+							console.log(splitData);
+						});
+					}else{
+						var i         = 0,
+							data      = options.data.rows,
+							pageSize  = options.pageSize,
+							dataLen   = options.data.total,                    //记录总数
+							pageStar  = index*pageSize,                        //当前记录的起始
+							pageEnd   = Math.min((index+1)*pageSize, dataLen); //当前记录的结束
+
+						for(; pageStar < pageEnd; pageStar++){
+							if( data[pageStar] ){
+								splitData[i] = data[pageStar];
+							}
+							i++;
+						}
+					}
+					
+					return splitData;
+				}
+				
+			};
 		
 		/**
 		* 表格初始化
@@ -501,23 +538,20 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					nullText:     o.nullText ? o.nullText : '',
 					detail:       o.detail || {},
 					pageAjax:     o.pageAjax || null
-				};
+				},
+				tmpArr  = [],
+				tmpPage = 0,
+				tm      = 1;
 			
+			tmpArr[0] = _core.splitData(options, 0);
+			tmpPage   = Math.ceil(options.data.total / options.pageSize);
 			
-			var tmpPage = Math.ceil(options.data.Total / options.pageSize),
-				tmpPageSize = options.pageSize,
-				tmpData = options.data.Rows
-				
-				
-			var tmpArr = [];
-			for(var tm = 0; tm<tmpPage; tm++){
-				tmpArr[tm] = tmpData[tmpPageSize*tm];
+			//tm = 1是因为splitData初始化的时候已经为0
+			for(; tm<tmpPage; tm++){
+				tmpArr[tm] = _core.splitData(options, tm);
 			}
-			
-			
-			
+						
 			options.tmpData = tmpArr;
-			console.log(tmpArr,options.data.Rows);
 			
 			/*复制options共享g.o对象*/
 			for(var key in options){
@@ -540,7 +574,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				grid.append(tHeadHtml);
 				
 				/*内容*/
-				if( options.data ){
+				if( options.tmpData.length ){
 					var tBodyHtml = _core.tBodyFn(options);
 					grid.append('<div class="l-grid-body">'+ tBodyHtml +'</div>');
 				}else{
@@ -617,7 +651,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				wrap      = $(options.wrap),
 				id        = options.id,
 				pageSize  = options.pageSize,          //每页长度
-				count     = options.data.Total || 0,   //记录总个数
+				count     = options.data.total || 0,   //记录总个数
 				grid      = $('#'+id),
 				gridBody  = grid.find('.l-grid-body');
 			
@@ -629,22 +663,22 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					n    = 0;
 	
 				for(; i < count; i++){
-					if( options.data.Rows[i] ){
-						arr[i] = options.data.Rows[i];
+					if( options.data.rows[i] ){
+						arr[i] = options.data.rows[i];
 					}else{
 						arr[i] = null;
 					}
 				}
 				if( !options.cache[index] && data ){
 					for(; n < pageSize; n++){
-						arr[star] = data.Rows[n];
+						arr[star] = data.rows[n];
 						star++;
 					}
 				}
 				
 				/*修改全局数据源中的成员*/
 				options.pageIndex = index;
-				options.data.Rows = arr;
+				options.data.rows = arr;
 				options.cache[index] = true;
 			}else{
 				var tBodyHtml = '';
@@ -674,22 +708,22 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		this.getSelectData = function(){
 			var arr   = [],
 				i     = 0,                
-				len   = _records.rowSelected.length, //记录的长度
+				len   = _records.rowselected.length, //记录的长度
 				data  = {},             //data对象
 				total = 0;              //data个数
 				
 			/*过滤掉records下面的空元素*/
 			for(; i < len; i++){
-				if( _records.rowSelected[i] ){
-					arr.push( _records.rowSelected[i] );
+				if( _records.rowselected[i] ){
+					arr.push( _records.rowselected[i] );
 				}
 			}
 			
 			/*组装一个表格适用的data数据*/
 			total = arr.length;
 			data = {
-				"Rows": arr,
-				"Total":total
+				"rows": arr,
+				"total":total
 			}
 			
 			return data;

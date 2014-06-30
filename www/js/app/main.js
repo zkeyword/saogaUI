@@ -14,10 +14,6 @@ define(function(require){
 	saogaUI.ui.grid         = require('core/gird');
 	
 	
-	saogaUI.app.d = function(){
-	      alert('d');
-	}
-	
 	$(function () {
 		var win             = $(window),
 			footerHeight    = $('#lt-footer').outerHeight(),
@@ -25,9 +21,12 @@ define(function(require){
 			rightMainOffset = rightMain.offset(),
 			rightMainTop    = rightMainOffset.top,
 			rightMainHeight = function(){
-				var winHeight = win.height();
-				if( winHeight > 750 ){
+				var winHeight = win.height(),
+					height    = 760;
+				if( winHeight > height ){
 					rightMain.height(winHeight - rightMainTop - footerHeight - 36 - 20 );
+				}else{
+					rightMain.height(height);
 				}
 			};
 		

@@ -234,13 +234,13 @@ h6,
 }
 /********** tip arrow*****************/
 .tip-arrow-down:after {
-  content: "▼";
+  content: "鈻�;
   position: relative;
   left: 1px;
   font-size: 0.9em;
 }
 .tip-arrow-up:after {
-  content: "▲";
+  content: "鈻�;
   position: relative;
   left: 1px;
   font-size: 0.9em;
@@ -2197,7 +2197,7 @@ input[type="range"]::-webkit-slider-thumb {
   display: inline-block;
   text-align: center;
 }
-/** 自定义文本 **/
+/** 鑷畾涔夋枃鏈�**/
 [data-on]:before {
   content: attr(data-off) !important;
   font-family: "Open Sans" !important;
