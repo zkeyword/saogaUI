@@ -160,13 +160,33 @@
 		<span class="ui-btn ui-btn-primary" href="javascript:;">更新成功</span>
 	</div>
 </div>
+<div class="fn-clear">
+	<div class="fn-left"> <a class="ui-btn ui-btn-primary" href="javascript:;">主要</a></div>
+	<div class="fn-right ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span></div>
+</div>
+<!-- 搜索框 -->
+<div class="fn-clear ui-search">
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-right ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
+</div>
+<div class="fn-clear ui-search">
+	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
+	<div class="fn-left ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
+</div>
 <!-- tab标签 -->
-<div class="ui-wrap fn-clear">
+<div class="ui-wrap fn-clear ui-tab">
 	<ul id="tab" class="fn-clear">
-		<li class="on">标签1<a href="#">更多</a></li>
+		<li class="on">标签1</li>
 		<li>标签2</li>
 		<li>标签3</li>
+		<div class="fn-right"><a class="helt-tip">帮助说明</a></div>
 	</ul>
+	
 	<div class="tab-main">标签1标签1标签1标签1标签1标签1标签1</div>
 	<div class="tab-main">标签2标签2标签2标签2标签2标签2标签2</div>
 	<div class="tab-main">标签3标签3标签3标签3标签3标签3标签3</div>
@@ -211,15 +231,11 @@
 </div> -->
 <!-- 提示标签 -->
 <span id="tip" title="title模拟控件">title模拟控件</div></span>
-
-<div class="n-clear">
-	<div class="l-ui l-tip">
-		<div class="l-tipMain">
-			<div class="l-tipMain-text">3333</div>
-		</div>
-		<span class="l-tipArrow l-tipArrow-topBottom l-tipArrow-topLeft"></span>
-	</div>
+<!-- 时间选择 -->
+<div class="ui-wrap fn-clear">
+	<div class="fn-left ui-form"><span for="calendar" class="ui-label">密码：</span><span><input type="text" id="calendar" class="ui-input" required></span> </div>
 </div>
+
 <script type="text/javascript">
 require(['app/main2'], function(saogaUI){	
 	//tab标签选项
@@ -227,7 +243,7 @@ require(['app/main2'], function(saogaUI){
 		tabItem:'#tab li',
 		tabWrap:'.tab-main',
 		tabEvent:'click',
-		isAuto:true
+		isAuto:false
 	});
 	//点击弹出弹出框
 	$("#btn-alert").click(function() {
@@ -243,6 +259,15 @@ require(['app/main2'], function(saogaUI){
 	saogaUI.ui.tip({
 		tipItem:'#tip',
 		isArrow: true
+	});
+	saogaUI.ui.calendar({
+		trigger:'#calendar',
+		dateFormat:'yyyy-MM-dd hh:mm:ss',
+		beginYear:'1970',
+		endYear:'2030',
+		callback: function(time){
+			alert(time)
+		}
 	});
 });
 

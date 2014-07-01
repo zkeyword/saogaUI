@@ -69,7 +69,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			}else{
 				switch( type ){
 					case 'alert':
-						btnMain.append('<a href="javascript:;" class="ui-btn ui-btnMain ui-floatCenter-item l-dialog-ok"><span>确定</span></a>');
+						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-floatCenter-item l-dialog-ok"><span>确定</span></a>');
 						btnMain.find('.l-dialog-ok').click(function(){
 							if( saogaUI.base.isFunction(ok) ){
 								ok();
@@ -78,7 +78,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 						});
 						break;
 					case 'confirm':
-						btnMain.append('<a href="javascript:;" class="ui-btn ui-btnMain ui-floatCenter-item l-dialog-ok"><span>确定</span></a><a href="javascript:;" class="ui-btn ui-btnMain ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
+						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-floatCenter-item l-dialog-ok"><span>确定</span></a><a href="javascript:;" class="ui-btn ui-btnMain ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
 						btnMain.find('.l-dialog-ok').click(function(){
 							if( saogaUI.base.isFunction(ok) ){
 								ok();
@@ -93,7 +93,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 						});
 						break;
 					case 'error':
-						btnMain.append('<a href="javascript:;" class="ui-btn ui-btnMain ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
+						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
 						btnMain.find('.l-dialog-no').click(function(){
 							if( saogaUI.base.isFunction(no) ){
 								no();
