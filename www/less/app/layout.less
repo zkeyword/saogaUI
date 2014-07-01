@@ -74,50 +74,46 @@ button[disabled],html input[disabled] {cursor:default}
 
 /* 超过宽度部分文字用省略号显示 */
 .show-ellipsis{overflow: hidden;text-overflow: ellipsis;display: inline-block;vertical-align: bottom; white-space:nowrap; word-wrap:normal;}
-#lt-wrap{min-width:943px;padding:40px 53px 20px;}
+#lt-wrap{min-width:943px;padding:20px 20px 15px;}
 
 	/*头部*/
 	#lt-header{
 		width:100%;
 		margin-bottom:10px;
-		#logo{
-			width:106px;
-			height:40px;
-			display:block;
-			text-indent:-9999px;
-			background:url(../images/app/logo.png) no-repeat
-		}
-		#status .progress p{height:15px;line-height:15px;}
-			#status .progress p span{display:inline-block;margin-right:3px;}
-				#status .progress p span label{
-					display:inline-block;
-					height:5px;
-					.border-radius(5px);
-				}
-				#status .progress .progress-bar{background:#5fb0d8;
-					width:115px;
-					height:5px;
-					.border-radius(5px);
-				}
-				#status .progress .progress-bar.progress-bar1 label{background:#ffbb00;}
-				#status .progress .progress-bar.progress-bar2 label{background:#e74f8a;}
-		#status .state-tip li{float:left;border-right:1px solid #9a9a9a;}
-		#status .state-tip li:last-child{border-right:none;}
-			#status .state-tip li p{float:left;width:100%;font-size:14px;text-align:center;}
-			#status .state-tip li .text-tip{font-size:16px;font-weight:bold;line-height:25px;}
-	   .circle-tip{display:inline-block;
-			position:relative;
-			width:45px;
-			height:45px;
-			line-height:45px;
-			margin-right:5px;
-			background:#5daede;
-			color:#fff;
-			text-align:center;
-			.border-radius(45px);
-	   }
-	   .circle-tip .tip-num{position:absolute;right:4px;width:11px;height:11px;line-height:11px;text-align:center;color:#fff;background:#e76e00;}
-	   .circle-tip .iconfont{font-size:34px;color:#fff;}
+		#logo{width:106px;height:40px;display:block;text-indent:-9999px;background:url(../images/app/logo.png) no-repeat}
+		#status{}
+			#status .progress p{height:15px;line-height:15px;}
+				#status .progress p span{display:inline-block;margin-right:3px;}
+					#status .progress p span label{
+						display:inline-block;
+						height:5px;
+						.border-radius(5px);
+					}
+					#status .progress .progress-bar{
+						background:#5fb0d8;
+						width:115px;
+						height:5px;
+						.border-radius(5px);
+					}
+					#status .progress .progress-bar.progress-bar1 label{background:#ffbb00;}
+					#status .progress .progress-bar.progress-bar2 label{background:#e74f8a;}
+			#status .state-tip li{float:left;border-right:1px solid #9a9a9a;}
+				#status .state-tip li:last-child{border-right:none;}
+				#status .state-tip li p{float:left;width:100%;font-size:14px;text-align:center;}
+				#status .state-tip li .text-tip{font-size:16px;font-weight:bold;line-height:25px;}
+		   .circle-tip{display:inline-block;
+				position:relative;
+				width:45px;
+				height:45px;
+				line-height:45px;
+				margin-right:5px;
+				background:#5daede;
+				color:#fff;
+				text-align:center;
+				.border-radius(45px);
+		   }
+		   .circle-tip .tip-num{position:absolute;right:4px;width:11px;height:11px;line-height:11px;text-align:center;color:#fff;background:#e76e00;}
+		   .circle-tip .iconfont{font-size:34px;color:#fff;}
 	}
 
 	/*内容*/
@@ -170,7 +166,8 @@ button[disabled],html input[disabled] {cursor:default}
 				/*菜单展开二级菜单样式*/
 				#lt-left .sidebar .nav-list li.active.open .submenu li{float:left;width:100%;}
 				#lt-left .sidebar .nav-list li.active.open .submenu li a{display:inline-block;width:100%;text-align:center;height:25px;line-height:25px;}
-				#lt-left .sidebar .nav-list li.active.open .submenu li a:hover,#lt-left .sidebar .nav-list li.active.open .submenu li.active a{background:#424458;}
+				#lt-left .sidebar .nav-list li.active.open .submenu li a:hover,
+				#lt-left .sidebar .nav-list li.active.open .submenu li.active a{background:#424458;}
 				
 		/*右侧*/
 		#lt-right{width:100%;float:left;margin-left:-196px;overflow:hidden}
@@ -190,6 +187,3 @@ button[disabled],html input[disabled] {cursor:default}
 			#lt-footer .footer-box .copyright{text-align:center;}
 			#lt-footer .footer-box .copyright span{display:inline-block;margin:0 2px;}
 			
-	
-	
-	
