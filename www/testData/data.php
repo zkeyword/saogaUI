@@ -36,8 +36,8 @@ $total     = $db->num_rows($allSql);
 $arr = array('rows' => $rows, 'total' => $total);
 $json = json_encode($arr);
 
-echo($json);
-die();
+//echo($json);
+//die();
 
 
 

@@ -18,19 +18,26 @@
 					url: 'http://127.0.0.1/saogaUI/www/testData/data.php',
 					data:'index={{index}}'
 				},
+				checkbox:true,
 				columns: [
 					{ display: '表头0...', name: 'title', width: 111, render: function(rdata, rindex, value){
 							var h = '<span style="color:#ddd">'+ value +'</span>';
 							return h;
 						}
 					},
-					{ display: '表头1', name: 'slug', width: 50},
-					{ display: '表头2', name: 'author', width: 50},
-					{ display: '表头3', name: 'content', width: 50},
-					{ display: '表头4', name: 'thumb', width: 50},
-					{ display: '表头5', name: 'content', width: 50}
-				]
+					{ display: '表头1', name: '', width: 50},
+					{ display: '表头2', name: '', width: 50},
+					{ display: '表头3', name: '', width: 50},
+					{ display: '表头4', name: '', width: 50},
+					{ display: '表头5', name: '', width: 50}
+				],
+				onPageFn: function(){
+					var s = grid.getSelectData();
+					console.log(s)
+				}
 			});
+			
+			
 		});
 	</script>
 </body>

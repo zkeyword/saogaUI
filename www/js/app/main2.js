@@ -11,7 +11,7 @@ define(function(require){
 	saogaUI.ui.validator    = require('core/validator');
 	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
 	saogaUI.ui.selectArea   = require('core/selectArea');
-	saogaUI.ui.grid         = require('core/gird');
+	saogaUI.ui.grid         = require('core/grid');
 
 	return saogaUI;
 });

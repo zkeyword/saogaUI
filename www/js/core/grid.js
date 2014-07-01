@@ -292,8 +292,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* @param {Number} 记录的索引值
 				*/
 				getRowData: function(options, index){
-					var	data      = options.data.rows; //表格数据
-											
+					var	current = options.current,
+						data    = options.tmpData[current - 1]; //表格数据
+
 					if( index === -1 ){
 						return false;
 					}
@@ -308,18 +309,20 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				initCheckbox: function(options, selectedRecords){
 					var pageSize   = options.pageSize,                  //每页显示多少个
 						pageIndex  = options.pageIndex,                  //起始位置
+						current    = options.current,
 						id         = options.id,                         //表格ID
 						grid       = $('#'+id),
 						gridHeader = grid.find('.l-grid-header'),        //表格头
 						gridBody   = grid.find('.l-grid-body'),          //表格主体
 						checkbox   = gridBody.find('.l-checkbox'),       //复选框
-						len        = selectedRecords.length,
+						arr        = selectedRecords[current-1],
+						len        = arr.length,
 						i          = pageSize*(pageIndex-1),
 						j          = 0,
 						selected   = Math.min(pageSize, checkbox.length); //已选数量
 					
 					for(; i < len; i++, j++){
-						if( selectedRecords[i] ){
+						if( arr[i] ){
 							checkbox.eq(j).addClass('l-checkbox-selected');
 						}
 					}
@@ -351,7 +354,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							checkbox   = gridBody.find('.l-checkbox'),
 							i          = checkbox.index(self),
 							selected   = Math.min(pageSize, checkbox.length), //已选数量
-							currentArr = _records.rowselected[current];
+							currentArr = _records.rowselected[current-1];
 						
 						if( isMemory ){
 							i = i + pageSize*(pageIndex - 1);
@@ -359,21 +362,18 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 											
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
-							_records.rowselected[current][i] = _core.getRowData(options, i);
+							currentArr[i] = _core.getRowData(options, i);
 	
 							/*全部选上时给表头全选*/
 							if( gridBody.find('.l-checkbox-selected').length === selected ){
 								gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
 							}
 						}else{
-							_records.rowselected.splice(i, 1, null); //赋一个null值，站位，防bug
+							currentArr[i] = [];
 							self.removeClass('l-checkbox-selected');
 							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
 						}
-						
-						console.log(_records.rowselected);
-						console.log()
-											
+
 						/*返回选择数据*/
 						if( saogaUI.base.isFunction(onCheckFn) ){
 							onCheckFn();
@@ -385,7 +385,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					gridHeader.on('click', '.l-checkbox', function(){
 						var self      = $(this),
 							current   = g.o.current,
-							pageSize  = g.o.pageSize,                 //每次触发重新查找pageSize
+							pageSize  = g.o.pageSize,
+							arr       = _records.rowselected[current-1],
 							checkbox  = gridBody.find('.l-checkbox'),
 							len       = checkbox.length,
 							i         = 0,
@@ -396,19 +397,22 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							len = len + i;
 						}
 						
+						
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
 							checkbox.addClass('l-checkbox-selected');
 							for(; i < len; i++){
-								_records.rowselected[i] = _core.getRowData(g.o, i);
+								arr[i] = _core.getRowData(g.o, i);
 							}
 						}else{
 							self.removeClass('l-checkbox-selected');
 							checkbox.removeClass('l-checkbox-selected');
 							for(; j > -1; j--){
-								_records.rowselected.splice(j, 1);
+								arr[i] = [];
 							}
 						}
+						
+						console.log(arr)
 						
 						/*返回选择数据*/
 						if( saogaUI.base.isFunction(onCheckFn) ){
@@ -442,6 +446,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					});
 				},
 				
+				/**
+				* ajax获取数据
+				*/
 				ajaxGetData: function(options, index, callback){
 					$.ajax({
 						type: "get",
@@ -504,6 +511,33 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 
 					}
 					return g.o.data;
+				},
+				
+				
+				/**
+				* 数据处理
+				*/
+				handleData: function(options){
+					var tmpArr  = [],
+						tmpPage = 0,
+						tm      = 1;
+
+					options.data = _core.splitData(options, 1);
+					tmpArr[0]    = options.data.rows;
+					tmpPage      = Math.ceil(options.data.total / options.pageSize);
+					_records.rowselected[0] = [];
+					//tm = 1是因为splitData初始化的时候已经为0
+					for(; tm<tmpPage; tm++){
+						if( !options.pageAjax ){
+							options.data = _core.splitData(options, tm + 1);
+							tmpArr[tm]   = options.data;
+						}else{
+							tmpArr[tm] = [];
+						}
+						_records.rowselected[i] = []; //选择中
+					}
+					options.tmpData = tmpArr;
+					return options;
 				}
 				
 			};
@@ -552,25 +586,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					detail:       o.detail || {},
 					pageAjax:     o.pageAjax || null,
 					current:      1
-				},
-				tmpArr  = [],
-				tmpPage = 0,
-				tm      = 1;
+				};
 			
-			//需要优化
-			options.data = _core.splitData(options, 1);
-			tmpArr[0]    = options.data.rows;
-			tmpPage      = Math.ceil(options.data.total / options.pageSize);
-			//tm = 1是因为splitData初始化的时候已经为0
-			for(; tm<tmpPage; tm++){
-				if( !options.pageAjax ){
-					options.data = _core.splitData(options, tm + 1);
-					tmpArr[tm]   = options.data;
-				}else{
-					tmpArr[tm] = [];
-				}
-			}
-			options.tmpData = tmpArr;
+			//需要优化--获取缓存数据
+			options = _core.handleData(options)
 
 			/*复制options共享g.o对象*/
 			for(var key in options){
@@ -578,7 +597,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					g.o[key] = options[key];
 				}
 			}
-			
 			
 			/*生成表格*/
 			
@@ -665,52 +683,19 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @param {Boolean} 是否缓存
 		* @return {Object} saogaUI.ui.BaseGrid
 		*/
-		this.reflash = function(data, index, cache){
-			var options   = g.o,                       //全局数据源
-				columns   = options.columns || {},
-				wrap      = $(options.wrap),
-				id        = options.id,
-				pageSize  = options.pageSize,          //每页长度
-				count     = options.data.total || 0,   //记录总个数
-				grid      = $('#'+id),
-				gridBody  = grid.find('.l-grid-body');
-			
-			if( cache ){
-				/*缓存已翻页数据，与_core.pageFn配合*/
-				var arr  = [],
-					star = (index - 1) * pageSize, //当前页的起始位置
-					i    = 0,
-					n    = 0;
-	
-				for(; i < count; i++){
-					if( options.data.rows[i] ){
-						arr[i] = options.data.rows[i];
-					}else{
-						arr[i] = null;
-					}
-				}
-				if( !options.cache[index] && data ){
-					for(; n < pageSize; n++){
-						arr[star] = data.rows[n];
-						star++;
-					}
-				}
+		this.refresh = function(){
+			if(!o){return false;}
+			var options = {
+					data:         o.data || {},
+					pageAjax:     o.pageAjax || null,
+					current:      1
+				};
 				
-				/*修改全局数据源中的成员*/
-				options.pageIndex = index;
-				options.data.rows = arr;
-				options.cache[index] = true;
-			}else{
-				var tBodyHtml = '';
+			//需要优化--获取缓存数据
+			options = _core.handleData(options)	
 				
-				/*index不存在默认pageIndex*/
-				if(index){
-					options.pageIndex = index;
-				}
-				options.data = data; //覆盖全局数据源中的data成员
-				tBodyHtml = _core.tBodyFn(options);
-				gridBody.html(tBodyHtml);
-			}
+			tBodyHtml = _core.tBodyFn(options);
+			gridBody.html(tBodyHtml);
 			
 			/*分页*/
 			if( grid.find('.l-grid-footer-pager') ){
@@ -718,7 +703,61 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			}
 			
 			return g;
-		};
+		},
+		// this.reflash = function(data, index, cache){
+			// var options   = g.o,                       //全局数据源
+				// columns   = options.columns || {},
+				// wrap      = $(options.wrap),
+				// id        = options.id,
+				// pageSize  = options.pageSize,          //每页长度
+				// count     = options.data.total || 0,   //记录总个数
+				// grid      = $('#'+id),
+				// gridBody  = grid.find('.l-grid-body');
+			
+			// if( cache ){
+				// /*缓存已翻页数据，与_core.pageFn配合*/
+				// var arr  = [],
+					// star = (index - 1) * pageSize, //当前页的起始位置
+					// i    = 0,
+					// n    = 0;
+	
+				// for(; i < count; i++){
+					// if( options.data.rows[i] ){
+						// arr[i] = options.data.rows[i];
+					// }else{
+						// arr[i] = null;
+					// }
+				// }
+				// if( !options.cache[index] && data ){
+					// for(; n < pageSize; n++){
+						// arr[star] = data.rows[n];
+						// star++;
+					// }
+				// }
+				
+				// /*修改全局数据源中的成员*/
+				// options.pageIndex = index;
+				// options.data.rows = arr;
+				// options.cache[index] = true;
+			// }else{
+				// var tBodyHtml = '';
+				
+				// /*index不存在默认pageIndex*/
+				// if(index){
+					// options.pageIndex = index;
+				// }
+				// options.data = data; //覆盖全局数据源中的data成员
+				// tBodyHtml = _core.tBodyFn(options);
+				// gridBody.html(tBodyHtml);
+			// }
+			
+			// /*分页*/
+			// if( grid.find('.l-grid-footer-pager') ){
+				// _core.pagerFn(options);
+			// }
+			
+			// return g;
+		// };
 			
 		/**
 		* 获取选中的数据，并组装成表格可用的数据格式
