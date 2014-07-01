@@ -28,7 +28,7 @@ function getPGC($k, $type='GP', $filter='') {
 $index = getPGC('index');
 
 
-$sql       = 'SELECT * FROM z_post limit '. ($index-1)*10 .','. $index*10;
+$sql       = 'SELECT * FROM z_post limit '. ($index)*10 .','. ($index+1)*10;
 
 $allSql    = 'SELECT * FROM z_post';
 $rows      = $db->fetch_array_all($sql);
