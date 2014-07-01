@@ -344,13 +344,14 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 	
 					/*多选*/
 					gridBody.on('click', '.l-checkbox', function(){
-						var self      = $(this),
-							pageSize  = g.o.pageSize,                        //每次触发重新查找pageSize
-							pageIndex = g.o.pageIndex,                       //每次触发重新查找pageIndex
-							checkbox  = gridBody.find('.l-checkbox'),
-							i         = checkbox.index(self),
-							arr       = [],
-							selected  = Math.min(pageSize, checkbox.length); //已选数量
+						var self       = $(this),
+							current    = g.o.current,
+							pageSize   = g.o.pageSize,                        //每次触发重新查找pageSize
+							pageIndex  = g.o.pageIndex,                       //每次触发重新查找pageIndex
+							checkbox   = gridBody.find('.l-checkbox'),
+							i          = checkbox.index(self),
+							selected   = Math.min(pageSize, checkbox.length), //已选数量
+							currentArr = _records.rowselected[current];
 						
 						if( isMemory ){
 							i = i + pageSize*(pageIndex - 1);
@@ -358,7 +359,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 											
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
-							_records.rowselected[i] = _core.getRowData(options, i);
+							_records.rowselected[current][i] = _core.getRowData(options, i);
 	
 							/*全部选上时给表头全选*/
 							if( gridBody.find('.l-checkbox-selected').length === selected ){
@@ -371,6 +372,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						}
 						
 						console.log(_records.rowselected);
+						console.log()
 											
 						/*返回选择数据*/
 						if( saogaUI.base.isFunction(onCheckFn) ){
