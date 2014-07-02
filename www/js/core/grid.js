@@ -1,3 +1,22 @@
+/**
+ **┏┓　　　┏┓ 
+ *┏┛┻━━━┛┻┓ 
+ *┃　　　　　　　┃ 　 
+ *┃　　　━　　　┃ 
+ *┃　┳┛　┗┳　┃ 
+ *┃　　　　　　　┃ 
+ *┃　　　┻　　　┃ 
+ *┃　　　　　　　┃ 
+ *┗━┓　　　┏━┛ 
+ ****┃　　　┃　　　　 
+ ****┃　　　┃ 神兽保护，代码无bug
+ ****┃　　　┗━━━┓ 
+ ****┃　　　　　　　┣┓ 
+ ****┃　　　　　　　┏┛ 
+ ****┗┓┓┏━┳┓┏┛ 
+ ******┃┫┫　┃┫┫ 
+ ******┗┻┛　┗┻┛  
+*/
 define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 	
 	var BaseGrid = function(){
@@ -19,7 +38,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			_core   = {
 				/**
 				* 内部表格表头内容
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				tHeadFn: function(options){
 					var columns   = options.columns,
@@ -62,7 +81,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 内部表格主体内容
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				tBodyFn: function(options, index){
 					var columns   = options.columns,
@@ -84,15 +103,16 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					
 					for(var i = 0; i<pageSize; i++){
 						if( tmpData[index][i] ){
+							
 							if( detail.length ){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
 							}
+							
 							if( checkbox ){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
 							}
+							
 							for(var h = 0; h < columns.length; h++){
-														//console.log(columns[h].name,tmpData[index][i][i])
-
 								var colWidth, innerWidth;
 								if( columns[h].width === tmpWidth ){
 									innerWidth = '';
@@ -108,14 +128,16 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 									s += tmpData[index][i][columns[h].name];
 								}
 								s += '</div></td>';
-								
 							}
+							
 							s += '</tr>';
+							
 							if( detail.render !== undefined ){
 								var str    = detail.render(tmpData[index], pageStar),
 									colLen = columns.length + (checkbox ? 1 : 0) + 1;
 								s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
 							}
+							
 						}
 					}
 					s += '</table>';
@@ -124,7 +146,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 内部分页函数
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				pagerFn: function(options){
 					var columns     = options.columns,                   //表格columns
@@ -134,7 +156,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						count       = options.data.total || 0,           //记录总个数
 						onPageFn    = options.onPageFn,                  //记录总个数
 						isMemory    = options.isMemory,                  //翻页是否记住选择记录
-						isPageCache = options.isPageCache,               //翻页是否缓存
 						itemNum     = 2,                                 //当前页两边显示个数
 						grid        = $('#'+id),
 						gridHeader  = grid.find('.l-grid-header'),       //表格头
@@ -223,7 +244,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						*/
 						_setMemory  = function(){
 							if( !isMemory ){
-								_records.rowselected = []; //修改选中的数组值
+								for(var i = 0; i<_records.rowselected.length; i++){
+									_records.rowselected[i] = []; //修改选中的数组值
+								}
 							}else{
 								_core.initCheckbox(options, _records.rowselected); //初始化选中状态
 							}
@@ -255,12 +278,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						
 						/*返回接口，可能修改全局g.o对象，所以前置*/
 						if( saogaUI.base.isFunction(onPageFn) ){
-							if( isPageCache ){
-								var cache = options.cache[index];
-								onPageFn(index, pageSize, cache);
-							}else{
-								onPageFn(index, pageSize);
-							}
+							onPageFn(index, pageSize);
 						}
 						
 						/*重新获取数据*/
@@ -288,7 +306,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 内部获取行数据
-				* @param {Object} init 和 reflash共享的对象
+				* @param {Object} init 和 refresh共享的对象
 				* @param {Number} 记录的索引值
 				*/
 				getRowData: function(options, index){
@@ -304,9 +322,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 初始化选择框
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				initCheckbox: function(options, selectedRecords){
+
 					var pageSize   = options.pageSize,                  //每页显示多少个
 						pageIndex  = options.pageIndex,                  //起始位置
 						current    = options.current,
@@ -335,14 +354,13 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 选择框事件
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				checkboxFn: function(options){
 					var id         = options.id,                  //表格ID
 						grid       = $('#'+id),
 						gridHeader = grid.find('.l-grid-header'), //表格头
 						gridBody   = grid.find('.l-grid-body'),   //表格主体
-						isMemory   = options.isMemory,            //是否记住选择
 						onCheckFn  = options.onCheckFn;           //点击后执行
 	
 					/*多选*/
@@ -350,15 +368,11 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						var self       = $(this),
 							current    = g.o.current,
 							pageSize   = g.o.pageSize,                        //每次触发重新查找pageSize
-							pageIndex  = g.o.pageIndex,                       //每次触发重新查找pageIndex
 							checkbox   = gridBody.find('.l-checkbox'),
 							i          = checkbox.index(self),
 							selected   = Math.min(pageSize, checkbox.length), //已选数量
 							currentArr = _records.rowselected[current-1];
-						
-						if( isMemory ){
-							i = i + pageSize*(pageIndex - 1);
-						}
+
 											
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
@@ -369,11 +383,11 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 								gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
 							}
 						}else{
-							currentArr[i] = [];
+							currentArr[i] = null;
 							self.removeClass('l-checkbox-selected');
 							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
 						}
-
+						
 						/*返回选择数据*/
 						if( saogaUI.base.isFunction(onCheckFn) ){
 							onCheckFn();
@@ -392,12 +406,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							i         = 0,
 							j         = len - 1;
 						
-						if( isMemory ){
-							i   = pageSize*(g.o.pageIndex - 1);
-							len = len + i;
-						}
-						
-						
 						if( !self.hasClass('l-checkbox-selected') ){
 							self.addClass('l-checkbox-selected');
 							checkbox.addClass('l-checkbox-selected');
@@ -408,11 +416,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							self.removeClass('l-checkbox-selected');
 							checkbox.removeClass('l-checkbox-selected');
 							for(; j > -1; j--){
-								arr[i] = [];
+								arr[i] = null;
 							}
 						}
 						
-						console.log(arr)
 						
 						/*返回选择数据*/
 						if( saogaUI.base.isFunction(onCheckFn) ){
@@ -423,7 +430,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				
 				/**
 				* 明细按钮事件
-				* @param {object} init 和 reflash共享的对象
+				* @param {object} init 和 refresh共享的对象
 				*/
 				detailBtnFn: function(options){
 					var id         = options.id,                  //表格ID
@@ -534,7 +541,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						}else{
 							tmpArr[tm] = [];
 						}
-						_records.rowselected[i] = []; //选择中
+						_records.rowselected[tm] = []; //选择中
 					}
 					options.tmpData = tmpArr;
 					return options;
@@ -559,7 +566,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @param {Boolean} options.onCheckFn 选择事件(复选框)
 		* @param {Number} options.width 表格总宽度
 		* @param {Boolean} options.isMemory 翻页是否记住选择记录
-		* @param {Boolean} options.isPageCache 翻页是否缓存数据
 		* @param {String} options.nullText 数据为空时的提示文本
 		* @param {Object} options.detail 表格详细
 		* @param {Object} options.pageAjax 表格数据ajax调用
@@ -580,8 +586,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					checkbox:     o.checkbox ? true : false,
 					width:        o.width || 'auto',
 					onCheckFn:    o.onCheckFn || null,
-					isMemory:     o.isMemory ? false : true,
-					isPageCache:  o.isPageCache ? false : true,
+					isMemory:     o.isMemory ? true : false,
 					nullText:     o.nullText ? o.nullText : '',
 					detail:       o.detail || {},
 					pageAjax:     o.pageAjax || null,
@@ -650,13 +655,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					
 					/*分页*/
 					if( gridFooter.find('.l-grid-footer-pager') ){
-										
-						/*翻页缓存*/
-						if(	options.isPageCache ){
-							g.o.cache = [];  //给g.o添加一个cache成员
-							g.o.cache[options.pageIndex] = true;
-						};
-						
 						_core.pagerFn(g.o);
 					}
 				
@@ -683,16 +681,18 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @param {Boolean} 是否缓存
 		* @return {Object} saogaUI.ui.BaseGrid
 		*/
-		this.refresh = function(){
+		this.refresh = function(o){
 			if(!o){return false;}
-			var options = {
-					data:         o.data || {},
-					pageAjax:     o.pageAjax || null,
-					current:      1
-				};
+			var id        = g.o.id,
+				grid      = $('#'+id),
+				gridBody  = grid.find('.l-grid-body'),
+				tBodyHtml = '';
+			
+			g.o.pageAjax = o.pageAjax;
+			g.o.current  = 1;
 				
 			//需要优化--获取缓存数据
-			options = _core.handleData(options)	
+			options = _core.handleData(g.o);	
 				
 			tBodyHtml = _core.tBodyFn(options);
 			gridBody.html(tBodyHtml);
@@ -704,7 +704,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			
 			return g;
 		},
-		// this.reflash = function(data, index, cache){
+		// this.refresh = function(data, index, cache){
 			// var options   = g.o,                       //全局数据源
 				// columns   = options.columns || {},
 				// wrap      = $(options.wrap),
@@ -765,27 +765,32 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @return {Object} 返回一个表格数据源
 		*/
 		this.getSelectData = function(){
-			var arr   = [],
-				i     = 0,                
-				len   = _records.rowselected.length, //记录的长度
-				data  = {},             //data对象
-				total = 0;              //data个数
+			var arr      = [],
+				i        = 0, 
+				Selected = _records.rowselected,
+				len      = Selected.length, //记录的长度
+				total    = 0;              //data个数
 				
+			//console.log(Selected)
+			
 			/*过滤掉records下面的空元素*/
 			for(; i < len; i++){
-				if( _records.rowselected[i] ){
-					arr.push( _records.rowselected[i] );
+				if( Selected[i] ){
+					for(var h = 0; h<Selected[i].length; h++){
+						if( Selected[i][h] ){
+							arr.push( Selected[i][h] );
+						}
+					}
 				}
 			}
 			
 			/*组装一个表格适用的data数据*/
 			total = arr.length;
-			data = {
+			
+			return {
 				"rows": arr,
 				"total":total
-			}
-			
-			return data;
+			};
 		};
 		
 	};
@@ -794,7 +799,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 	 * grid实例化
 	 * @dest 封装在saogaUI.ui.grid里，可创建多个saogaUI.ui.grid，又避免多个表格this互相影响
 	 */
-	return grid = function(options){
+	return function(options){
 		var grid = new BaseGrid();
 		grid.init(options);
 		return grid;

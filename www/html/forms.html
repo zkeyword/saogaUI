@@ -8,13 +8,15 @@
 </head>
 <body>
 <!-- 基本案例-->
+<!-- 常见填写表单-->
 <div class="fn-clear">
-	<div class="ui-form fn-left"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span><span><i data-uid="983375" class="icon-font icon-font-10">&#983375</i></span></div>
+	<div class="ui-form fn-left"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span></div>
 </div>	
+<!-- 选择表单-->
 <div class="fn-clear">
 	<div class="ui-form fn-left"><span>密码：</span>
 		<span>
-			<select class="ui-select" required>
+			<select class="ui-select">
 				<option>22222</option>
 				<option>22222</option>
 				<option>22222</option>
@@ -22,25 +24,15 @@
 		</span>
 	</div>
 </div>	
+<!-- 文本域表单-->
 <div class="fn-clear">
 		<div class="ui-form fn-left"><span>编辑：</span><span><textarea rows="3" class="ui-textarea" required></textarea></span></div>
-</div>	
-<div class="fn-clear">
-	<div class="ui-form fn-left">
-		<span>密码：</span>
-		<span><input type="email" placeholder="Enter email"  class="ui-input" required></span>
-		<span><label><input type="checkbox" value="">嚯嚯嚯</label></span>
-		<span>
-			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10">&#983250</i></label>
-			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10">&#983250</i></label>
-			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10">&#983250</i></label>
-			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10">&#983250</i></label>
-		</span>
-	</div>
-</div>	
+</div>
+<!-- 选择文件表单-->	
 <div class="fn-clear">
 	<input type="file" id="exampleInputFile">
 </div>	
+<!-- 单选及复选表单-->
 <div class="fn-clear">
 	<div class="fn-left">
 	  <label><input type="checkbox" value="">嚯嚯嚯</label>
@@ -57,11 +49,85 @@
 		<label class="checkbox-inline">3<input type="checkbox" value="option3"></label>
 	</div>
 </div>
+<!-- 输入表单后面带复选表单-->
+<div class="fn-clear">
+	<div class="ui-form fn-left">
+		<span>密码：</span>
+		<span><input type="email" placeholder="Enter email"  class="ui-input" required></span>
+		<span><label><input type="checkbox" value="">嚯嚯嚯</label></span>
+		<span>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-808b9c">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-ff0000">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-ffae00">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-00fd22">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-0051fd">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-e100fd">&#983250</i></label>
+		</span>
+	</div>
+</div>	
+<!--按钮在左，输入框在右 搜索框 -->
+<div class="fn-clear">
+	<div class="fn-left"> <a class="ui-btn ui-btn-primary" href="javascript:;">主要</a></div>
+	<div class="fn-right ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email" class="ui-input" required></span></div>
+</div>
+<!-- !!!!单搜索框搜索条件在最小分辨率的情况下依旧是单行的情况下，不需为span添加类名。在搜索条件多行情况下考虑到对齐问题才需添加宽度控制<span class="ui-label ui-label-75"> -->
+<!--多个输入框在左，按钮在右 搜索框 -->
+<div class="fn-clear ui-search">
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-right ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
+</div>
+<!--多个输入框，按钮都在左 搜索框 -->
+<div class="fn-clear ui-search">
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">地址：</span>
+		<span>
+			<select class="ui-select ui-select-130">
+					<option>22222</option>
+					<option>22222</option>
+					<option>22222</option>
+			</select>
+		</span> 
+	</div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">描述关键字：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
+	<div class="fn-left ui-form"><span class="ui-label ui-label-75">地址：</span>
+		<span>
+			<select class="ui-select ui-select-130">
+					<option>22222</option>
+					<option>22222</option>
+					<option>22222</option>
+			</select>
+		</span> 
+	</div>
+	<div class="fn-left ui-form">
+		<span><label><input type="checkbox" value="">嚯嚯嚯</label></span>
+		<span>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-808b9c">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-ff0000">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-ffae00">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-00fd22">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-0051fd">&#983250</i></label>
+			<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-e100fd">&#983250</i></label>
+		</span>
+	</div>
+	<div class="fn-left ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
+</div>
 <div class="fn-clear">
 	<ul class="ui-forms fn-left">
 		<li>
 			<div>
-				<span class="ui-form-title">密码：</span>
+				<span class="ui-label">密码：</span>
 				<span><input type="email" placeholder="Enter email"  class="ui-input" required></span>
 				<span class="wrong-tip"><i data-uid="983381" class="icon-font icon-font-10">&#983381</i>请输入正确格式</span>
 				<span class="right-tip"><i data-uid="983382" class="icon-font icon-font-10">&#983382</i>填写正确</span>
@@ -70,29 +136,11 @@
 		<li><span class="ui-form-title">手机号码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span>
 		<span><i data-uid="983375" class="icon-font icon-font-10" required>&#983375</i></span>
 		</li>
-		<li><span class="ui-form-title">编辑：</span><span><textarea rows="3" class="ui-textarea"></textarea></span></li>
-		<li><span class="ui-form-title"></span><span><label><input type="checkbox" value="">统一相关协议</label></span></li>
-		<li><span class="ui-form-title"></span><button class="ui-btn ui-btn-primary" type="button">主要</button></li>
-		<li><span class="ui-form-title"></span><button class="ui-btn ui-btn-primary" type="button">提交</button><button class="ui-btn ui-btn-primary" type="button">取消</button></li>
+		<li><span class="ui-label">编辑：</span><span><textarea rows="3" class="ui-textarea"></textarea></span></li>
+		<li><span class="ui-label"></span><span><label><input type="checkbox" value="">统一相关协议</label></span></li>
+		<li><span class="ui-label"></span><button class="ui-btn ui-btn-primary" type="button">主要</button></li>
+		<li><span class="ui-label"></span><button class="ui-btn ui-btn-primary" type="button">提交</button><button class="ui-btn ui-btn-primary" type="button">取消</button></li>
 	</ul>
-</div>
-<!-- 搜索框 -->
-<div class="fn-clear">
-	<div class="fn-left"> <a class="ui-btn ui-btn-primary" href="javascript:;">主要</a></div>
-	<div class="fn-right ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span></div>
-</div>
-<div class="fn-clear ui-search">
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-right ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
-</div>
-<div class="fn-clear ui-search">
-	<div class="fn-left ui-form"><span>密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input" required></span> </div>
-	<div class="fn-left ui-form"><a class="ui-btn ui-btn-primary" href="javascript:;">搜索</a></div>
 </div>
 </body>
 </html>
