@@ -64,7 +64,7 @@ define(['core/saogaUI'], function(){
 				    				 .find('.ui-floatCenter'),
 				    btnMain = btnWrap.find('.ui-sl-floatCenter');			
 				$.each(btns,function(i,item){
-					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn ui-btnMain ui-floatCenter-item '+item.cls:'ui-btn ui-btnMain ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
+					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn  ui-btn-primary ui-floatCenter-item '+item.cls:'ui-btn ui-btn-primary ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
 					item.onclick && btnMain.find('a').eq(i).click(function(){
 						item.onclick(i,item,id);
 						saogaUI.ui.pop.close(id);

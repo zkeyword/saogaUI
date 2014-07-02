@@ -530,9 +530,14 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						tm      = 1;
 
 					options.data = _core.splitData(options, 1);
+					
+					//ajax 请求失败或data无指定
+					if( !options.data ){return false;}
+					
 					tmpArr[0]    = options.data.rows;
 					tmpPage      = Math.ceil(options.data.total / options.pageSize);
 					_records.rowselected[0] = [];
+					
 					//tm = 1是因为splitData初始化的时候已经为0
 					for(; tm<tmpPage; tm++){
 						if( !options.pageAjax ){
@@ -594,7 +599,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				};
 			
 			//需要优化--获取缓存数据
-			options = _core.handleData(options)
+			options = _core.handleData(options);
+			if( !options ){return false;}
 
 			/*复制options共享g.o对象*/
 			for(var key in options){
@@ -704,60 +710,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			
 			return g;
 		},
-		// this.refresh = function(data, index, cache){
-			// var options   = g.o,                       //全局数据源
-				// columns   = options.columns || {},
-				// wrap      = $(options.wrap),
-				// id        = options.id,
-				// pageSize  = options.pageSize,          //每页长度
-				// count     = options.data.total || 0,   //记录总个数
-				// grid      = $('#'+id),
-				// gridBody  = grid.find('.l-grid-body');
-			
-			// if( cache ){
-				// /*缓存已翻页数据，与_core.pageFn配合*/
-				// var arr  = [],
-					// star = (index - 1) * pageSize, //当前页的起始位置
-					// i    = 0,
-					// n    = 0;
-	
-				// for(; i < count; i++){
-					// if( options.data.rows[i] ){
-						// arr[i] = options.data.rows[i];
-					// }else{
-						// arr[i] = null;
-					// }
-				// }
-				// if( !options.cache[index] && data ){
-					// for(; n < pageSize; n++){
-						// arr[star] = data.rows[n];
-						// star++;
-					// }
-				// }
-				
-				// /*修改全局数据源中的成员*/
-				// options.pageIndex = index;
-				// options.data.rows = arr;
-				// options.cache[index] = true;
-			// }else{
-				// var tBodyHtml = '';
-				
-				// /*index不存在默认pageIndex*/
-				// if(index){
-					// options.pageIndex = index;
-				// }
-				// options.data = data; //覆盖全局数据源中的data成员
-				// tBodyHtml = _core.tBodyFn(options);
-				// gridBody.html(tBodyHtml);
-			// }
-			
-			// /*分页*/
-			// if( grid.find('.l-grid-footer-pager') ){
-				// _core.pagerFn(options);
-			// }
-			
-			// return g;
-		// };
 			
 		/**
 		* 获取选中的数据，并组装成表格可用的数据格式
