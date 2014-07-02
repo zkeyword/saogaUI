@@ -23,10 +23,11 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		var g       = this,
 		
 			/**
-			* 全局已选记录
+			* 缓存池
 			* @private
 			*/
-			_records = {
+			_cache = {
+				data: [],
 				rowselected: [],
 				detailSelected: []
 			},
@@ -40,7 +41,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* 内部表格表头内容
 				* @param {object} init 和 refresh共享的对象
 				*/
-				tHeadFn: function(options){
+				tHeadCreateHtml: function(options){
 					var columns   = options.columns,
 						len       = columns.length,
 						width     = options.width,    //考虑去掉
@@ -56,12 +57,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					}
 					
 					s += '<div class="l-grid-header"><table style="width:100%">';
-					s += '<tr>';
+					s += '<tr class="l-grid-hd-row">';
 					if( detail.length ){
-						s += '<th style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn"></span></div></th>';
+						s += '<th class="l-grid-hd-cell l-grid-hd-detail" style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn"></span></div></th>';
 					}
 					if( checkbox ){
-						s += '<th style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
+						s += '<th class="l-grid-hd-cell l-grid-hd-checkbox" style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
 					}
 					for(; i < len; i++){
 						var colWidth, innerWidth;
@@ -72,7 +73,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							innerWidth = ' style="width:'+ (columns[i].width - 10) +'px"';
 							colWidth = columns[i].width + 'px';
 						}
-						s += '<th style="width:'+ colWidth +'"><div class="l-grid-hd-cell-inner"'+ innerWidth +'>'+ columns[i].display +'</div></th>';
+						s += '<th class="l-grid-hd-cell" style="width:'+ colWidth +'"><div class="l-grid-hd-cell-inner"'+ innerWidth +'>'+ columns[i].display +'</div></th>';
 					}
 					s += '</tr>';
 					s += '</table></div>';
@@ -83,7 +84,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* 内部表格主体内容
 				* @param {object} init 和 refresh共享的对象
 				*/
-				tBodyFn: function(options, index){
+				tBodyCreateHtml: function(options, index){
 					var columns   = options.columns,
 						pageSize  = options.pageSize,
 						width     = options.width,
@@ -103,6 +104,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					
 					for(var i = 0; i<pageSize; i++){
 						if( tmpData[index][i] ){
+													
+							s += '<tr class="l-grid-row'+ (i%2 == 0 ? '' : ' l-grid-row-even') +'">';
 							
 							if( detail.length ){
 								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
@@ -244,11 +247,11 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						*/
 						_setMemory  = function(){
 							if( !isMemory ){
-								for(var i = 0; i<_records.rowselected.length; i++){
-									_records.rowselected[i] = []; //修改选中的数组值
+								for(var i = 0; i<_cache.rowselected.length; i++){
+									_cache.rowselected[i] = []; //修改选中的数组值
 								}
 							}else{
-								_core.initCheckbox(options, _records.rowselected); //初始化选中状态
+								_core.initCheckbox(options, _cache.rowselected); //初始化选中状态
 							}
 						};
 						
@@ -288,7 +291,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						}
 						
 						/*重载html*/
-						gridBody.html( _core.tBodyFn(options, index) );
+						gridBody.html( _core.tBodyCreateHtml(options, index) );
 						gridpageMsg.html( _getCount(pageSize, count, index) );
 						gridpageBtn.html( _getBtn(pageSize, count, index) );
 						
@@ -371,7 +374,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							checkbox   = gridBody.find('.l-checkbox'),
 							i          = checkbox.index(self),
 							selected   = Math.min(pageSize, checkbox.length), //已选数量
-							currentArr = _records.rowselected[current-1];
+							currentArr = _cache.rowselected[current-1];
 
 											
 						if( !self.hasClass('l-checkbox-selected') ){
@@ -400,7 +403,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						var self      = $(this),
 							current   = g.o.current,
 							pageSize  = g.o.pageSize,
-							arr       = _records.rowselected[current-1],
+							arr       = _cache.rowselected[current-1],
 							checkbox  = gridBody.find('.l-checkbox'),
 							len       = checkbox.length,
 							i         = 0,
@@ -536,7 +539,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					
 					tmpArr[0]    = options.data.rows;
 					tmpPage      = Math.ceil(options.data.total / options.pageSize);
-					_records.rowselected[0] = [];
+					_cache.rowselected[0] = [];
 					
 					//tm = 1是因为splitData初始化的时候已经为0
 					for(; tm<tmpPage; tm++){
@@ -546,10 +549,47 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						}else{
 							tmpArr[tm] = [];
 						}
-						_records.rowselected[tm] = []; //选择中
+						_cache.rowselected[tm] = []; //选择中
 					}
 					options.tmpData = tmpArr;
 					return options;
+				},
+				
+				//表头事件
+				tHeadFn: function(){
+					$('.l-grid-hd-cell').on('contextmenu', '.l-grid-hd-cell-inner', function(e){
+						console.log(e.which) 
+						return false;
+					}).on('mousedown', '.l-grid-hd-cell-inner', function(e){
+						console.log(e.which)
+					});
+				},
+				
+				//排序
+				dataSort: function(){
+				
+				},
+				
+				//行事件
+				rowFn: function(){
+				
+				},
+				
+				//列事件
+				cellFn: function(){
+				
+				},
+				
+				//代码内部函数初始化
+				init: function(){
+					this.handleData();
+					this.tHeadCreateHtml();
+					this.tBodyCreateHtml();
+					this.checkboxFn();
+					this.checkboxFn();
+					this.pageFn();
+					this.tHeadFn();
+					this.tRowFn();
 				}
 				
 			};
@@ -576,7 +616,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @param {Object} options.pageAjax 表格数据ajax调用
 		* @return {Object} saogaUI.ui.baseGrid
 		*/
-		this.init = function(o){
+		g.init = function(o){
 			if(!o){return false;}
 			var options = {
 					data:         o.data || {},
@@ -619,12 +659,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				options.width = width;
 				
 				/*表头*/
-				var tHeadHtml = _core.tHeadFn(options);
+				var tHeadHtml = _core.tHeadCreateHtml(options);
 				grid.append(tHeadHtml);
 				
 				/*内容*/
 				if( options.tmpData.length ){
-					var tBodyHtml = _core.tBodyFn(options);
+					var tBodyHtml = _core.tBodyCreateHtml(options);
 					grid.append('<div class="l-grid-body">'+ tBodyHtml +'</div>');
 				}else{
 					grid.append('<div class="l-grid-body">'+ options.nullText +'</div>');
@@ -677,7 +717,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* 表格全局数据源
 		* @member saogaUI.ui.BaseGrid
 		*/
-		this.o = {};
+		g.o = {};
 		
 		/**
 		* 表格刷新数据源
@@ -687,7 +727,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @param {Boolean} 是否缓存
 		* @return {Object} saogaUI.ui.BaseGrid
 		*/
-		this.refresh = function(o){
+		g.refresh = function(o){
 			if(!o){return false;}
 			var id        = g.o.id,
 				grid      = $('#'+id),
@@ -700,7 +740,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			//需要优化--获取缓存数据
 			options = _core.handleData(g.o);	
 				
-			tBodyHtml = _core.tBodyFn(options);
+			tBodyHtml = _core.tBodyCreateHtml(options);
 			gridBody.html(tBodyHtml);
 			
 			/*分页*/
@@ -716,10 +756,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		* @member saogaUI.ui.BaseGrid
 		* @return {Object} 返回一个表格数据源
 		*/
-		this.getSelectData = function(){
+		g.getSelectData = function(){
 			var arr      = [],
 				i        = 0, 
-				Selected = _records.rowselected,
+				Selected = _cache.rowselected,
 				len      = Selected.length, //记录的长度
 				total    = 0;              //data个数
 				
