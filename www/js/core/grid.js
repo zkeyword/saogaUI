@@ -793,8 +793,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 	 */
 	return function(options){
 		var grid = new BaseGrid();
-		grid.init(options);
-		return grid;
+		return grid.init(options);
 	};
 	
 });
