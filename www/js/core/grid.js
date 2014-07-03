@@ -147,6 +147,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					return s;
 				},
 				
+				PagerCreateHtml: function(){
+					
+				},
+				
 				/**
 				* 内部分页函数
 				* @param {object} init 和 refresh共享的对象
@@ -481,7 +485,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							}
 						},
 						error: function(data){
-							//console.log(data);
+							if( saogaUI.base.isFunction(options.pageAjax.error) ){
+								options.pageAjax.error(data);
+							}
 						}
 					});
 				},
@@ -734,7 +740,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				gridBody  = grid.find('.l-grid-body'),
 				tBodyHtml = '';
 			
-			g.o.pageAjax = o.pageAjax;
+			for(var key in o.pageAjax){
+				if( o.pageAjax.hasOwnProperty(key) && o.pageAjax[key] ){
+					g.o.pageAjax[key] = o.pageAjax[key];
+				}
+			}
+
 			g.o.current  = 1;
 				
 			//需要优化--获取缓存数据
