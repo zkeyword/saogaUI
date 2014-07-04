@@ -14,8 +14,8 @@
 .col-47a447{color:#47a447;}//青色深
 .col-5bc0de{color:#5bc0de;}//蓝色3
 .col-39b3d7{color:#39b3d7;}//蓝色4深
-.col-f0ad4e{color:#f0ad4e;}//橙色1
-.col-ed9c28{color:#ed9c28;}//橙色2
+.col-e76c00{color:#e76c00;}//橙色1 按钮默认颜色
+.col-c4630e{color:#c4630e;}//橙色2 按钮鼠标已过去颜色
 .col-d9534f{color:#d9534f;}//红色1
 .col-d2322d{color:#d2322d;}//红色2
 .col-c3cdd9{color:#c3cdd9;}
@@ -44,8 +44,12 @@
 @col-d9534f:#d9534f;
 @col-d2322d:#d2322d;
 @col-c3cdd9:#c3cdd9;
+@col-e76c00:#e76c00;//橙色1 按钮默认颜色
+@col-c4630e:#c4630e;//橙色2 按钮鼠标已过去颜色
+@col-c1bfc1:#c1bfc1;//输入框边框颜色
 @col-fff:#fff;
 @col-000:#000;
+
 /* 表单边框样式 */
 @col-d5d5d5:#d5d5d5;
 @col-f59942:#f59942;
@@ -106,14 +110,14 @@ button[disabled],html input[disabled] {cursor:default}
 					}
 					#status .progress .progress-bar.progress-bar1 label{background:#ffbb00;}
 					#status .progress .progress-bar.progress-bar2 label{background:#e74f8a;}
-			#status .state-tip li{
+			#status .state-tip > li{
 				float:left;position:relative;margin:0 20px;
 				p{float:left;width:100%;font-size:14px;text-align:center;clear:both;}
 				.text-tip{font-size:16px;font-weight:bold;line-height:25px;}
 			}
-			#status .state-tip li.divide-line{min-width:1px;width:1px;height:30px;background:#9a9a9a;margin:5px 0 0;}
-			#status .state-tip li:nth-last-child(2){margin:0;}
-			#status .state-tip li:last-child{margin:0 0 0 10px;}		
+			#status .state-tip > li.divide-line{min-width:1px;width:1px;height:30px;background:#9a9a9a;margin:5px 0 0;}
+			#status .state-tip > li:nth-last-child(2){margin:0;}
+			#status .state-tip > li:last-child{margin:0 0 0 10px;}		
 		   .circle-tip{display:inline-block;
 				position:relative;
 				width:45px;
@@ -170,19 +174,20 @@ button[disabled],html input[disabled] {cursor:default}
 				}
 				#lt-left .sidebar .nav-list li .active-tip{display:none;}
 				/*菜单选中样式*/
-				#lt-left .sidebar .nav-list li.active{ 
-					.dropdown-toggle{background:#656582;border-left:15px solid #ec826b;}
-					.dropdown-toggle .nav-menu{width:160px;border-bottom:none;}
+				#lt-left .sidebar .nav-list .active.dropdown-toggle{ 
+					background:#656582;border-left:15px solid #ec826b;
+					nav-menu{width:160px;border-bottom:none;}
 					.active-tip{display:block;position:absolute;top:17px;right:0px;.arrow(#fff; left; 9px);}
 				}
 				/*菜单展开二级菜单样式*/
-				#lt-left .sidebar .nav-list li.active.open .submenu li{
+				#lt-left .sidebar .nav-list li .submenu{}
+				#lt-left .sidebar .nav-list li .submenu.open{display:block;}
+				#lt-left .sidebar .nav-list li .submenu.open  li{
 					float:left;width:100%;
 					a{display:inline-block;width:100%;text-align:center;height:25px;line-height:25px;}
-					a:hover,
-					.active a{background:#424458;}
+					a:hover{background:#424458;}
 				}
-				
+				#lt-left .sidebar .nav-list li .submenu.open  li.active a{background:#424458;}
 		/*右侧*/
 		#lt-right{width:100%;float:left;margin-left:-196px;overflow:hidden}
 			#lt-sl-right{min-width:747px;margin-left:196px;}
@@ -204,7 +209,19 @@ button[disabled],html input[disabled] {cursor:default}
 			.copyright span{display:inline-block;margin:0 2px;}
 		}
 /*下拉框样式*/
-.ui-dropdown{position:absolute;top:10px;z-index:100;display:none;}
+.ui-dropdown{position:absolute;top:40px;right:10px;z-index:100;display:none;width:140px;padding-bottom:10px;.border-radius(4px);background:#fff;border:1px solid #ccc;.box-shadow(0,2px,4px,#ccc);}
 .ui-dropdown.ui-dropdown-open{display:block;}
+.ui-dropdown li{width:120px;margin:0 auto;}
+.ui-dropdown li.dropdown-header{border-bottom:1px solid #c3cdd9;font-size:13px;font-weight:bold;line-height:34px;}
+.ui-dropdown li a{display:inline-block;height:18px;line-height:18px;padding:3px 10px;}
+.ui-dropdown li a i{margin:0 3px;float:left;}
+#login-user .ui-dropdown{position:absolute;top:120px;right:-120px;color:#000;}
+#login-user .ui-dropdown a{color:#000;}
+
+
+
+
+	
+
  		
 			

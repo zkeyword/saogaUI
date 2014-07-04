@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body>
+	<div>
+		
+		<section>
+			<header>对话框</header>
+			<article name="alert" id="alert">
+				<header>alert：<a href="#alert" id="dialog_alert">点击打开</a></header>
+				<p>
+					<pre>
+						$('#dialog_alert').click(function(){
+							saogaUI.ui.dialog.alert({
+								title:'标题',
+								text:'内容'
+							});
+						});
+					</pre>
+				</p>
+			</article>
+			<article name="confirm" id="confirm">
+				<header>confirm：<a href="#confirm" id="dialog_confirm">点击打开</a></header>
+				<p>
+					<pre>
+						$('#dialog_confirm').click(function(){
+							saogaUI.ui.dialog.confirm({
+								title:'标题',
+								text:'内容'
+							});
+						});
+					</pre>
+				</p>
+			</article>
+			<article name="error" id="error">
+				<header>error：<a href="#" id="dialog_error">点击打开</a></header>
+				<p>
+					<pre>
+						$('#dialog_error').click(function(){
+							saogaUI.ui.dialog.error({
+								title:'标题',
+								text:'内容'
+							});
+						});
+					</pre>
+				</p>
+			</article>
+			<article name="prompt" id="prompt">
+				<header>prompt：<a href="#prompt" id="dialog_prompt">点击打开</a></header>
+				<p>
+					<pre>
+						$('#dialog_error').click(function(){
+							saogaUI.ui.dialog.prompt({
+								text:'测试测试',
+								showTime:'5000' //5秒后关闭,
+								endFn: function(){
+									alert('sssss');
+								}
+							});
+						});
+					</pre>
+				</p>
+			</article>
+		</section>
+	
+	</div>
+	<script>
+		require(['app/main2'], function(saogaUI){
+
+			
+			$('#dialog_alert').click(function(){
+				saogaUI.ui.dialog.alert({
+					title:'标题',
+					text:'内容',
+					ok:function(){
+						alert('确定')
+					}
+				});
+				return false;
+			});
+			
+			/*confirm*/
+			$('#dialog_confirm').click(function(){
+				saogaUI.ui.dialog.confirm({
+					title:'标题',
+					text:'内容',
+					ok:function(){
+						alert('确定')
+					},
+					on:function(){
+						alert('取消')
+					}
+				});
+				return false;
+			});
+			
+			/*error*/
+			$('#dialog_error').click(function(){
+				saogaUI.ui.dialog.error({
+					title:'标题',
+					text:'内容'
+				});
+				return false;
+			});
+			
+			/*prompt*/
+			$('#dialog_prompt').click(function(){
+				saogaUI.ui.dialog.prompt({
+					text:'测试测试'
+				});
+				return false;
+			});
+			
+			
+		});
+	</script>
+</body>
+</html>

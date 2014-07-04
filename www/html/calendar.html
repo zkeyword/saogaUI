@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>日期选择空间测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body>
+	<div>
+		<div class="ui-wrap fn-clear ui-search">
+			<div class="ui-form"><span for="calendar" class="ui-label">日期：</span><span><input type="text" id="calendar1" class="ui-input ui-input-145 ui-input-datatime" required></span> </div>
+		</div>
+		<div class="ui-wrap fn-clear ui-search">
+			<div class="ui-form"><span for="calendar" class="ui-label">日期：</span><span><input type="text" id="calendar2" class="ui-input ui-input-100 ui-input-datatime" required></span> </div>
+		</div>
+		<pre>
+			saogaUI.app.calendar({
+				trigger:'#calendar1',
+				dateFormat:'yyyy-MM-dd hh:mm:ss',
+				beginYear:'1970',
+				endYear:'2030',
+				callback: function(time){
+					alert(time)
+				}
+			});
+		</pre>
+	
+	</div>
+	<script type="text/javascript">
+require(['app/main2'], function(saogaUI){	
+	saogaUI.ui.calendar({
+		trigger:'#calendar1',
+		dateFormat:'yyyy-MM-dd hh:mm:ss',
+		beginYear:'1970',
+		endYear:'2030',
+		callback: function(time){
+			alert(time)
+		}
+	});
+	saogaUI.ui.calendar({
+		trigger:'#calendar2',
+		dateFormat:'yyyy-MM-dd',
+		beginYear:'1970',
+		endYear:'2030',
+		callback: function(time){
+			alert(time)
+		}
+	});
+});
+
+
+   </script>
+</body>
+</html>

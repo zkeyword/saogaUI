@@ -12,6 +12,7 @@ define(function(require){
 	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
 	saogaUI.ui.selectArea   = require('core/selectArea');
 	saogaUI.ui.grid         = require('core/grid');
-
+	saogaUI.app.btnDropdwon = require('app/btnDropdown');
+	
 	return saogaUI;
 });

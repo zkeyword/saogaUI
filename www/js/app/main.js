@@ -12,6 +12,7 @@ define(function(require){
 	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
 	saogaUI.ui.selectArea   = require('core/selectArea');
 	saogaUI.ui.grid         = require('core/grid');
+	saogaUI.app.btnDropdown = require('app/btnDropdown');
 	
 	
 	$(function () {
@@ -39,6 +40,29 @@ define(function(require){
 		rightMain.attr({'style':'min-height:'+(winHeight - rightMainTop - footerHeight - 36 - 20)+'px'});
 		
 	});
-
+	//点击显示下拉框
+	var isShow = false;
+	$(".dropdown-toggle").on("click",function(event){
+		event.stopPropagation();
+		if( !isShow ){
+			$(".ui-dropdown").hide();
+       		$(this).siblings(".ui-dropdown").show();
+			isShow = true;
+		}else{
+			$(this).siblings(".ui-dropdown").hide();
+			isShow = false;
+		}
+		console.log(isShow)
+    });
+	$('.ui-dropdown').click(function(event){
+		event.stopPropagation();
+	})
+	$(document).on('click',function(){
+		if( isShow ){
+       		$(".dropdown-toggle").siblings(".ui-dropdown").hide();
+			isShow = false;
+		}
+	})
+	
 	return saogaUI;
 });

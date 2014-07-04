@@ -64,10 +64,14 @@ define(['core/saogaUI'], function(){
 				    				 .find('.ui-floatCenter'),
 				    btnMain = btnWrap.find('.ui-sl-floatCenter');			
 				$.each(btns,function(i,item){
-					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn  ui-btn-primary ui-floatCenter-item '+item.cls:'ui-btn ui-btn-primary ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
-					item.onclick && btnMain.find('a').eq(i).click(function(){
-						item.onclick(i,item,id);
-						saogaUI.ui.pop.close(id);
+					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn  ui-btn-primary ui-floatCenter-item '+item.cls:'ui-btn ui-pop-btn ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
+					btnMain.find('a').eq(i).click(function(){
+						if( item.onclick ){
+							item.onclick(i,item,id);
+						}
+						if( !item.closePop ){
+							saogaUI.ui.pop.close(id);
+						}
 					});
 				});		
 				var popBtnsHeight = btnWrap.height();
@@ -118,7 +122,7 @@ define(['core/saogaUI'], function(){
 			if( allowClose ){
 			
 				/*添加关闭按钮*/
-				popMain.prepend('<div class="l-pop-close">x</div>');
+				popMain.prepend('<div class="l-pop-close"><i data-uid="58950" class="icon-font icon icon-font-616" title="关闭弹窗">&#58950</i></div>');
 				$('.l-pop-close').click(function(){
 				
 					/*关闭时要触发的事件*/

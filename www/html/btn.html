@@ -86,7 +86,7 @@
 		<i class="icon-font icon-font-10 col-fff"  data-uid="983721" >&#983721</i>
 	</a>
 
-	<ul class="dropdown-menu">
+	<ul class="dropdown-menu fn-hide">
 		<li>
 			<a href="#">111</a>
 		</li>
@@ -109,6 +109,7 @@
 		<a class="ui-btn ui-btn-primary" href="javascript:;">更新成功</a>
 	</div>
 </div>
+
 <!-- 按鈕模塊 span标签 -->
 <div class="fn-clear">
       <span class="ui-btn ui-btn-primary" href="javascript:;">主要</span>
@@ -129,6 +130,12 @@
 		<p><i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i></p>
 		<p>新手上路</p>	
 	</span>
+</div>
+<div class="fn-clear">
+	<button class="ui-btn ui-btn-primary" type="button">默认大按钮</button>
+	<button class="ui-btn ui-sm-btn" type="button">中按钮</button>
+	<button class="ui-btn ui-min-btn" type="button">小按钮</button>
+	<button class="ui-btn ui-pop-btn" type="button">弹窗按钮</button>
 </div>	
 <div class="fn-clear">
 <div class="ui-btn-dropdown">
@@ -137,7 +144,7 @@
 		<i class="icon-font icon-font-10 col-fff" data-uid="983721" >&#983721</i>
 	</span>
 
-	<ul class="dropdown-menu">
+	<ul class="dropdown-menu fn-hide">
 		<li>
 			<a href="#">111</a>
 		</li>
@@ -160,100 +167,13 @@
 		<span class="ui-btn ui-btn-primary" href="javascript:;">更新成功</span>
 	</div>
 </div>
-<!-- tab标签 -->
-<div class="ui-wrap fn-clear ui-tab">
-	<ul id="tab" class="fn-clear">
-		<li class="on">标签1</li>
-		<li>标签2</li>
-		<li>标签3</li>
-		<div class="fn-right"><a class="helt-tip">帮助说明</a></div>
-	</ul>
-	
-	<div class="tab-main">标签1标签1标签1标签1标签1标签1标签1</div>
-	<div class="tab-main">标签2标签2标签2标签2标签2标签2标签2</div>
-	<div class="tab-main">标签3标签3标签3标签3标签3标签3标签3</div>
-</div>
-<!-- 弹出框 -->
-<a class="fn-clear" id="btn-alert" href="javascript:;">点击弹出弹窗</a>
-<!-- <div id="l-ui-wrap">
-    <div id="l-dialog-1404093880795" class="l-ui l-dialog-wrap l-ui-mask">
-        <table class="l-dialog-table">
-            <tbody>
-                <tr>
-                    <td class="l-dialog-border l-dialog-border-top" colspan="3">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="l-dialog-border l-dialog-border-left">
-                    </td>
-                    <td class="l-dialog-main">
-                        <div class="l-dialog-close"> x </div>
-                        <div id="l-dialog-title1404093880795" class="l-dialog-title">标题</div>
-                        <div style="width:200px;height:50px" class="l-dialog-content l-dialog-alert">内容</div>
-                        <div class="ui-floatCenter l-dialog-btnWrap">
-                            <div class="ui-sl-floatCenter">
-                                <a class="ui-btn ui-btnMain ui-floatCenter-item l-dialog-ok" href="javascript:;">
-                                    <span>确定</span>
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="l-dialog-border l-dialog-border-right"></td>
-                </tr>
-                <tr>
-                    <td class="l-dialog-border l-dialog-border-bottom" colspan="3"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    [if lte IE 6.5]>
-        <iframe src="javascript:false;" style="width:0;height:0;">
-        </iframe>
-    <![endif]
-</div> -->
-<!-- 提示标签 -->
-<span id="tip" title="title模拟控件">title模拟控件</div></span>
-<!-- 时间选择 -->
-<div class="ui-wrap fn-clear">
-	<div class="fn-left ui-form"><span for="calendar" class="ui-label">密码：</span><span><input type="text" id="calendar" class="ui-input" required></span> </div>
-</div>
-
-<script type="text/javascript">
-require(['app/main2'], function(saogaUI){	
-	//tab标签选项
-	saogaUI.ui.tab({
-		tabItem:'#tab li',
-		tabWrap:'.tab-main',
-		tabEvent:'click',
-		isAuto:false
-	});
-	//点击弹出弹出框
-	$("#btn-alert").click(function() {
-		saogaUI.ui.dialog.alert({
-			title:'表单进程',
-			text:'更新成功',
-			ok:function(){
-				alert('确定')
-			}
-		});
-	});
-	//tip鼠标已过去 提示标签
-	saogaUI.ui.tip({
-		tipItem:'#tip',
-		isArrow: true
-	});
-	saogaUI.ui.calendar({
-		trigger:'#calendar',
-		dateFormat:'yyyy-MM-dd hh:mm:ss',
-		beginYear:'1970',
-		endYear:'2030',
-		callback: function(time){
-			alert(time)
-		}
+<script>
+require(['app/main2'], function(saogaUI){
+	saogaUI.app.btnDropdown({
+		target:'.ui-btn-dropdown',
+		menu:'.dropdown-menu'
 	});
 });
-
-
-   </script>
+</script>
 </body>
 </html>

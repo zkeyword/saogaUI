@@ -13,19 +13,22 @@
 
 /*普通按钮*/
 .ui-btn{
-	.border-radius(4px);
-	padding:3px 12px;
+	.border-radius(2px);
+	padding:3px 13px;
 	line-height:1.5;
 	display:inline-block;
-	color:@col-fff;
+	font-size:15px;
 	text-align: center;
 	vertical-align: middle;
 	white-space: nowrap;
-	border:1px solid @col-3276b1;
 	cursor:pointer;
+	.ui-btn-stauts(@col-fff, @col-e76c00, @col-c4630e)
 }
+.ui-sm-btn{padding:2px 20px;font-size:12px;}
+.ui-min-btn{padding:3px 20px;}
+.ui-pop-btn{padding:3px 45px;}
 	.ui-btn-primary{
-		.ui-btn-stauts(@col-fff, @col-428bca, @col-3276b1)
+		.ui-btn-stauts(@col-fff, @col-e76c00, @col-c4630e)
 	}
 	.ui-btn-success{
 		.ui-btn-stauts(@col-fff, @col-5cb85c, @col-47a447)
@@ -51,7 +54,7 @@
 	}
 	
 	/* 带有图标按钮 */
-	.ui-btn .icon-font{margin:0 2px;}
+	.ui-btn .icon-font{margin:1px 3px 0 0;font-size:15px;}
 	
 /* 下拉框按钮 */
 .ui-btn-dropdown{display:inline-block;position:relative;vertical-align:middle;}
@@ -95,6 +98,3 @@
 		border-right:none;
 	}
 	
-	
-/* 搜索框*/
-.ui-search{background:#f5f8f8;line-height:35px;}

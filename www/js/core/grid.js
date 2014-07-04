@@ -464,8 +464,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				* ajax获取数据
 				*/
 				ajaxGetData: function(options, index, callback){
+					var type = options.pageAjax.type == undefined ? 'POST' : options.pageAjax.type;
 					$.ajax({
-						type: "get",
+						type: type,
 						url: options.pageAjax.url,
 						cache: false,
 						async: false,

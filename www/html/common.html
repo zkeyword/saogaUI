@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>組件頁面</title>
+    <link rel="stylesheet/less" type="text/less" href="/resources/saogaUI/www/less/styles.less">
+	<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body>
+<!-- tab标签 -->
+<h1>tab标签</h1>
+<div class="ui-wrap fn-clear ui-tab">
+	<ul id="tab" class="fn-clear">
+		<li class="on">标签1</li>
+		<li>标签2</li>
+		<li>标签3</li>
+		<div class="fn-right"><a class="helt-tip"><idata-uid="983363" class="icon-font icon-font-10 col-428bca">&#983363</i>帮助说明</a></div>
+	</ul>
+	
+	<div class="tab-main">标签1标签1标签1标签1标签1标签1标签1</div>
+	<div class="tab-main">标签2标签2标签2标签2标签2标签2标签2</div>
+	<div class="tab-main">标签3标签3标签3标签3标签3标签3标签3</div>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">数据分析样式横向排列</h1>
+<div class="fn-clear ui-analysis-table">
+	<!-- 数据图表分析标题 -->
+	<div class="ui-analysis-head">
+     	<div class="fn-left">
+         	<strong>数据图表</strong>
+             <span><label><input type="radio" checked="" value="option1" name="Radios">订单金额</label></span>
+             <span><label><input type="radio" checked="" value="option1" name="Radios">商品件数</label></span>
+         </div>
+     </div>
+     <!-- 数据图表分析数据图-->
+	<div class="ui-analysis-charts"></div>
+    <!-- 暂无相关资料 -->
+    <div class="ui-analysis-none">暂无相关资料</div>
+	<!-- 数据报表分析标题 -->
+	<div class="ui-analysis-head">
+        <div class="fn-left"><strong>数据报表</strong></div>
+        <div class="fn-right">
+                <a href="javascript:void(0);" class="white">
+                <i class="icon-font icon-font-10" data-uid="983395" >&#983395</i></i>导出报表</a>
+        </div>
+    </div>
+    <!-- 数据报表分析表格结果 -->
+    <div class="ui-analysis-charts"></div>
+    <!-- 暂无相关资料 -->
+    <div class="ui-analysis-none">暂无相关资料</div>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">数据分析样式纵向排列</h1>
+<div class="fn-clear ui-analysis-table">
+	<div class="fn-left" style="width:49%;">
+		<!-- 数据图表分析标题 -->
+		<div class="ui-analysis-head">
+	     	<div class="fn-left">
+	         	<strong>数据图表</strong>
+	             <span><label><input type="radio" checked="" value="option1" name="Radios">订单金额</label></span>
+	             <span><label><input type="radio" checked="" value="option1" name="Radios">商品件数</label></span>
+	         </div>
+	     </div>
+	     <!-- 数据图表分析数据图-->
+		<div class="ui-analysis-charts"></div>
+	    <!-- 暂无相关资料 -->
+	    <div class="ui-analysis-none">暂无相关资料</div>
+	</div>
+	<div class="fn-right" style="width:49%;">
+		<!-- 数据报表分析标题 -->
+		<div class="ui-analysis-head">
+	        <div class="fn-left"><strong>数据报表</strong></div>
+	        <div class="fn-right">
+	                <a href="javascript:void(0);" class="white">
+	                <i class="icon-font icon-font-10" data-uid="983395" >&#983395</i></i>导出报表</a>
+	        </div>
+	    </div>
+	    <!-- 数据报表分析表格结果 -->
+	    <div class="ui-analysis-charts"></div>
+	    <!-- 暂无相关资料 -->
+	    <div class="ui-analysis-none">暂无相关资料</div>
+	</div>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">帮助说明文本提示</h1>
+<div class="ui-operate-tips fn-clear">
+ 	<a class="icon-remove"></a>
+     <p><em>1.</em>友情提示</p>
+     <p><em>2.</em>由于当客户使用购物车拍下多种宝贝时，存在购物车级别的优惠的分摊问题，在此分析数据中，购物车级别的优惠不会从销售额中减去，所以宝贝的销售额仅供参考，不能作为财务核算数据。销售件数可以作为精确数据使用。</p>
+     <p><em>3.</em>数据采用付款判定（排除退款数据）。</p>
+     <p class="operate-tips-text"><em>1)</em>由于当客户使用购物车拍下多种宝贝时，存在购物车级别的优惠的分摊问题，在此分析数据中，购物车级别的优惠不会从销售额中减去，所以宝贝的销售额仅供参考，不能作为财务核算数据。销售件数可以作为精确数据使用。</p>
+     <p class="operate-tips-text"><em>2)</em>由于当客户使用购物车拍下多种宝贝时，存在<a href="#">222222222</a>购物车级别的优惠的</p>
+ </div>
+<!-- 提示标签 -->
+<span id="tip" title="title模拟控件">title模拟控件</div></span>
+<!-- 时间选择 -->
+<div class="ui-wrap fn-clear">
+	<div class="fn-left ui-form"><span for="calendar" class="ui-label">密码：</span><span><input type="text" id="calendar" class="ui-input" required></span> </div>
+</div>
+<!-- 客户服务-手动催付 -->
+<div class="mo-remindpay-list fn-clear">
+	<table>
+		<thead>
+			<tr>
+                 <th style="min-width:180px;width:180px;">关闭倒计时</th>
+                 <th>宝贝</th>
+                 <th style="min-width:100px;width:100px;">单价(元)</th>
+                 <th style="min-width:100px;width:100px;">数量</th>
+                 <th style="min-width:150px;width:150px;">实付款</th>
+                 <th style="min-width:150px;width:150px;">交易状态</th>
+                 <th style="min-width:150px;width:150px;">操作</th>
+             </tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td  colspan="7">
+				<div class="fn-left ui-list-title">
+					<span><input type="checkbox" value=""></span>
+					<span>订单编号：717643855570628 </span>      
+					<span>客户昵称： 婷婷小狗狗 ( 王婷：13022840800 ）</span> 
+    					<span>成交时间：2014-07-02 19:13 </span> 
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="min-width:180px;width:180px;">
+					<div class="ui-countdown"><span><lablel>1222</lablel>天</span><span><lablel>12</lablel>时</span><span><lablel>22</lablel>分</span><span><lablel>66</lablel>秒</span></div>
+				</td>
+				<td>
+					<div class="num-sum fn-left">
+						<p class="col-e76c00">新客户</p>
+						<p>3日内总订单：<lablel>122</lablel>笔；</p>
+						<p>未支付：<lablel>1</lablel>笔；</p>
+						<p>已关闭：<lablel>12</lablel>笔；</p>
+						<p>支付及其他：<lablel>2</lablel>笔；</p>
+					</div>
+					<div class="product-list fn-left">
+						<div class="product-intro">
+							<div class="product-img"><img src="http://img04.taobaocdn.com/bao/uploaded/i4/TB1V26_FFXXXXcBapXXXXXXXXXX_!!0-item_pic.jpg_60x60.jpg"></div>
+							<div class="product-text">
+								<p>绿叶正品绿豆泥浆面膜补水美白祛痘去痘印去黑头清洁控油护肤品 </p>
+								<p>化妆品净含量:100g</p>
+							</div>
+						</div>
+						<div class="product-intro">
+							<div class="product-img"><img src="http://img04.taobaocdn.com/bao/uploaded/i4/TB1V26_FFXXXXcBapXXXXXXXXXX_!!0-item_pic.jpg_60x60.jpg"></div>
+							<div class="product-text">
+								<p>绿叶正品绿豆泥浆面膜补水美白祛痘去痘印去黑头清洁控油护肤品 </p>
+								<p>化妆品净含量:100g</p>
+							</div>
+						</div>
+						<div class="product-intro">
+							<div class="product-img"><img src="http://img04.taobaocdn.com/bao/uploaded/i4/TB1V26_FFXXXXcBapXXXXXXXXXX_!!0-item_pic.jpg_60x60.jpg"></div>
+							<div class="product-text">
+								<p>绿叶正品绿豆泥浆面膜补水美白祛痘去痘印去黑头清洁控油护肤品 </p>
+								<p>化妆品净含量:100g</p>
+							</div>
+						</div>
+					</div>
+				</td>
+				<td class="text-right" style="min-width:100px;width:100px;">¥98.00 	</td>
+				<td class="text-right" style="min-width:100px;width:100px;">11</td>
+				<td class="text-right" style="min-width:100px;width:100px;">
+					<p>¥59.90</p>
+					<p>（含快递：0.00） </p>
+				</td>
+				<td class="text-center" style="min-width:150px;width:150px;">等待买家付款<i class="icon-font icon-font-10" data-uid="983535">&#983535</i></td>
+				<td style="min-width:150px;width:150px;"></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	
+</div>
+<script type="text/javascript">
+require(['app/main2'], function(saogaUI){	
+	//tab标签选项
+	saogaUI.ui.tab({
+		tabItem:'#tab li',
+		tabWrap:'.tab-main',
+		tabEvent:'click',
+		isAuto:false
+	});
+	//点击弹出弹出框
+	$("#btn-alert").click(function() {
+		saogaUI.ui.dialog.alert({
+			title:'表单进程',
+			text:'更新成功',
+			ok:function(){
+				alert('确定')
+			}
+		});
+	});
+	//tip鼠标已过去 提示标签
+	saogaUI.ui.tip({
+		tipItem:'#tip',
+		isArrow: true
+	});
+	saogaUI.ui.calendar({
+		trigger:'#calendar',
+		dateFormat:'yyyy-MM-dd hh:mm:ss',
+		beginYear:'1970',
+		endYear:'2030',
+		callback: function(time){
+			alert(time)
+		}
+	});
+});
+
+
+   </script>
+</body>
+</html>

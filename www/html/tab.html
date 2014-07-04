@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body>
+	<div>
+		<div class="ui-wrap fn-clear">
+			<ul id="tab" class="fn-clear">
+				<li class="on">标签1<a href="#">更多</a></li>
+				<li>标签2</li>
+				<li>标签3</li>
+			</ul>
+			<div class="tab-main">标签1标签1标签1标签1标签1标签1标签1</div>
+			<div class="tab-main">标签2标签2标签2标签2标签2标签2标签2</div>
+			<div class="tab-main">标签3标签3标签3标签3标签3标签3标签3</div>
+		</div>
+		<p>
+			<pre>
+				saogaUI.ui.tab({
+					tabItem:'#tab li',
+					tabWrap:'.tab-main',
+					onclick:function(i){
+						console.log(i)
+					}
+				})
+			</pre>
+		</p>
+	
+	</div>
+	<script>
+		require(['app/main2'], function(saogaUI){
+
+			
+			saogaUI.ui.tab({
+				tabItem:'#tab li',
+				tabWrap:'.tab-main',
+				onclick:function(i){
+					console.log(i)
+				}
+			})
+			
+			
+		});
+	</script>
+</body>
+</html>

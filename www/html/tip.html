@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>title 提示样式测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body>				
+<div class="l-tip l-tipArrow">
+	<div class="l-tipBlock">111111</div>
+	<div class="l-tipMain">
+		<div class="l-tipMain-message">2222222222</div>
+		<div class="l-tipArrow-topBottom"><div class="l-tipArrow-topLeft"></div></div>
+	</div>
+</div>
+	<div>
+		<div class="ui-wrap fn-clear">
+			<a id="tip" href="#" title="title模拟控件">title模拟控件</a>
+			<a id="tip2" href="#">title模拟控件</a>
+		</div>
+		<pre>
+			saogaUI.ui.tip({
+				tipItem:'#tip'
+				isArrow: true
+			});
+		</pre>
+	
+	</div>
+	<script>
+		require(['app/main2'], function(saogaUI){
+
+			
+			saogaUI.ui.tip({
+				tipItem:'#tip',
+				isArrow: true
+			});
+			
+			saogaUI.ui.tip({
+				tipItem:'#tip2',
+				isArrow: true,
+				text:'提示提示'
+			});
+			
+			
+		});
+	</script>
+</body>
+</html>
