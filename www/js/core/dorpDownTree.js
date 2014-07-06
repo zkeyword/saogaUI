@@ -29,23 +29,28 @@ define(['core/saogaUI'], function(saogaUI){
 	
 						for(; i<len; i++){
 
-							var chlidrenObj = data[i].chlidren,
-								isLastNode = ( i == len-1 )
-
+							var chlidrenObj      = data[i].chlidren,
+								isLastNode       = ( i === len-1 ),
+								isYoungerBrother = (data[i+1] !== undefined ? false : true);
 
 							html += '<div class="l-treeItemWrap fn-clear'+ ( chlidrenObj ? ' l-treeParent' : ' l-treeLast' ) + (selectedID == data[i].val ? ' l-treeSelected' : '') +'">';
 								if( isOrigin ){
 									html += '<div class="l-treeBox l-treeExpandable-open"></div>';
 								}else{
-									//html += chlidrenObj ? '' : 'd';
 									html += '<div class="l-treeBox l-treeLine"></div>';
 								}
 								html += (isMultiple ? '<div class="l-treeCheckbox"></div>' : '');
 								
 								//替换字符串，考虑修改
-								html +=	(line ? line + node : '');
-								html = html.replace('"></div><div class="l-treeNode"></div>', ' l-treeNode"></div>');
+								html +=	(line ? line + node +'<div class="l-treeIco"></div>' : '');
+								html = html.replace('"></div><div class="l-treeNode"></div>', ' l-treeNode'+ (isLastNode ? ' l-treeLastNode' : '') +'"></div>');
+								if( isYoungerBrother && chlidrenObj  ){
+									line = line.replace(' l-treeLine', '');
+								}
 								
+								html += isYoungerBrother && chlidrenObj ? '<div class="fn-left">dd</div>' : '';
+
+
 								html += '<div class="l-treeItem" data-value='+ data[i].val +'>'+ data[i].name +'</div>';
 							
 							html += '</div>';
