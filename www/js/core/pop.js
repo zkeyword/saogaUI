@@ -64,7 +64,7 @@ define(['core/saogaUI'], function(){
 				    				 .find('.ui-floatCenter'),
 				    btnMain = btnWrap.find('.ui-sl-floatCenter');			
 				$.each(btns,function(i,item){
-					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn  ui-btn-primary ui-floatCenter-item '+item.cls:'ui-btn ui-pop-btn ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
+					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn  ui-btn-primary ui-floatCenter-item '+item.cls:'ui-btn ui-btn-primary ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
 					btnMain.find('a').eq(i).click(function(){
 						if( item.onclick ){
 							item.onclick(i,item,id);
@@ -115,7 +115,7 @@ define(['core/saogaUI'], function(){
 			
 			/*载入时要触发的事件*/
 			if( saogaUI.base.isFunction(onloadFn) ){
-				onloadFn(id);
+				onloadFn(id, popMain);
 			}
 			
 			/*关闭*/

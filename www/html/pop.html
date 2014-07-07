@@ -46,7 +46,7 @@
 	
 	
 	<script>
-		require(['app/main2'], function(saogaUI){
+		require(['app/main2，app/com'], function(saogaUI,comm){
 		
 			
 			var html = saogaUI.template('test', null);
@@ -54,8 +54,10 @@
 			$('#pop').click(function(){
 				saogaUI.ui.pop.open({
 					title:'添加营销活动',//标题
-					html:html,//中间内容
-					height:210,
+					//html:html,//中间内容
+					ajax:'/resources/saogaUI/www/html/pop2.html',
+					width:800,
+					height:510,
 					btns:[  
 						{
 							text:'保存',

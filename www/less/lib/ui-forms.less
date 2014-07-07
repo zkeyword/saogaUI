@@ -34,6 +34,28 @@
 	.border-radius(0px);
 	padding:3px;
 	text-align:left;
+	position:relative;
+	
+	.arrow{
+		position:absolute;
+		top:10px;
+		right:10px;
+		.arrow(#333, down, 6px)
+	}
+	
+	.ui-select-init{width:100%;box-sizing:border-box;background:#fff}
+	.ui-select-itemWrap{
+		width:100%;
+		border:1px solid @col-c1bfc1;
+		background:#fff;
+		position:absolute;
+		top:24px;
+		left:-1px;
+		z-index:2;
+		overflow:auto
+	}
+	.ui-select-item{height:26px;line-height:26px;padding:0 5px;}
+	.ui-select-itemWrap .selected{background:#f8f8f8}
 }
 /*时间*/
 .ui-input-datatime{background:url(../images/app/datePicker.png) right center no-repeat #fff;cursor:default;font-size:12px;}
