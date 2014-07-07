@@ -35,13 +35,10 @@
 </div>	
 <!-- 选择表单-->
 <div class="fn-clear">
-	<div class="ui-form fn-left"><span>密码：</span>
+	<div class="ui-form fn-left">
+		<span>下拉框：</span>
 		<span>
-			<select class="ui-select">
-				<option>22222</option>
-				<option>22222</option>
-				<option>22222</option>
-			</select>
+			<input type="hidden" name="test" id="test2"/>
 		</span>
 	</div>
 </div>	
@@ -131,14 +128,11 @@
 		<div class="ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
 		<div class="ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
 		<div class="ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
-		<div class="ui-form"><span class="ui-label ui-label-75">地址：</span>
+		<div class="ui-form fn-left">
+			<span>下拉框：</span>
 			<span>
-				<select class="ui-select ui-select-130">
-						<option>22222</option>
-						<option>22222</option>
-						<option>22222</option>
-				</select>
-			</span> 
+				<input type="hidden" name="test" id="test3"/>
+			</span>
 		</div>
 	</div>
 	<div class="fn-clear line-margin">
@@ -152,7 +146,7 @@
 			<span class="ui-label-15">~</span>
 			<span><input type="time" placeholder="Enter time"  class="ui-input ui-input-100 ui-input-datatime" required></span> 
 		</div>
-		<div class="ui-form">
+		<div class="ui-form ui-form-check">
 			<span><label><input type="checkbox" value="">嚯嚯嚯</label></span>
 			<span>
 				<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-808b9c">&#983250</i></label>
@@ -190,14 +184,12 @@
 			<div class="ui-form"><span class="ui-label ui-label-75">客户昵称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
 			<div class="ui-form"><span class="ui-label ui-label-75">密码：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
 			<div class="ui-form"><span class="ui-label ui-label-75">描述关键字：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-130" required></span> </div>
-			<div class="ui-form"><span class="ui-label ui-label-75">地址：</span>
+
+			<div class="ui-form fn-left">
+				<span>下拉框：</span>
 				<span>
-					<select class="ui-select ui-select-130">
-							<option>22222</option>
-							<option>22222</option>
-							<option>22222</option>
-					</select>
-				</span> 
+					<input type="hidden" name="test" id="test1"/>
+				</span>
 			</div>
 		</div>
 		<div class="fn-clear">
@@ -207,7 +199,7 @@
 				<span class="ui-label-15">~</span>
 				<span><input type="time" placeholder="Enter time"  class="ui-input ui-input-100 ui-input-datatime" required></span> 
 			</div>
-			<div class="ui-form">
+			<div class="ui-form ui-form-check">
 				<span><label><input type="checkbox" value="">嚯嚯嚯</label></span>
 				<span>
 					<label><input type="radio" checked="" value="option1" name="Radios"><i data-uid="983250" class="icon-font icon-font-10 col-808b9c">&#983250</i></label>
@@ -269,5 +261,234 @@
 		<li><span class="ui-label ui-label-75"></span><button class="ui-btn ui-btn-primary" type="button">提交</button><button class="ui-btn ui-btn-primary" type="button">取消</button></li>
 	</ul>
 </div>
+	<script>
+	require(['app/main'], function(saogaUI){
+		
+		'use strict';
+		
+		
+		
+		$(function (){
+			var data = [
+				{
+					"id" : "1",
+					"name": "一级菜单",
+					"val":"1",
+					"chlidren": [
+						{
+							"id": "12",
+							"name": "二级菜单11",
+							"val": "12"
+						},
+						{
+							"id": "12",
+							"name": "二级菜单11",
+							"val": "12"
+						},
+						{
+							"id": "12",
+							"name": "二级菜单11",
+							"val": "12"
+						},
+						{
+							"id": "12",
+							"name": "二级菜单11",
+							"val": "12"
+						},
+						{
+							"id": "13",
+							"name": "二级菜单12",
+							"val": "13",
+							"chlidren": [
+								{
+									"id": "131",
+									"name": "三级菜单131",
+									"val": "131",
+									"chlidren": [
+										{
+											"id": "1311",
+											"name": "四级菜单1311",
+											"val": "1311"
+										},
+										{
+											"id": "1312",
+											"name": "四级菜单1312",
+											"val": "1312"
+										}
+									]
+								},
+								{
+									"id": "132",
+									"name": "三级菜单132",
+									"val": "132"
+								}
+							]
+						},
+						{
+							"id": "14",
+							"name": "二级菜单13",
+							"val": "14"
+						}
+					]
+				},
+				{
+					"id" : "2",
+					"name": "一级菜单2",
+					"val":"2",
+					"chlidren": [{
+						"id": "21",
+						"name": "二级菜单21",
+						"val": "21",
+						"chlidren": [{
+							"id": "21",
+							"name": "二级菜单21",
+							"val": "21",
+							"chlidren": [{
+								"id": "21",
+								"name": "二级菜单21",
+								"val": "21",
+								"chlidren": [{
+									"id": "21",
+									"name": "二级菜单21",
+									"val": "21"
+								}]
+							}]
+						}]
+					}]
+				},
+				{
+					"id" : "2",
+					"name": "一级菜单2",
+					"val":"2",
+					"chlidren": [{
+						"id": "21",
+						"name": "二级菜单21",
+						"val": "21"
+					},
+					{
+						"id": "22",
+						"name": "二级菜单22",
+						"val": "22"
+					}]
+				},
+				{
+					"id" : "3",
+					"name": "一级菜单3",
+					"val":"3",
+					"chlidren": [{
+						"id": "31",
+						"name": "二级菜单31",
+						"val": "31",
+							"chlidren": [{
+								"id": "31",
+								"name": "二级菜单31",
+								"val": "31"
+							}]
+					},
+					{
+						"id": "32",
+						"name": "二级菜单32",
+						"val": "32"
+					}]
+				},
+				{
+					"id" : "2",
+					"name": "一级菜单2",
+					"val":"2",
+					"chlidren": [{
+						"id": "21",
+						"name": "二级菜单21",
+						"val": "21",
+						"chlidren": [{
+							"id": "21",
+							"name": "二级菜单21",
+							"val": "21",
+							"chlidren": [{
+								"id": "21",
+								"name": "二级菜单21",
+								"val": "21",
+								"chlidren": [{
+									"id": "21",
+									"name": "二级菜单21",
+									"val": "21"
+								}]
+							}]
+						}]
+					}]
+				}
+			];
+			
+			var options = {
+				data: data,
+				target: '#down',
+				selected: '22',
+				onclickItem: function(name, val){
+					console.log(name,val)
+				}
+			}
+
+			saogaUI.ui.select({
+				target: '#test1',
+				selectedID: '13',
+				isTree:true,
+				data: data,
+				downHeight:300,
+				downWidth:300,
+				cls:'ui-select-130',
+				onclickItem: function(name, id){
+					console.log(name, id);
+				}
+			});
+			
+			
+			var data2 = [
+	 			{
+					name: '我我我我',
+					value: '1'
+				},
+				{
+					name: 'asdfasdf',
+					value: '2'
+				}
+			];
+			saogaUI.ui.select({
+				target: '#test2',
+				data: data2,
+				initVal:'1',
+				cls:'ui-select-130'
+			});
+			
+			var data2 = [
+	 			{
+					name: '我我我我',
+					value: '1'
+				},
+				{
+					name: 'asdfasdf',
+					value: '2'
+				}
+			];
+			saogaUI.ui.select({
+				target: '#test3',
+				data: data2,
+				initVal:'1',
+				cls:'ui-select-130'
+			});
+			
+			//var dorpDownTree2 = saogaUI.ui.dorpDownTree(options2);
+			//dorpDownTree2.init();
+			
+			/* var ss = saogaUI.ui.validator({
+				text: 'dd'
+			});
+			ss.init();
+			
+			saogaUI.ui.dialog.alert({
+				text: 'asdfadf'
+			}); */
+							
+		});
+	});
+	</script>
 </body>
 </html>

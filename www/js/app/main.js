@@ -17,29 +17,30 @@ define(function(require){
 	
 	
 	$(function () {
-		var win             = $(window),
-			winHeight       = win.height(),
-			footerHeight    = $('#lt-footer').outerHeight(),
-			rightMain       = $('#lt-rightMain'),
-			rightMainOffset = rightMain.offset(),
-			rightMainTop    = rightMainOffset.top;
-			/*rightMainHeight = function(){
-				
-				var winHeight = win.height(),
-					height    = 760;
-				if( winHeight > height ){
-					rightMain.height(winHeight - rightMainTop - footerHeight - 36 - 20 );
-				}else{
-					rightMain.height(height);
-			}*/
-		
-		/*rightMainHeight();
-		win.resize(function(){
-			rightMainHeight();
-		});*/
-		
-		rightMain.attr({'style':'min-height:'+(winHeight - rightMainTop - footerHeight - 36 - 20)+'px'});
-		
+		if( $('#lt-rightMain').length ){
+			var win             = $(window),
+				winHeight       = win.height(),
+				footerHeight    = $('#lt-footer').outerHeight(),
+				rightMain       = $('#lt-rightMain'),
+				rightMainOffset = rightMain.offset(),
+				rightMainTop    = rightMainOffset.top;
+				/*rightMainHeight = function(){
+					
+					var winHeight = win.height(),
+						height    = 760;
+					if( winHeight > height ){
+						rightMain.height(winHeight - rightMainTop - footerHeight - 36 - 20 );
+					}else{
+						rightMain.height(height);
+				}*/
+			
+			/*rightMainHeight();
+			win.resize(function(){
+				rightMainHeight();
+			});*/
+			
+			rightMain.attr({'style':'min-height:'+(winHeight - rightMainTop - footerHeight - 36 - 20)+'px'});
+		}
 	});
 	//点击显示下拉框
 	var isShow = false;

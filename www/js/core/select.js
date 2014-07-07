@@ -39,12 +39,12 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 				isShow = false;
 			}
 		});
-		$(window).on('click', function(){
+		/*$(window).on('click', function(){
 			if( isShow ){
 				itemWrap.addClass('fn-hide');
 				isShow = false;
 			}
-		});
+		});*/
 		
 		
 		if( !isTree ){
@@ -81,7 +81,7 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 				data: data,
 				target: itemWrap,
 				selectedID: selectedID,
-				onclickItem: function(name, id){
+				onclickItem: function(name, id, pid){
 					
 					target.val( id );
 					initWrap.attr('data-value', id)
@@ -90,7 +90,7 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 					itemWrap.addClass('fn-hide');
 					
 					if( onclickItem && saogaUI.base.isFunction(onclickItem)  ){
-						onclickItem(name, id);
+						onclickItem(name, id, pid);
 					}
 				},
 				onloadFn: function(obj){

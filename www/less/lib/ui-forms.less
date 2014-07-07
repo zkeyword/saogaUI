@@ -32,7 +32,6 @@
 .ui-select{
 	.ui-input-stauts(@col-c1bfc1, @col-d5d5d5, @col-f59942, @col-d5d5d5);
 	.border-radius(0px);
-	padding:3px;
 	text-align:left;
 	position:relative;
 	
@@ -43,7 +42,7 @@
 		.arrow(#333, down, 6px)
 	}
 	
-	.ui-select-init{width:100%;box-sizing:border-box;background:#fff}
+	.ui-select-init{height:18px;line-height:18px;padding:3px;background:#fff}
 	.ui-select-itemWrap{
 		width:100%;
 		border:1px solid @col-c1bfc1;
@@ -65,7 +64,7 @@ input[type="file"]{border:none;height:auto;padding:0;}
 /*全选/取消标签*/
 .ui-select-tag a,.ui-select-tag label{float:left;display:inline-block;margin:0 3px;padding:2px;}
 .ui-select-tag label{padding:2px 0 0;}
-.ui-select-tag a:hover{background:#f0ad4e;.border-radius(2px);}
+.ui-select-tag a:hover{background:#f0ad4e;.border-radius(2px);color:#fff;}
 	
 /* 表单列表区域样式 */
 .ui-forms{}
@@ -86,6 +85,7 @@ input[type="file"]{border:none;height:auto;padding:0;}
 .ui-search .ui-form span{display:inline-block;float:left;}
 .ui-search .ui-form.fn-right{float:right;}
 .ui-search .ui-form.ui-recent-time a{padding:2px;float:left;line-height:30px;}
+.ui-search .ui-form-check{line-height:30px;}
 /* 表单条件搜索标题*/
 .ui-label{text-align:right;}
 .ui-label-15{width:15px;}

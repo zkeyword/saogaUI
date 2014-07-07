@@ -40,6 +40,8 @@ define(['core/saogaUI'], function(saogaUI){
 							
 							if( selectedID == data[i].id ){
 								selected = data[i];
+							}else{
+								selected = data[0];
 							}
 							
 							html += '<div class="l-treeItemWrap fn-clear'+ ( chlidrenObj ? ' l-treeParent' : ' l-treeLast' ) + (selectedID == data[i].id ? ' l-treeSelected' : '') +'">';
@@ -76,7 +78,7 @@ define(['core/saogaUI'], function(saogaUI){
 							html += '</div>';
 									
 							if( chlidrenObj ){
-								html += '<div class="l-treeChildrenWrap fn-clear">'+ tree(chlidrenObj, line+'<div class="l-treeBox l-treeLine"></div>', false) +'</div>';
+								html += '<div class="l-treeChildrenWrap fn-clear" data-pid='+ data[i].id +'>'+ tree(chlidrenObj, line+'<div class="l-treeBox l-treeLine"></div>', false) +'</div>';
 							}
 						}
 											
@@ -92,13 +94,15 @@ define(['core/saogaUI'], function(saogaUI){
 				target.find('.l-treeItem').on('click',function(){
 					var that = $(this),
 						name = that.text(),
-						id   = that.attr('data-id');
-					target.find('.l-tree').attr({
-						'data-name': name,
-						'data-id': id
-					});
+						id   = that.attr('data-id'),
+						pid  = that.parents('.l-treeChildrenWrap').attr('data-pid');
+					
+					if( pid === undefined ){
+						pid = '';
+					}
+
 					if( onclickItem && saogaUI.base.isFunction(onclickItem) ){
-						onclickItem(name, id);
+						onclickItem(name, id, pid);
 					}
 				});
 			},
