@@ -10,6 +10,13 @@
 	 p.operate-tips-text{padding-left:30px;width:92%;}
 	 p.operate-tips-text em { margin-left:-30px;}
 }
+/*翻页*/
+.ui-pageBar{width:100%;position:relative;margin:25px 0;font-size:14px;}
+.show-pagenum{position:absolute;}
+.pagination{width:450px;margin:0 auto;text-align:center;}
+.pagination li{display:inline-block;margin:0 2px;}
+.pagination li a{display:block;width:30px;heigiht:30px;text-align:center;line-height:30px;background:#e7eaef;color:#000;font-family:SimSun;}
+.pagination li a:hover,.pagination li.active a{background:#e76c00;color:#fff;}
 /*客户服务-手动催付*/
 .mo-remindpay-list tbody tr td{border:none;}
 .ui-list-title{background:#E3E3E3;padding:4px 0;width:100%;}
@@ -24,3 +31,39 @@
 .product-list .product-text{margin-left:5px;}
 .product-list .product-text p{line-height:18px;}
 .business-status i{margin-left:4px;color:#e76c00;cursor:pointer;}
+/*事物中心-事物处理-事物列表  */
+.ui-operat-tag{
+	background:#eef1f8;width:100%;float:left;
+	li{float:left;}
+	a{padding:10px 20px;display:block;background:#eef1f8;}
+	a:hover,a.cur{background:#c3cdd9;}
+}
+/*新增标签 */
+.ui-add-tag{
+	ul li{float:left;display:inline;margin:0 3px;}
+	a{background:#e76c00;color:#fff;float:left;display:block;padding:2px;}
+	i{color:#fff;}
+	a:hover{background:#c4630e;color:#fff;}
+	a:first-child{.border-left-radius(3px);}
+	a:last-child{.border-right-radius(3px);}
+}
+/*高中低级别显示 */
+.ui-level-tip{display:inline-block;}
+.ui-level-tip label{padding:1px 3px;color:#fff;}
+.ui-level-tip .ui-level-tip-tip{padding:1px 3px;color:#000;}
+.ui-level-tip-high label{background:#ffae00;}
+.ui-level-tip-high .ui-level-tip-tip{background:#fff2d3}
+.ui-level-tip-mid label{background:#288acb;}
+.ui-level-tip-mid .ui-level-tip-tip{background:#bee8f7}
+.ui-level-tip-low label{background:#818c9d;}
+.ui-level-tip-low .ui-level-tip-tip{background:#eef1f8}
+.ui-source-tip label{background:#fff;color:#000;}
+
+/*事物中心-事物列表 */
+.mo-affair-list{
+	width:100%;float:left;
+	.affair-list-title,.affair-list-body,.affair-list-foot{width:100%;float:left;}
+	.affair-list-title{background:#eef1f8;line-height:30px;}
+}
+
+

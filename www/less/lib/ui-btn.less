@@ -24,8 +24,8 @@
 	cursor:pointer;
 	.ui-btn-stauts(@col-fff, @col-e76c00, @col-c4630e)
 }
-.ui-sm-btn{padding:2px 20px;font-size:12px;}
-.ui-min-btn{padding:3px 20px;}
+.ui-sm-btn{padding:3px 20px;}
+.ui-min-btn{padding:2px 20px;font-size:12px;}
 .ui-pop-btn{padding:3px 45px;}
 	.ui-btn-primary{
 		.ui-btn-stauts(@col-fff, @col-e76c00, @col-c4630e)
@@ -97,4 +97,20 @@
 		.border-right-radius(4px);
 		border-right:none;
 	}
+/*表格下拉按钮 */
+.ui-table-grounp{position:relative;display:inline-block;height:28px;vertical-align:middle;}
+.ui-table-grounp a{float:left;}
+.ui-table-grounp i{display:block;margin:10px 0 0 10px;color:#929292;}
+.ui-table-grounp .dropdown-menu{
+	position:absolute;
+	top:100%;  
+	min-width: 100%;
+	margin:2px 0 0;
+	padding:5px 0;
+	background:#fff;
+	.border-radius(3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
+    }
+.ui-table-grounp .dropdown-menu li a{float:left;display:inline-block;min-width: 100%;text-align:left;text-indent:10px;}
+
 	

@@ -15,6 +15,15 @@ define(function(require){
 	saogaUI.ui.select      = require('core/select');
 	saogaUI.app.btnDropdown = require('app/btnDropdown');
 	
+	/*ajax分页插件*/
+	require('jquery.pagination');
+	
+	/*表单验证*/
+	require('jquery.validate.min');
+	
+	/*日期控件*/
+	require('jquery.validate.min');
+	
 	
 	$(function () {
 		if( $('#lt-rightMain').length ){
@@ -54,17 +63,17 @@ define(function(require){
 			$(this).siblings(".ui-dropdown").hide();
 			isShow = false;
 		}
-		console.log(isShow)
+		console.log(isShow);
     });
 	$('.ui-dropdown').click(function(event){
 		event.stopPropagation();
-	})
+	});
 	$(document).on('click',function(){
 		if( isShow ){
        		$(".dropdown-toggle").siblings(".ui-dropdown").hide();
 			isShow = false;
 		}
-	})
+	});
 	
 	return saogaUI;
 });

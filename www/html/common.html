@@ -88,12 +88,6 @@
      <p class="operate-tips-text"><em>1)</em>由于当客户使用购物车拍下多种宝贝时，存在购物车级别的优惠的分摊问题，在此分析数据中，购物车级别的优惠不会从销售额中减去，所以宝贝的销售额仅供参考，不能作为财务核算数据。销售件数可以作为精确数据使用。</p>
      <p class="operate-tips-text"><em>2)</em>由于当客户使用购物车拍下多种宝贝时，存在<a href="#">222222222</a>购物车级别的优惠的</p>
  </div>
-<!-- 提示标签 -->
-<span id="tip" title="title模拟控件">title模拟控件</div></span>
-<!-- 时间选择 -->
-<div class="ui-wrap fn-clear">
-	<div class="fn-left ui-form"><span for="calendar" class="ui-label">密码：</span><span><input type="text" id="calendar" class="ui-input" required></span> </div>
-</div>
 <!-- 客户服务-手动催付 -->
 <div class="mo-remindpay-list fn-clear">
 	<table>
@@ -105,7 +99,7 @@
                  <th class="ui-td-width70">数量</th>
                  <th class="ui-td-width150">实付款</th>
                  <th class="ui-td-width150">交易状态</th>
-                 <th  class="ui-td-width150">操作</th>
+                 <th  class="ui-td-width130">操作</th>
              </tr>
 		</thead>
 		<tbody>
@@ -114,8 +108,15 @@
 				<div class="fn-left ui-list-title">
 					<span><input type="checkbox" value=""></span>
 					<span>订单编号：717643855570628 </span>      
-					<span>客户昵称： 婷婷小狗狗 ( 王婷：13022840800 ）</span> 
-    					<span>成交时间：2014-07-02 19:13 </span> 
+					<span>客户昵称：<i class="icon-font icon-font-10 col-737383" data-uid=983360 >&#983360</i><i class="icon-font icon-font-10 col-288acb" data-uid=983360 >&#983360</i>婷婷小狗狗 ( 王婷：13022840800 <i class="icon-font icon-font-10" data-uid=983531 title="发送短信">&#983531</i>）
+					<i class="icon-font icon-font-10" data-uid="983234" title="复制">&#983234</i> 
+					<i class="icon-font icon-font-10" data-uid="983396" title="">&#983396</i> 
+					</span> 
+    					<span>成交时间：2014-07-02 19:13 
+    						<i class="icon-font icon-font-10" data-uid=983202 >&#983202</i> 
+    						<i class="icon-font icon-font-10 col-e100fd" data-uid="983250">&#983250</i> 
+    						<i class="icon-font icon-font-10" data-uid=983339 >&#983339</i> 
+    					</span> 
 				</div>
 				</td>
 			</tr>
@@ -130,6 +131,7 @@
 						<p>未支付：<lablel>1</lablel>笔；</p>
 						<p>已关闭：<lablel>12</lablel>笔；</p>
 						<p>支付及其他：<lablel>2</lablel>笔；</p>
+						<p>其他订单已催付</p>
 					</div>
 				</td>
 				<td>
@@ -164,12 +166,182 @@
 					<p>（含快递：0.00） </p>
 				</td>
 				<td class="text-center ui-td-width150"><div class="business-status">等待买家付款<i class="icon-font icon-font-10" data-uid="983535">&#983535</i></div></td>
-				<td class="text-center ui-td-width150"></td>
+				<td class="text-center ui-td-width130">
+					<div class="ui-table-grounp">
+						<a href="javascript:void(0)" class="ui-btn ui-min-btn">关闭交易</a>
+						<a href="javascript:void(0)" class="dropdown-toggle"><i data-uid="983463" class="icon-font icon-font-10 col-fff">󰆧</i></a>
+						<ul class="dropdown-menu fn-hide">
+							<li><a href="#">111</a></li>
+							<li><a href="#">222</a></li>
+							<li><a href="#">333</a></li>
+						</ul>
+					</div>
+				</td>
 			</tr>
 		</tbody>
 	</table>
-	
-	
+</div>
+<!-- 翻页 -->
+<div class="ui-pageBar fn-clear" id="pageBar">
+	<div class="show-pagenum">
+		<span>显示</span>
+		<select>
+			<option value="50">50</option>
+		</select>
+		<span>条，共<label>131</label>条<label>7</label>页</span>
+	</div>
+	<div class="">
+		<ul class="pagination">
+			<li><a class="first-page" href="javascript:void(0);">&lt;&lt;</a></li>
+			<li><a class="next-page" href="javascript:void(0);">&lt;</a></li>
+			<li class="active"><a href="javascript:void(0)">1</a></li>
+			<li><a  href="javascript:void(0)">2</a></li>
+			<li><a  href="javascript:void(0)">3</a></li>
+			<li><a  href="javascript:void(0)">4</a></li>
+			<li><a  href="javascript:void(0)">...</a></li> 
+			<li><a class="next-page"  href="javascript:void(0)">&gt;</a></li>
+			<li><a class="last-page"  href="javascript:void(0)">&gt;&gt;</a></li>
+			<li><input type="text" maxlength="8" class="ui-input ui-input-50"></li>
+			<li><a class="go_page" href="javascript:void(0)">go</a></li>
+		</ul>
+	</div>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">添加标签</h1>
+<div class="fn-clear">
+	<div class="ui-add-tag">  
+    	<div class="fn-left"><a href="javascript:void(0)"><i class="icon-font icon-font-10" data-uid="983413">&#983413</i>添加标签</a></div>
+        <div class="fn-left">
+        	<ul>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+                <li>
+	            	<a href="javascript:;" class="click-focus">标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            	<li>
+	            	<a href="javascript:;" class="click-focus">评价标签</a>
+	            	<a href="javascript:;" title="编辑"><i class="icon-font icon-font-10" data-uid="983230">&#983230</i></a>
+	            	<a href="javascript:;" title="删除"><i class="icon-font icon-font-10" data-uid="983219">&#983219</i></a>
+            	</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 事物中心-事物处理-事物列表 -->
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">事物中心-事物处理-事物列表 </h1>
+<div class="fn-clear">
+	<div class="ui-operat-tag full-width">
+	    <ul  class="nav navbar-nav fn-left">
+	        <li><a href="javascript:void(0);">待解决(<span>208</span>)</a> </li>
+	        <li><a href="javascript:void(0);">解决中(<span>24</span>)</a> </li>
+	        <li><a href="javascript:void(0);">已解决(<span>31</span>)</a> </li>
+	        <li><a href="javascript:void(0);">已过期(<span>214</span>)</a> </li>
+	    </ul>
+	    <ul class="nav navbar-nav fn-right">
+	        <li><a class="cur"  href="javascript:void(0);"><i data-uid="983313" class="icon-font icon-font-10">&#983313</i>优先级</a></li>
+	        <li><a href="javascript:void(0);"><i data-uid="983313" class="icon-font icon-font-10">&#983313</i>创建时间</a> </li>
+	        <li><a href="javascript:void(0);"><i data-uid="983313" class="icon-font icon-font-10">&#983313</i>到期时间</a> </li>
+	    </ul>
+	</div>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">事物中心-事物处理-事物列表级别显示 </h1>
+<div class="fn-clear">
+    <div class="fn-left"> <a class="ui-btn ui-btn-primary" href="javascript:;"><i class="icon-font icon-font-10 col-fff" data-uid="983380" >&#983380</i>新增事物</a></div>
+    <div class="fn-right">
+    	<span class="ui-level-tip ui-level-tip-high"><label>高</label><label class="ui-level-tip-tip">优先级高</label></span>
+    	<span class="ui-level-tip ui-level-tip-mid"><label>中</label><label class="ui-level-tip-tip">优先级中</label></span>
+    	<span class="ui-level-tip ui-level-tip-low"><label>低</label><label class="ui-level-tip-tip">优先级低</label></span>
+    </div>
+</div>
+<div class="fn-clear">
+  	<span class="ui-level-tip ui-level-tip-high"><label>高</label></span>
+  	<span class="ui-level-tip ui-level-tip-mid"><label>中</label></span>
+  	<span class="ui-level-tip ui-level-tip-low"><label>低</label></span>
+  	<span class="ui-level-tip ui-source-tip"><label>关怀</label></span>
+</div>
+<h1 style="font-size:25px;color:red;margin:10px 0;width:100%;">事物中心-事物处理-事物列表显示 </h1>
+<div class="mo-remindpay-list fn-clear">
+	<table>
+		<tr>
+			<td>
+				<div class="fn-clear mo-affair-list">
+					<div class="affair-list-title">
+						<div class="fn-left">
+							<span><input type="checkbox" value=""></span>
+							<span class="ui-level-tip ui-level-tip-high"><label>高</label></span>
+							<span class="ui-level-tip ui-source-tip"><label>呼叫中心</label></span>  
+							<span>编号：GH00000293 </span>  
+							<span>类型：节假日关怀</span>
+							<span><i class="icon-font icon-font-10 col-737383" data-uid=983360  title="旺旺不在线">&#983360</i><i class="icon-font icon-font-10 col-288acb" data-uid=983360  title="在线旺旺">&#983360</i> 客道小池
+							<i class="icon-font icon-font-10" data-uid=983234 title="复制" >&#983234</i>
+							<i class="icon-font icon-font-10" data-uid="983531" title="查看聊天记录">&#983531</i> 
+							<i class="icon-font icon-font-10" data-uid="983340" title="查看详情记录">&#983340</i>
+							<i class="ui-icon bestvip-icon" ></i> 
+							</span> 
+		    				<span>过期时间：<label>2014-07-05 17:58</label></span> 
+		    			</div>
+		    			<div class="fn-right">
+		    				<span> 额外成本：-  </span>
+		    				<span>状态： <label>待解决</label></span>
+		    			</div>
+					</div>
+					
+				</div>
+				<div class="affair-list-body">22</div>
+				<div class="affair-list-foot">
+					<div class="fn-left">
+						<span>发起人: 南讯客服(2014-07-02 17:58)</span>
+						<span>关联订单: 711734903162597 交易成功</span>
+						<span>指定处理人: 中差评测试 </span> 
+						<span>最后更新: 南讯客服 (2014-07-02 17:58)</span> 
+					</div>
+					<div class="fn-right">
+						<div class="ui-table-grounp">
+							<a href="javascript:void(0)" class="ui-btn ui-min-btn">处理</a>
+							<a href="javascript:void(0)" class="dropdown-toggle"><i data-uid="983463" class="icon-font icon-font-10 col-fff">󰆧</i></a>
+							<ul class="dropdown-menu fn-hide">
+								<li><a href="#">删除</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
 </div>
 <script type="text/javascript">
 require(['app/main2'], function(saogaUI){	
@@ -194,15 +366,6 @@ require(['app/main2'], function(saogaUI){
 	saogaUI.ui.tip({
 		tipItem:'#tip',
 		isArrow: true
-	});
-	saogaUI.ui.calendar({
-		trigger:'#calendar',
-		dateFormat:'yyyy-MM-dd hh:mm:ss',
-		beginYear:'1970',
-		endYear:'2030',
-		callback: function(time){
-			alert(time)
-		}
 	});
 });
 
