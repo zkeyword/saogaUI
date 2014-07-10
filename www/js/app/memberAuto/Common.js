@@ -828,7 +828,7 @@ Date.prototype.addYears = function (y) {
             _o.selectionEnd = startPos + _m.length;
         }
     };
-})(jQuery);
+})($);
 
 //查看模块说明
 function ShowModuleDesc(type) {

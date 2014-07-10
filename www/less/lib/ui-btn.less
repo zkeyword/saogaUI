@@ -27,6 +27,7 @@
 .ui-sm-btn{padding:3px 20px;}
 .ui-min-btn{padding:2px 20px;font-size:12px;}
 .ui-pop-btn{padding:3px 45px;}
+.ui-little-btn{padding:1px 8px;font-size:12px;}
 	.ui-btn-primary{
 		.ui-btn-stauts(@col-fff, @col-e76c00, @col-c4630e)
 	}
@@ -54,7 +55,7 @@
 	}
 	
 	/* 带有图标按钮 */
-	.ui-btn .icon-font{margin:1px 3px 0 0;font-size:15px;}
+	.ui-btn .icon-font,.ui-btn .icon-font-10{margin:1px 3px 0 0;font-size:15px;}
 	
 /* 下拉框按钮 */
 .ui-btn-dropdown{display:inline-block;position:relative;vertical-align:middle;}
@@ -65,7 +66,6 @@
 		top:100%;
 		z-index:1000;
 		background:@col-428bca;
-		display:none;
 	}
 	.open.ui-btn-dropdown .dropdown-menu{display:inline-block;}
 	.open.ui-btn-dropdown .dropdown-menu li a{

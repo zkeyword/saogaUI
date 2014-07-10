@@ -1,0 +1,115 @@
+/**
+* @Author:      norion
+* @Update:      2012.04.25
+* @Update by:   norion
+* @overview:    demo
+*/
+header{padding:10px;font-size:16px;background:#0F5B99;color:#fff}
+article{}
+	article header{background:#eee;margin:10px 0 0;font-size:14px;color:#333}
+	pre{background:#fafafa;overflow:auto;margin:10px 10px 20px 0;padding:10px;clear:both;border-left:3px solid #09e}
+	pre:hover{background:#eee;}
+
+#demo-header{height:26px;margin:0 0 10px;background:#fff;overflow:hidden;}
+	#demo-header-main{width:980px;height:26px;margin:0 auto;}
+		#demo-logo{display:block;width:250px;height:26px;overflow:hidden;float:left;}
+		#demo-nav{list-style:none;float:left;margin:0;padding:0}
+			#demo-nav li{float:left;padding:0 20px}
+				#demo-nav a{color:#333}
+				#demo-nav a:hover{color:#999;}
+
+	
+#demo-main{width:980px;margin:0 auto;}
+	#demo-left{width:180px;padding:10px 10px 0;border:1px solid #fff;background:#fff}
+		#demo-left dt{background:#f1f1f1;padding:10px;margin:0 0 10px}
+		#demo-left dd{margin:0 0 10px;padding:0 0 0 20px}
+		#demo-left dd a{display:block}
+	#demo-right{width:768px;border:1px solid #f1f1f1;background:#fff}
+		#demo-demo{width:768px}
+		
+				
+#demo-footer{background:#f1f1f1;margin:10px 0 0}
+	#demo-footer-main{width:980px;margin:0 auto;height:50px;line-height:50px;text-align:center;}
+	
+	
+	
+	
+	
+	
+	
+	
+/* qingdou 2.1*/
+.prettyprint,
+script.prettyprint {
+ background-color: #272822;
+ border: 1px solid #272822;
+ overflow: hidden;
+ padding: 8px;
+}
+.prettyprint.linenums,
+script.prettyprint.linenums {
+ -webkit-box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+ -moz-box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+ box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+}
+.prettyprint.linenums ol,
+script.prettyprint.linenums ol {
+ margin: 0 0 0 33px; 
+}
+.prettyprint.linenums ol li,
+script.prettyprint.linenums ol li {
+ padding-left: 12px;
+ color: #bebec5;
+ line-height: 20px;
+ margin-left: 0;
+ list-style: decimal;
+}
+
+.prettyprint,
+pre.prettyprint {
+ background-color: #272822;
+ border: 1px solid #272822;
+ overflow: hidden;
+ padding: 8px;
+}
+.prettyprint.linenums,
+pre.prettyprint.linenums {
+ -webkit-box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+ -moz-box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+ box-shadow: inset 40px 0 0 #39382E, inset 41px 0 0 #464741;
+}
+.prettyprint.linenums ol,
+pre.prettyprint.linenums ol {
+ margin: 0 0 0 33px; 
+}
+.prettyprint.linenums ol li,
+pre.prettyprint.linenums ol li {
+ padding-left: 12px;
+ color: #bebec5;
+ line-height: 20px;
+ margin-left: 0;
+ list-style: decimal;
+}
+.prettyprint .com { color: #93a1a1; }
+.prettyprint .lit { color: #AE81FF; }
+.prettyprint .pun,
+.prettyprint .opn, 
+.prettyprint .clo { color: #F8F8F2; }
+.prettyprint .fun { color: #dc322f; }
+.prettyprint .str, 
+.prettyprint .atv { color: #E6DB74; }
+.prettyprint .kwd, 
+.prettyprint .tag { color: #F92659; }
+.prettyprint .typ, 
+.prettyprint .atn, 
+.prettyprint .dec, 
+.prettyprint .var { color: #A6E22E; }
+.prettyprint .pln { color: #66D9EF; }
+
+
+
+/*基本规范-字体模块*/
+.color-area{width:260px;height:80px;float:left;margin-bottom:15px;}
+.color-area .color-show{width:80px;height:80px;float:left;}
+.color-area .color-intro{width:180px;height:80px;float:left;}
+.color-area .color-intro p{width:100%;float:left;line-height:20px;}

@@ -159,9 +159,9 @@
 						</div>
 					</div>
 				</td>
-				<td class="text-right ui-td-width80">¥98.00 	</td>
-				<td class="text-right ui-td-width70">11</td>
-				<td class="text-right ui-td-width100">
+				<td class="text-right ui-td-width80"><div class="price-num">¥98.00</div><div class="price-num">¥98.00</div><div class="price-num">¥98.00</div> 	</td>
+				<td class="text-right ui-td-width70"><div class="amount-num">22</div><div class="amount-num">22</div><div class="amount-num">22</div></td>
+				<td class="text-center ui-td-width100">
 					<p>¥59.90</p>
 					<p>（含快递：0.00） </p>
 				</td>
@@ -299,7 +299,7 @@
 		<tr>
 			<td>
 				<div class="fn-clear mo-affair-list">
-					<div class="affair-list-title">
+					<div class="affair-list-head">
 						<div class="fn-left">
 							<span><input type="checkbox" value=""></span>
 							<span class="ui-level-tip ui-level-tip-high"><label>高</label></span>
@@ -343,8 +343,50 @@
 		</tr>
 	</table>
 </div>
+<!-- 点击显示隐藏部分 -->
+<div class="mo-cutover">
+	<div class="cutover-tab active">
+		<i class="icon-font-10 icon-up fn-hide" data-uid="983722">&#983722</i><i class="icon-font-10 icon-down" data-uid="983721">&#983721</i>基本属性
+	</div>
+	<div class="cutover-content">1111</div>
+	<div class="cutover-tab">
+		<i class="icon-font-10 icon-up" data-uid="983722">&#983722</i><i class="icon-font-10 icon-down fn-hide" data-uid="983721">&#983721</i>拓展属性
+	</div>
+	<div class="cutover-content fn-hide">22222</div>
+	<div class="cutover-tab">
+		<i class="icon-font-10 icon-up" data-uid="983722">&#983722</i><i class="icon-font-10 icon-down fn-hide" data-uid="983721">&#983721</i>自定义属性
+	</div>
+	<div class="cutover-content fn-hide">33333</div>
+</div>
 <script type="text/javascript">
 require(['app/main2'], function(saogaUI){	
+	
+	//客户分层点击显示隐藏导航
+	$(".cutover-tab").on('click',function(){
+		var that     = $(this),
+			next     = that.next('.cutover-content'),
+			sibTabs   = next.siblings('.cutover-tab')
+			siblings = that.siblings('.cutover-content');
+		var thisIndex = siblings.index(next);
+		for(var i=0; i<siblings.length; i++){
+			if(i==thisIndex){
+				if(that.hasClass('active')){
+					next.addClass('fn-hide');
+					that.removeClass('active');
+					$(this).find(".icon-up").show();
+					$(this).find(".icon-down").hide();
+				}else{
+					next.removeClass('fn-hide');
+					that.addClass('active');
+					$(this).find(".icon-up").hide();
+					$(this).find(".icon-down").show();
+				}
+			}else{
+				$(sibTabs[i]).removeClass('active');
+				$(siblings[i]).addClass('fn-hide');
+			}
+		}
+	}); 
 	//tab标签选项
 	saogaUI.ui.tab({
 		tabItem:'#tab li',

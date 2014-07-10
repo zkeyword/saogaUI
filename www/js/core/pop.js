@@ -26,7 +26,8 @@ define(['core/saogaUI'], function(){
 				isMaskClose   = o.isMaskClose === undefined || o.isMaskClose,      //是否点击遮罩关闭,默认true
 				allowClose    = o.allowClose === undefined || o.allowClose,        //允许关闭,默认true
 				allowEscClose = o.allowEscClose === undefined || o.allowEscClose,  //允许esc关闭,默认true
-				isDrag        = o.isDrag === undefined || o.isDrag;                //允许拖拽,默认true
+				isDrag        = o.isDrag === undefined || o.isDrag,                //允许拖拽,默认true
+				async         = o.async === undefined ? true : false;
 										
 			var h = '';
 				h += '<div class="l-ui l-pop-wrap" id="'+ id +'">';
@@ -86,6 +87,7 @@ define(['core/saogaUI'], function(){
 				$.ajax({
 					url     : ajax,
 					cache   : false,
+					async   : async,
 					success : function(data){
 						popContent.append(data);
 					}

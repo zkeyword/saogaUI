@@ -90,8 +90,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						width     = options.width,
 						checkbox  = options.checkbox,                      //选择框
 						detail    = options.detail,                        //行明细
+						nullText  = options.nullText,
 						s         = '',
 						tmpData   = options.tmpData,
+						total     = options.data.total,
 						index     = index !== undefined ? index - 1  : 0;
 					
 					//取出宽度最大的列
@@ -102,46 +104,51 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						
 					s += '<table style="width:100%">';
 					
-					for(var i = 0; i<pageSize; i++){
-						if( tmpData[index][i] ){
-													
-							s += '<tr class="l-grid-row'+ (i%2 == 0 ? '' : ' l-grid-row-even') +'">';
-							
-							if( detail.length ){
-								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
-							}
-							
-							if( checkbox ){
-								s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
-							}
-							
-							for(var h = 0; h < columns.length; h++){
-								var colWidth, innerWidth;
-								if( columns[h].width === tmpWidth ){
-									innerWidth = '';
-									colWidth = 'auto';
-								}else{
-									innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
-									colWidth = columns[h].width + 'px';
+					if( total ){
+					
+						for(var i = 0; i<pageSize; i++){
+							if( tmpData[index][i] ){
+														
+								s += '<tr class="l-grid-row'+ (i%2 == 0 ? '' : ' l-grid-row-even') +'">';
+								
+								if( detail.length ){
+									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
 								}
-								s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
-								if( columns[h].render !== undefined ){
-									s += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name]);
-								}else{
-									s += tmpData[index][i][columns[h].name];
+								
+								if( checkbox ){
+									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
 								}
-								s += '</div></td>';
+								
+								for(var h = 0; h < columns.length; h++){
+									var colWidth, innerWidth;
+									if( columns[h].width === tmpWidth ){
+										innerWidth = '';
+										colWidth = 'auto';
+									}else{
+										innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
+										colWidth = columns[h].width + 'px';
+									}
+									s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
+									if( columns[h].render !== undefined ){
+										s += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name]);
+									}else{
+										s += tmpData[index][i][columns[h].name];
+									}
+									s += '</div></td>';
+								}
+								
+								s += '</tr>';
+								
+								if( detail.render !== undefined ){
+									var str    = detail.render(tmpData[index], pageStar),
+										colLen = columns.length + (checkbox ? 1 : 0) + 1;
+									s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
+								}
+								
 							}
-							
-							s += '</tr>';
-							
-							if( detail.render !== undefined ){
-								var str    = detail.render(tmpData[index], pageStar),
-									colLen = columns.length + (checkbox ? 1 : 0) + 1;
-								s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
-							}
-							
 						}
+					}else{
+						s += '<tr class="l-grid-row"><td><div class="l-grid-row-cell-inner">'+ nullText +'</div></td></tr>';
 					}
 					s += '</table>';
 					return s;
@@ -542,7 +549,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					options.data = _core.splitData(options, 1);
 					
 					//ajax 请求失败或data无指定
-					if( !options.data ){return false;}
+					if( !options.data || options.data.rows === undefined ){
+						options.data = {
+							rows:[],
+							total:0
+						};
+					}
 					
 					tmpArr[0]    = options.data.rows;
 					tmpPage      = Math.ceil(options.data.total / options.pageSize);
@@ -639,7 +651,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					width:        o.width || 'auto',
 					onCheckFn:    o.onCheckFn || null,
 					isMemory:     o.isMemory ? true : false,
-					nullText:     o.nullText ? o.nullText : '',
+					nullText:     o.nullText ? o.nullText : lang.nullText,
 					detail:       o.detail || {},
 					pageAjax:     o.pageAjax || null,
 					current:      1
@@ -747,7 +759,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				}
 			}
 
-			g.o.current  = 1;
+			g.o.current   = 1;
+			g.o.pageIndex = 1;
 				
 			//需要优化--获取缓存数据
 			options = _core.handleData(g.o);	

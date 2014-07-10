@@ -17,18 +17,7 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 			onloadFn    = o.onloadFn,
 			isShow      = false;
 		
-		initWrap.click(function(e){
-			e.stopPropagation();
-			$('.ui-select-itemWrap').addClass('fn-hide');
-			if( !isShow ){
-				itemWrap.removeClass('fn-hide');
-				isShow = true;
-			}else{
-				itemWrap.addClass('fn-hide');
-				isShow = false;
-			}
-		});
-		arrow.click(function(e){
+		wrap.click(function(e){
 			e.stopPropagation();
 			$('.ui-select-itemWrap').addClass('fn-hide');
 			if( !isShow ){
@@ -81,8 +70,7 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 				data: data,
 				target: itemWrap,
 				selectedID: selectedID,
-				onclickItem: function(name, id, pid){
-					
+				onclickItem: function(name, id, pid,that){					
 					target.val( id );
 					initWrap.attr('data-value', id)
 							.html( name );
@@ -90,16 +78,17 @@ define(['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
 					itemWrap.addClass('fn-hide');
 					
 					if( onclickItem && saogaUI.base.isFunction(onclickItem)  ){
-						onclickItem(name, id, pid);
+						onclickItem(name, id, pid, that);
 					}
 				},
 				onloadFn: function(obj){
 					itemWrap.height(downHeight)
 							.width(downWidth);
+					target.val( obj.id );
 					initWrap.attr('data-value', obj.val)
 							.html( obj.name );
 					if( onloadFn && saogaUI.base.isFunction(onloadFn)  ){
-						onloadFn(selected);
+						onloadFn(obj);
 					}
 				}
 			});

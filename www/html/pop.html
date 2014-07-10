@@ -34,7 +34,10 @@
 	</div>
 	<div class="fn-clear">
 		<a href="#" id="pop1">确认隐藏</a>
-	</事务中心-事物处理-事物列表-修改弹窗
+	</div>
+	<div class="fn-clear">
+	<a href="#" id="pop2">客户详细信息</a>
+	</div>
 	<script id="test" type="text/html">
 	<ul class="ui-forms ui-pop-forms fn-left">
 		<li>
@@ -55,7 +58,130 @@
 		</table>
 	</div>
 	</script>
-	
+	<script id="test2" type="text/html">
+<div class="ui-tab">
+	<ul id="tab" class="fn-clear">
+		<li class="on">会员信息</li>
+		<li>会员积分</li>
+		<li>历史订单</li>
+	</ul>
+	<div class="tab-main">
+        <table cellspacing="1" cellpadding="1">
+            <tbody>
+            <tr><td colspan="8"><b>基本信息：</b></td></tr>
+            <tr>
+                <td class="text-right ui-td-width90">会员昵称：</td>
+                <td>ddddd&nbsp;</td>
+                <td class="text-right ui-td-width90">真实姓名：</td>
+                <td>&nbsp;</td>
+                <td class="text-right">性别：</td>
+                <td>未知&nbsp;</td>
+                <td class="text-right ui-td-width90">会员等级：</td>
+                <td> <span id="memberGradeName">店铺客户</span></td>
+            </tr>
+            <tr>
+                <td class="text-right"> 会员状态：</td>
+                <td>&nbsp;</td>
+                <td class="text-right">vip信息： </td>
+                <td>&nbsp;</td>
+                <td class="text-right">生日：</td>
+                <td><span>未知</span>&nbsp;</td>
+                <td class="text-right"> 来自：</td>
+                <td>&nbsp; </td>
+            </tr>
+            <tr>
+                <td class="text-right">手机： </td>
+                <td>18859234530&nbsp;</td>
+                <td class="text-right"> 电话：</td>
+                <td>15160074997</td>
+                <td class="text-right"> Email：</td>
+                <td>123456789999@qq.com</td>
+                <td class="text-right">QQ：</td>
+                <td>1234567891231</td>
+            </tr>
+            <tr>
+                <td class="text-right"> 评价：</td>
+                <td colspan="7"  class="textalignleft rate">总评价：0条，其中：<span class="good"></span>
+                    好评0条，<span class="neutral"></span> 中评0条，<span class="bad"></span> <span style="width:120px;">差评0条；</span>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">详细地址：</td>
+                <td colspan="7"></td>
+            </tr>
+            <tr>
+                <td colspan="8"> <b>交易信息：</b></td>
+            </tr>
+            <tr>
+                <td class="text-right"> 客户类型：</td>
+                <td>意向客户</td>
+                <td class="text-right">交易统计：</td>
+                <td colspan="3">222</td>
+                <td class="text-right"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="8"><b>扩展属性：</b></td>
+            </tr>
+            <tr>
+                <td class="text-right ui-td-width90">回访黑名单：</td>
+                <td> 否</td>
+                <td class="text-right ui-td-width100"> 系统黑名单：</td>
+                <td>否</td>
+                <td class="text-right ui-td-width100"> 最近关怀时间：</td>
+                <td colspan="3">2014-02-05 14:00:33 </td>  
+            </tr>
+            <tr>
+                <td class="text-right"> 客户标签：</td>
+                <td> 中等 </td>
+                <td class="text-right">短信退订：</td>
+                <td colspan="5"> 退订</td>
+            </tr>
+            <tr>
+                <td class="text-right"> 备注： </td>
+                <td colspan="7"> </td>
+            </tr>
+            <tr>
+                <td colspan="8"><b>自定义属性：</b></td>
+            </tr>
+            <tr>
+                <td class="text-right">性别：</td>
+                <td>女</td>
+                <td class="text-right">裤子尺码111：</td>
+                <td>
+                </td>
+                <td class="text-right">喜欢的数字：</td>
+                <td>11111</td>
+                <td class="text-right">日期：</td>
+                <td>2013-10-30 </td>
+			</tr>
+			<tr>                
+				<td class="text-right">自定义属性5：</td>
+                <td></td>
+                <td class="text-right">自定义属性5：</td>
+                <td></td>
+                <td class="text-right">自定义属性5：</td>
+                <td></td>
+                <td class="text-right">自定义属性5：</td>
+                <td></td>
+			</tr>
+			<tr>        
+				<td class="text-right">自定义属性5：</td>
+                <td></td>
+                <td class="text-right">自定义属性5：</td>
+                <td></td>
+                <td class="text-right">自定义属性5：</td>
+                <td></td>
+                 <td class="text-right">自定义属性5：</td>
+                <td></td>
+           </tr>
+        </tbody>
+  </table>
+</div>
+<div class="tab-main" style="display:none;">222</div>
+<div class="tab-main" style="display:none;">333</div>
+</div>
+	</script>
 	<script>
 		require(['app/main2'], function(saogaUI){
 		
@@ -105,6 +231,23 @@
 				});
 			});
 			
+			
+			//tab标签选项
+			saogaUI.ui.tab({
+				tabItem:'#tab li',
+				tabWrap:'.tab-main',
+				tabEvent:'click',
+				isAuto:false
+			});
+			var html2 = saogaUI.template('test2', null);
+			$('#pop2').click(function(){
+				saogaUI.ui.pop.open({
+					title:'客户详细信息',//标题
+					html:html2,//中间内容
+					width:900,
+					height:500
+				});
+			});
 			
 		});
 	</script>

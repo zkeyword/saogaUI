@@ -33,6 +33,7 @@
 	.ui-input-stauts(@col-c1bfc1, @col-d5d5d5, @col-f59942, @col-d5d5d5);
 	.border-radius(0px);
 	text-align:left;
+	padding:3px;
 	position:relative;
 	
 	.arrow{
@@ -42,7 +43,7 @@
 		.arrow(#333, down, 6px)
 	}
 	
-	.ui-select-init{height:18px;line-height:18px;padding:3px;background:#fff}
+	.ui-select-init{height:18px;line-height:18px;background:#fff}
 	.ui-select-itemWrap{
 		width:100%;
 		border:1px solid @col-c1bfc1;
@@ -53,9 +54,11 @@
 		z-index:2;
 		overflow:auto
 	}
-	.ui-select-item{height:26px;line-height:26px;padding:0 5px;}
+	.ui-select-item{height:26px;line-height:26px;padding:0 5px;cursor: pointer;}
 	.ui-select-itemWrap .selected{background:#f8f8f8}
 }
+.ui-form span{display:inline-block;float:left;}
+
 /*时间*/
 .ui-input-datatime{background:url(../images/app/datePicker.png) right center no-repeat #fff;cursor:default;font-size:12px;}
 /* 公共表单input样式 */
@@ -69,7 +72,7 @@ input[type="file"]{border:none;height:auto;padding:0;}
 /* 表单列表区域样式 */
 .ui-forms{}
 	.ui-forms li{float:left;width:100%;display:inline;margin:2px 0;}
-	.ui-forms li span{display:inline-block;margin-right:2px;float:left;line-height:24px;}
+	.ui-forms span{display:inline-block;margin-right:2px;float:left;line-height:24px;}
 	.ui-forms li .ui-label{text-align:right;height:20px;line-height:23px;}
 	.ui-forms li .ui-btn{display:inline-block;margin-right:5px;}
 	.ui-forms li .right-tip,.ui-forms li .right-tip .icon-font{color:#e76e00;}
@@ -78,7 +81,7 @@ input[type="file"]{border:none;height:auto;padding:0;}
 .ui-pop-forms{font-size:14px;}
 .ui-pop-forms li{margin:3px 0;}
 .ui-pop-forms li .ui-label{height:26px;}
-	
+
 /* 条件搜索搜索框样式*/
 .ui-search{background:#f6f7f8;line-height:30px;padding:7px 9px 9px 9px;}
 .ui-search .ui-form{margin:2px 2px 0px 0;float:left;height:27px;line-height:27px;}
@@ -99,9 +102,11 @@ input[type="file"]{border:none;height:auto;padding:0;}
 .ui-label-110{width:110px;}
 .ui-label-120{width:120px;}
 /* 输入框宽度样式*/
+.ui-input-30{width:30px;}
 .ui-input-50{width:50px;}
 .ui-input-100{width:100px;}//时间控件-年月日
 .ui-input-110{width:110px;}
+.ui-input-120{width:120px;}
 .ui-input-130{width:130px;}
 .ui-input-140{width:140px;}
 .ui-input-145{width:145px;}//时间控件-年月日秒

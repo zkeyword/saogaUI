@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>title 提示样式测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="/resources/saogaUI/www/less/styles.less">
+<link rel="stylesheet" type="text/css" href="style.css">
+<!-- <link rel="stylesheet" type="text/css" href="demo/SyntaxHighlighter/shCore.css">
+<link rel="stylesheet" type="text/css" href="demo/SyntaxHighlighter/shThemeDefault.css"> -->
+<script type="text/javascript">
+var str  = location.pathname,
+	arr  = str.split('/'),
+	root = '';
+
+if( arr[2] != 'saogaUI' ){
+	root = '/ecrp';
+}
+	
+</script>
+<script data-main="../www/js/common3" src="../www/js/lib/require.js"></script>
+</head>
+<body>				
+	<div id="demo-wrap">
+		<header id="demo-header">
+			<div id="demo-header-main" class="fn-clear">
+				<a id="demo-logo" href="#" class="fn-left">saogaUI</a>
+				<ul id="demo-nav" class="fn-left">
+					<li><a href="#">DEMO</a></li>
+					<li><a href="#">API</a></li>
+				</ul>
+			</div>
+		</header>
+		<div id="demo-main" class="fn-clear">
+			<dl id="demo-left" class="fn-left">
+				<dt><a href="#">UI组件</a></dt>
+				<dd>
+					<a href="demo/basic.html">页面基本规范</a>
+					<a href="demo/pop.html">pop 弹出框</a>
+					<a href="demo/tip.html">tip 提示控件</a>
+					<a href="demo/icon.html">icon图标</a>
+					<a href="demo/btn.html">icon图标</a>
+				</dd>
+				<dt><a href="#">页面模块</a></dt>
+				<dd>
+					<dl>
+						<dt>数据分析</dt>
+						<dd>
+							横向排列
+						<dd>
+					</dl>
+				</dd>
+			</dl>
+			<div id="demo-right" class="fn-right">
+				<div id="demo-index">
+					hello saogaUI!
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+	require(['app/main'], function(saogaUI){
+
+		$('#demo-left a').click(function(){
+			var that  = $(this),
+				url   = that.attr('href'),
+				right = $('#demo-right'),
+				html  = '';
+			
+			if( url !== '#' ){
+				right.load(url); 
+			}
+			
+			return false;
+		});
+		
+	});
+	</script>
+</body>
+</html>
