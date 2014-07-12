@@ -1,9 +1,10 @@
 requirejs.config({
     baseUrl: '../js/lib',
     paths: {
-    	jquery: 'jquery-2.1.1.min',
+    	//jquery: 'jquery-2.1.1.min',
 		core: '../core',
-        app:  '../app'
+        app:  '../app',
+        WdatePicker: 'My97DatePicker/WdatePicker'
     }
 });
 

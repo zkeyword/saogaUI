@@ -4,13 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>测试页面</title>
 <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script src="../js/lib/jquery-2.1.1.min.js"></script>
 <script data-main="../js/common2" src="../js/lib/require.js"></script>
-<script src="../testData/CustomersData2.js"></script>
-</head>
+<!-- <script src="../testData/CustomersData2.js"></script>
+ --></head>
 <body>
 	<div id="grid1"></div>
 	<script>
-		require(['app/main2'], function(saogaUI){
+		require(['app/main'], function(saogaUI){
+			
 			var grid = saogaUI.ui.grid({
 				wrap:'#grid1',
 				//data:CustomersData,
@@ -37,8 +39,12 @@
 				}
 			});
 			
-			grid.refresh
-			
+			grid.methos.alert = function(){
+				console.log(this)
+			}
+
+			grid.methos.alert();
+			//saogaUI.ui.grid.prototype.alert();			
 			
 		});
 	</script>

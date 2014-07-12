@@ -40,7 +40,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			_core   = {
 				/**
 				* 内部表格表头内容
-				* @param {object} init 和 refresh共享的对象
 				*/
 				tHeadCreateHtml: function(){
 					var columns   = g.o.columns,
@@ -48,12 +47,14 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						width     = g.o.width,    //考虑去掉
 						detail    = g.o.detail,   //表格明细
 						checkbox  = g.o.checkbox, //复选框
-						wrap      = g.o.wrap,
+						popup     = g.popup,
+						grid1     = g.grid1,
+						grid2     = g.grid2,
 						i         = 0,
 						s         = '';
 					
 					//取出宽度最大的列
-					var tmpWidth = 0;
+					var tmpWidth = 0
 					for(var h = 0; h < columns.length; h++){
 						tmpWidth = Math.max(columns[h].width, tmpWidth);
 					}
@@ -79,16 +80,87 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					}
 					s += '</tr>';
 					s += '</table></div>';
-					console.log(g.grid2);
-					g.grid2.append(s);
+
+					grid2.append(s);
 				},
 				
 				/**
 				* 内部表格主体内容
-				* @param {object} init 和 refresh共享的对象
 				*/
-				tBodyCreateHtml: function(options, index){
-				
+				tBodyCreateHtml: function(){
+					var columns   = g.o.columns,
+						len       = columns.length,
+						width     = g.o.width,    //考虑去掉
+						detail    = g.o.detail,   //表格明细
+						checkbox  = g.o.checkbox, //复选框
+						nullText  = g.o.nullText,
+						pageSize  = g.o.pageSize,
+						popup     = g.popup,
+						grid1     = g.grid1,
+						grid2     = g.grid2,
+						i         = 0,
+						s         = '',
+						tmpData   = _cache.tmpData,
+						total     = g.o.data.total,
+						index     = index !== undefined ? index - 1  : 0;
+					
+					//取出宽度最大的列
+					var tmpWidth = 0;
+					for(var h = 0; h < columns.length; h++){
+						tmpWidth = Math.max(columns[h].width, tmpWidth);
+					}
+						
+					s += '<table style="width:100%">';
+					
+					if( total ){
+					
+						for(var i = 0; i<pageSize; i++){
+							if( tmpData[index][i] ){
+														
+								s += '<tr class="l-grid-row'+ (i%2 == 0 ? '' : ' l-grid-row-even') +'">';
+								
+								if( detail.length ){
+									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
+								}
+								
+								if( checkbox ){
+									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
+								}
+								
+								for(var h = 0; h < columns.length; h++){
+									var colWidth, innerWidth;
+									if( columns[h].width === tmpWidth ){
+										innerWidth = '';
+										colWidth = 'auto';
+									}else{
+										innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
+										colWidth = columns[h].width + 'px';
+									}
+									s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
+									if( columns[h].render !== undefined ){
+										s += columns[h].render.call(tmpData[index][i], i, tmpData[index][i][columns[h].name]);
+									}else{
+										s += tmpData[index][i][columns[h].name];
+									}
+									s += '</div></td>';
+								}
+								
+								s += '</tr>';
+								
+								if( detail.render !== undefined ){
+									var str    = detail.render(tmpData[index], pageStar),
+										colLen = columns.length + (checkbox ? 1 : 0) + 1;
+									s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
+								}
+								
+							}
+						}
+					}else{
+						s += '<tr class="l-grid-row"><td><div class="l-grid-row-cell-inner">'+ nullText +'</div></td></tr>';
+					}
+					s += '</table>';
+
+					grid2.append(s);
 				},
 				
 				PagerCreateHtml: function(){
@@ -310,9 +382,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		*/
 		g.init = function(){
 			var grid  = g.o.wrap.append('<div class="l-grid" id='+ g.o.id +'></div>').find('#'+g.o.id),
-				popup = grid.append('<div class="l-grid-popup"></div>').find('.popup'),
-				grid1 = grid.append('<div class="l-grid1"></div>').find('.grid1'),
-				grid2 = grid.append('<div class="l-grid2"></div>').find('.grid2');
+				popup = grid.append('<div class="l-grid-popup"></div>').find('.l-grid-popup'),
+				grid1 = grid.append('<div class="l-grid1"></div>').find('.l-grid1'),
+				grid2 = grid.append('<div class="l-grid2"></div>').find('.l-grid2');
 			
 			g.o.current   = 1;
 			g.o.pageIndex = 1;
@@ -334,6 +406,19 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			_core.run();
 			return g;
 		},
+
+		/**
+		* 重设列头
+		*/
+		g.reSetColumns = function(o){
+			g.o.columns = o.columns;
+			_core.run();
+		},
+
+		/*修改列名*/
+		g.changeHeaderText = function(){
+
+		},
 			
 		/**
 		* 获取选中的数据，并组装成表格可用的数据格式
@@ -346,6 +431,8 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			console.log(data);
 			return false;
 		};
+
+		g.methos = g.methos || {};
 		
 	};
 

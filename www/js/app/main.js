@@ -10,8 +10,8 @@ define(function(require){
 	saogaUI.ui.calendar     = require('core/calendar');
 	saogaUI.ui.validator    = require('core/validator');
 	saogaUI.ui.selectArea   = require('core/selectArea');
-	saogaUI.ui.grid         = require('core/grid');
-	//saogaUI.ui.grid         = require('core/grid_debug');
+	//saogaUI.ui.grid         = require('core/grid');
+	saogaUI.ui.grid         = require('core/grid_debug');
 	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
 	saogaUI.ui.select       = require('core/select');
 	
