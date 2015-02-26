@@ -3,7 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>title 提示样式测试页面</title>
-<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+ <script src="../js/lib/jquery-1.8.3.min.js"></script>
 <script data-main="../js/common2" src="../js/lib/require.js"></script>
 </head>
 <body>				
@@ -18,31 +20,35 @@
 		<div class="ui-wrap fn-clear">
 			<a id="tip" href="#" title="title模拟控件">title模拟控件</a>
 			<a id="tip2" href="#">title模拟控件</a>
+			
+			<a class="tip2" href="#">title模拟控件</a>
+			<a class="tip2" href="#">title模拟控件</a>
+			<a class="tip2" href="#">title模拟控件</a>
+			
 		</div>
 		<pre>
 			saogaUI.ui.tip({
-				tipItem:'#tip'
-				isArrow: true
-			});
+				target:'.buyerMessagePop',
+				targetWrap:'#lt-wrap',
+				width:300
+			}); 
+
 		</pre>
 	
 	</div>
 	<script>
 		require(['app/main2'], function(saogaUI){
-
-			
+		
 			saogaUI.ui.tip({
-				tipItem:'#tip',
-				isArrow: true
-			});
-			
-			saogaUI.ui.tip({
-				tipItem:'#tip2',
-				isArrow: true,
-				text:'提示提示'
-			});
-			
-			
+				target:'#tip',
+				targetWrap:'.l-tip',
+				width:300,
+				render:function(obj){
+					var h = '';
+					h += '<div>买家留言</div>';
+					return h;
+				}
+			}); 
 		});
 	</script>
 </body>

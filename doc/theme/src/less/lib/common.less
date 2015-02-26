@@ -1,0 +1,27 @@
+/*floatCenter*/
+/*调用需要给ui-floatCenter重置高度、ui-floatCenter-item重置间距，否则就默认*/
+.ui-floatCenter{position:relative;height:33px;overflow:hidden;}
+	.ui-sl-floatCenter{float:left;position:relative;left:50%}
+		.ui-floatCenter-item{position:relative;right:50%;float:left;margin:0 5px}
+		
+/*进度条*/
+.progress{
+
+	.progress-bar{
+		display:block;
+		background:#5fb0d8;
+		width:115px;
+		height:5px;
+		margin:5px 0 0;
+		
+		.border-radius(5px);
+		
+		span{
+			display:block;
+			height:5px;
+			.border-radius(5px);
+		}
+	}
+	.progress-bar1 span{background:#ffbb00;}
+	.progress-bar2 span{background:#e74f8a;}
+}

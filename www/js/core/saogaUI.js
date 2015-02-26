@@ -9,6 +9,7 @@ define(function(){
 		
 		/**
 		 * 获取中文长度
+		 * @method getLength
 		 */
 		String.prototype.getLength = function(){
 			return this.replace(/[^\x00-\xff]/g, "en").length; //若为中文替换成两个字母
@@ -16,13 +17,17 @@ define(function(){
 		
 		/**
 		 * 清空空格
+		 * @method trims
+		 * @return {String}
 		 */
-		String.prototype.trim = function(){
+		String.prototype.trims = function(){
 			return this.replace(/^[\s\xa0\u3000]+|[\u3000\xa0\s]+$/g, "");
 		};
 		
 		/**
 		 * 转为unicode编码
+		 * @method toUnicode
+		 * @return {String}
 		 */
 		String.prototype.toUnicode = function(){
 			return escape( this.toLocaleLowerCase().replace(/%u/gi, '\\') );
@@ -30,14 +35,26 @@ define(function(){
 		
 		/**
 		 * 转为unicode编码
+		 * @method unicodeTo
+		 * @return {String}
 		 */
 		String.prototype.unicodeTo = function(){
 			return unescape( this.toLocaleLowerCase().replace(/%u/gi, '\\') );
 		};
 		
 		/**
-		 * saogaUI
-		 * @namespace设定基本命名空间
+		 * 重写console
+		 */
+		if(!window.console){
+			window.console = {};
+		}
+		if(!console.log){
+			console.log = function(){};
+		}
+		
+		/**
+		 * 设定基本命名空间
+		 * @namespace saogaUI
 		 * @author norion
 		 * @blog http://zkeyword.com/
 		 */
@@ -48,18 +65,37 @@ define(function(){
 			_INSTALL: function(){
 				window.saogaUI = saogaUI;
 			},
-			base: {}, //基础层,所有的基础函数库,如cookie等
-			ui: {},   //前端显示层,用来重构和回流DOM,前端的特效显示处理
+			base: {}, //基础层，所有的基础函数库，如cookie等
+			ui: {},   //前端显示层，用来重构和回流DOM，前端的特效显示处理
 			app:{}    //应用层，挂载一些应用的通用类。
 		};
 		
 		saogaUI._INSTALL();
 	}(window));
 	
+	/*鼠标滚轮监听*/
+	/*(function($){
+	    $.fn.preventScroll = function(){
+	        var that = this[0];
+	        if($.browser.mozilla){
+	        	that.addEventListener('DOMMouseScroll',function(e){
+	        		that.scrollTop += e.detail > 0 ? 60 : -60;   
+	                e.preventDefault();
+	            },false); 
+	        }else{
+	        	that.onmousewheel = function(e){   
+	                e = e || window.event;   
+	                that.scrollTop += e.wheelDelta > 0 ? -60 : 60;   
+	                e.returnValue = false;  
+	            };
+	        }
+	        return this;
+	    };
+	})(jQuery);*/
+	
 	/**
-	 * saogaUI.base基础层
+	 * 基础函数库
 	 * @class saogaUI.base 基础函数库
-	 * @requires saogaUI.base
 	 * @author norion
 	 * @blog http://zkeyword.com/
 	 */
@@ -67,7 +103,8 @@ define(function(){
 		
 		/**
 		 * 判断是否是数组
-		 * @param {Object} 
+		 * @method saogaUI.base.isArray
+		 * @param {Object} 数组对象
 		 * @return {Boolean}
 		 */
 		isArray: function(o){
@@ -76,7 +113,8 @@ define(function(){
 		
 		/**
 		 * 判断是否是对象
-		 * @param {Object} 
+		 * @method saogaUI.base.isObject
+		 * @param {Object} 字符串对象
 		 * @return {Boolean}
 		 */
 		isObject: function(o){
@@ -85,75 +123,194 @@ define(function(){
 		
 		/**
 		 * 判断是否是函数
-		 * @param {Function} 
+		 * @method saogaUI.base.isFunction
+		 * @param {Function} Function对象
 		 * @return {Boolean}
 		 */
 		isFunction: function(o){
 			return o ? Object.prototype.toString.call(o) === "[object Function]" : false;
+		},
+		
+		/**
+		 * 获取浏览器 userAgent
+		 * @method saogaUI.base.browser
+		 * @return {Object}
+		 */
+		browser: (function(){
+			var na            = window.navigator,
+				browserTester = /(msie|webkit|gecko|presto|opera|safari|firefox|chrome|maxthon|android|ipad|iphone|webos|hpwos)[ \/os]*([\d_.]+)/ig,
+				ua            = na.userAgent.toLowerCase(),
+				browser       = {
+									platform: na.platform
+								};
+			ua.replace(browserTester, function(a, b, c) {
+				var bLower = b.toLowerCase();
+				if (!browser[bLower]) {
+					browser[bLower] = c; 
+				}
+			});
+			if( browser.msie ){
+				browser.ie = browser.msie;
+				var v = parseInt(browser.msie, 10);
+				browser['ie' + v] = true;
+			}	
+			return browser;
+		}()),
+		
+		/**
+		 * cookie
+		 * @method zUI.base.cookie
+		 */
+		cookie: {
+
+			/**
+			 * 设置cookie
+			 * @param {String} cookie的名称
+			 * @param {String} cookie的值
+			 * @param {String} cookie的有效期
+			 * @param {String} cookie的域名
+			 * @param {String} cookie存放的路径
+			 * @return {Boolean}
+			 */
+			set: function(name, value, hour, domain, path){
+				if( hour ){
+					var today  = new Date(),
+						expire = new Date();
+					expire.setTime(today.getTime() + 36E5 * hour);
+				}
+				document.cookie = name + "=" + encodeURI(value) + "; " + (hour ? "expires=" + expire.toGMTString() + "; " : "") + (path ? "path=" + path + "; " : "path=/; ") + (domain ? "domain=" + domain + ";" : "");
+				return true;
+			},
+			
+			/**
+			 * 获取cookie
+			 * @param {String} cookie的名称
+			 * @return {String} cookie的值
+			 */
+			get: function( name ){
+				var r = new RegExp("(?:^|;+|\\s+)" + name + "=([^;]*)"),
+					m = document.cookie.match(r);
+					
+				return unescape(decodeURI(!m ? "" : m[1]));
+			},
+			
+			/**
+			 * 删除cookie
+			 * @param {String} cookie的名称
+			 * @param {String} cookie的域名
+			 * @param {String} cookie存放的路径
+			 */
+			del: function(name, domain, path){
+				document.cookie = name + "=; expires=Mon, 26 Jul 1997 05:00:00 GMT; " + (path ? "path=" + path + "; " : "path=/; ") + (domain ? "domain=" + domain + ";" : "");
+			}
 		}
 	};
 	
+	
+	
 	/**
-	 * saogaUI.ui前端显示层
-	 * @class saogaUI.ui 前端显示层,用来重构和回流DOM,前端的特效显示处理
-	 * @requires saogaUI.base
+	 * 前端显示层，用来重构和回流DOM，前端的特效显示处理
+	 * @class saogaUI.ui 前端显示层
 	 * @author norion
 	 * @blog http://zkeyword.com/
 	 */
 	saogaUI.ui = {
 		
 		/**
-		 * css中的z-index值
+		 * z-index
+		 * @method saogaUI.ui.zIndex
 		 * @return {Number} z-index值
 		 */
 		zIndex: function(){
-			return 9999 + $('.l-ui').length;
+			return 99999 + $('.l-ui').length;
 		},
 		
 		/**
 		 * 需要ui元素需要绝对定位的容器
+		 * @method saogaUI.ui.wrap
+		 * @return {Object} ui元素jquery对象
 		 */
 		wrap: function(){
 			if( !$('#l-ui-wrap').length ){
 				$('body').append('<div id="l-ui-wrap"><!--[if lte IE 6.5]><iframe src="javascript:false;" style="width:0;height:0;"></iframe><![endif]--></div>');
 			}
+			return $('#l-ui-wrap');
+		},
+		
+		/**
+		 * 去除滚动条
+		 * @method saogaUI.ui.noScroll
+		 */
+		noScroll: function(){
+			var html = $('html');
+			
+			/*监听滚轮*/
+			if( document.onmousewheel === undefined ){
+				html[0].addEventListener('DOMMouseScroll',function(e){
+					html.scrollTop += e.detail > 0 ? 60 : -60;   
+	            },false);
+			}else{
+				html.onmousewheel = function(e){   
+	                e = e || window.event;   
+	                html.scrollTop += e.wheelDelta > 0 ? -60 : 60;   
+	                e.returnValue = false;  
+	            };
+			}
+			
+			html.addClass('html-noScroll');
 		},
 		
 		/**
 		 * 设置遮罩
+		 * @method saogaUI.ui.lock
+		 * @return {Object} 遮罩元素jquery对象
 		 */
 		lock: function(){
-			var body = $('body'),
-				bodyW = body.width(),
-				bodyH = $(document).height();
+			var win      = $(window),
+				body     = $('body'),
+				lock     = $('.l-ui-lock'),
+				_setSize = function(){
+					if( !lock.length ){
+						lock = body
+								.append('<div class="l-ui-lock fn-hide"></div>')
+								.find('.l-ui-lock')
+					}
+					lock.css({
+						filter:'Alpha(opacity=20)',
+						width:'100%',
+						height: body[0].scrollHeight
+					});
+				};
 				
-			if( !$('.l-ui-lock').length ){
-				body.append('<div class="l-ui-lock"></div>')
-					.find('.l-ui-lock').css({ width:bodyW, height:bodyH, filter:'Alpha(opacity=20)' });
-			}else{
-				$('.l-ui-lock').show();
-			}
-			
-			//给.l-ui添加遮罩标识
-			$('.l-ui').addClass('l-ui-mask');
+			this.noScroll();
+			_setSize();	
+			win.resize(_setSize);
+			lock.fadeIn();
+
+			return lock;
 		},
 		
 		/**
 		 * 删除遮罩
+		 * @method saogaUI.ui.unlock
 		 */
 		unlock: function(){
-			$('.l-ui-lock').hide();
+			$('html').removeClass('html-noScroll');
+			$('.l-ui-lock').fadeOut();
 		},
 		
 		/**
 		 * 获取鼠标位置
+		 * @method saogaUI.ui.mousePosition
 		 * @param {Object} event事件
 		 * @return {Array} 返回鼠标的x、y轴：[positionX, positionY]
 		 */
 		mousePosition: function(e){
-			var e = e || window.event,
-				x = e.pageX || e.clientX + document.body.scrollLeft,
+			e = e || window.event;
+			
+			var x = e.pageX || e.clientX + document.body.scrollLeft,
 				y = e.pageY || e.clientY + document.body.scrollTop;
+				
 			return{
 				positionX : x,
 				positionY : y
@@ -162,11 +319,27 @@ define(function(){
 		
 		/**
 		 * 判断是否宽屏
+		 * @method saogaUI.ui.widescreen
 		 * @return {Boolean} 
 		 */
-		Widescreen: (function(){
+		widescreen: (function(){
 			return (screen.width >= 1210);
-		})()
+		})(),
+		
+		/**
+		 * onselectstart 选中处理
+		 * @method saogaUI.ui.onselectstart
+		 * @param {Object} jquery 对象
+		 */
+		onselectstart: function(obj){
+			if( !obj || !obj.length ){ return false; }
+			if( document.onselectstart !== undefined ){
+				obj[0].onselectstart = function(){return false;};
+			}else{
+				obj.css({'-moz-user-select':'none'});
+			}
+			return obj;
+		}
 	};	
 	
 	return saogaUI;

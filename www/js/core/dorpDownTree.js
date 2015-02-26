@@ -2,7 +2,7 @@ define(['core/saogaUI'], function(saogaUI){
 	
 	'use strict';
 	
-	var dorpDownTree = function(options){
+	var DorpDownTree = function(options){
 		var o = options || {};
 		if(!o.target){return false;}
 		var g           = this,
@@ -31,20 +31,21 @@ define(['core/saogaUI'], function(saogaUI){
 						var i    = 0,
 							len  = data.length,
 							html = '';
-	
 						for(; i<len; i++){
 
 							var childrenObj      = data[i].children,
 								isLastNode       = ( i === len-1 ),
 								isYoungerBrother = (data[i+1] !== undefined ? false : true);
 							
-							if( selectedID == data[i].id ){
+							if( selectedID === Number(data[i].id) ){
 								selected = data[i];
 							}else if(selectedID === undefined){
 								selected = data[0];
 							}
 							
-							html += '<div class="l-treeItemWrap fn-clear'+ ( childrenObj ? ' l-treeParent' : ' l-treeLast' ) + (selectedID == data[i].id ? ' l-treeSelected' : '') +'">';
+							console.log(selectedID,Number(data[i].id))
+							
+							html += '<div class="l-treeItemWrap fn-clear'+ ( childrenObj ? ' l-treeParent' : ' l-treeLast' ) + (selectedID === Number(data[i].id) ? ' l-treeSelected' : '') +'">';
 								if( isOrigin ){
 									if( isLastNode ){
 										html += '<div class="l-treeBox l-treeExpandableLast-open"></div><div class="l-treeBox l-treeIco"></div>';
@@ -61,19 +62,19 @@ define(['core/saogaUI'], function(saogaUI){
 								//替换字符串，考虑修改
 								html +=	(line ? line + node + '<div class="l-treeBox l-treeIco"></div>' : '');
 								html = html.replace('l-treeLine"></div><div class="l-treeNode"></div>',(isLastNode ? 'l-treeLastNode' : 'l-treeNode') +'"></div>');
-								if( isYoungerBrother && childrenObj  ){
-									line = line.replace(' l-treeLine', '');
+								if( isYoungerBrother && childrenObj ){
+									//line = line.replace(/ l-treeLine/g, '');
 								}
-								
+
 								if( childrenObj === undefined && !isOrigin ){
-									html = html.replace(/l-treeNode/g, 'l-treeExpandable-open');
-									html = html.replace('l-treeLastNode', 'l-treeExpandableLast-open');
+									//html = html.replace(/l-treeNode/g, 'l-treeExpandable-open');
+									//html = html.replace('l-treeLastNode', 'l-treeExpandableLast-open');
 									html = html.replace(/<div class="l-treeBox l-treeExpandable-open"><\/div><div class="l-treeBox l-treeIcoLast"><\/div>/g,'<div class="l-treeBox l-treeNode"></div><div class="l-treeBox l-treeIcoLast"></div>');
 								}else if( !childrenObj && !isOrigin ){
 									html += '<div class="l-treeBox l-treeIcoLast"></div>';
 									html = html.replace('<div class="l-treeBox l-treeIco"></div><div class="l-treeBox l-treeIcoLast"></div>', '<div class="l-treeBox l-treeIcoLast"></div>');
 								}
-								html += '<div class="l-treeItem" data-id='+ data[i].id +'>'+ data[i].name +'</div>';
+								html += '<div class="l-treeItem" data-id='+ data[i].id +' data-isCategory='+ data[i].isCategory +'>'+ data[i].name +'</div>';
 							
 							html += '</div>';
 									
@@ -91,18 +92,20 @@ define(['core/saogaUI'], function(saogaUI){
 			},
 			
 			onItem: function(){
-				target.find('.l-treeItem').on('click',function(){
+				target.find('.l-treeItem').on('click',function(e){
+					e.stopPropagation();
 					var that = $(this),
 						name = that.text(),
 						id   = that.attr('data-id'),
-						pid  = that.parents('.l-treeChildrenWrap').attr('data-pid');
+						pid  = that.parents('.l-treeChildrenWrap').attr('data-pid'),
+						isCategory  = that.attr('data-isCategory');
 					
 					if( pid === undefined ){
 						pid = '';
 					}
 
 					if( onclickItem && saogaUI.base.isFunction(onclickItem) ){
-						onclickItem(name, id, pid, that);
+						onclickItem(name, id, pid, that, isCategory);
 					}
 				});
 			},
@@ -118,12 +121,17 @@ define(['core/saogaUI'], function(saogaUI){
 					onloadFn(selected);
 				}
 				
+				
+				target.find('.l-treeParent .l-treeNode').addClass('l-treeExpandable-open');
+				target.find('.l-treeParent .l-treeLastNode').addClass('l-treeExpandableLast-open');
+				
 				if( !isOpen ){
 					target.find('.l-treeChildrenWrap').hide();
 					target.find('.l-treeExpandable-open').addClass('l-treeExpandable-close');
 					target.find('.l-treeExpandableLast-open').addClass('l-treeExpandableLast-close');
 				}
-				target.find('.l-treeExpandable-open').on('click',function(){
+				target.find('.l-treeExpandable-open').on('click',function(e){
+					e.stopPropagation();
 					var that = $(this);
 					if( that.hasClass('l-treeExpandable-close') ){
 						that.removeClass('l-treeExpandable-close');
@@ -133,7 +141,8 @@ define(['core/saogaUI'], function(saogaUI){
 						that.parent().next('.l-treeChildrenWrap').hide();
 					}
 				});
-				target.find('.l-treeExpandableLast-open').on('click',function(){
+				target.find('.l-treeExpandableLast-open').on('click',function(e){
+					e.stopPropagation();
 					var that = $(this);
 					if( that.hasClass('l-treeExpandableLast-close') ){
 						that.removeClass('l-treeExpandableLast-close');
@@ -156,7 +165,7 @@ define(['core/saogaUI'], function(saogaUI){
 	};
 	
 	return function(options){
-		var tree = new dorpDownTree(options);
+		var tree = new DorpDownTree(options);
 		return tree.init();
 	};
 });

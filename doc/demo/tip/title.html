@@ -1,0 +1,48 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>该接口的是直接在tip容器中插入鼠标经过的对象的自定义字符data-tip。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+/*html 代码*/
+&lt;div id="lt-wrap"&gt;
+	&lt;div data-tip="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-tip="请速发货2！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-tip="请速发货3！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-tip="请速发货4！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-tip="请速发货5！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+&lt;div/&gt;
+
+/*js 代码*/
+saogaUI.ui.tip({
+	target:'.buyerMessagePop',
+	targetWrap:'#lt-wrap',
+	width:300
+}); 
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果：</h2>
+	<div id="lt-wrap">
+		<div data-tip="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-tip="请速发货2！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-tip="请速发货3！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-tip="请速发货4！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-tip="请速发货5！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+	</div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	saogaUI.ui.tip({
+		target:'.buyerMessagePop',
+		targetWrap:'#lt-wrap',
+		width:300
+	}); 
+
+});
+</script>

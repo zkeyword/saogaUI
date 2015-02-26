@@ -1,0 +1,54 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>触发切换的api是tabEvent，默认是click事件。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码(mouseover触发)：</h2>
+<pre>
+/*html代码*/
+&lt;ul id=&quot;tabUl&quot; class=&quot;tab fn-clear&quot;&gt;
+	&lt;li class=&quot;on&quot;&gt;&lt;a href=&quot;javascript:void(0);&quot;&gt;选项一&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;javascript:void(0);&quot;&gt;选项二&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;a href=&quot;javascript:void(0);&quot;&gt;选项三&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&quot;tabWrap&quot;&gt;
+	&lt;div class=&quot;tab-main&quot;&gt;内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容&lt;/div&gt;
+	&lt;div class=&quot;tab-main&quot;&gt;内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2&lt;/div&gt;
+	&lt;div class=&quot;tab-main&quot;&gt;内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3&lt;/div&gt;
+&lt;/div&gt;
+
+/*js代码*/
+saogaUI.ui.tab({
+	tabItem:'#tabUl li',
+	tabWrap:'#tabWrap .tab-main',
+	tabEvent:'mouseover'
+});
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果：</h2>
+	<ul id="tabUl" class="tab fn-clear">
+		<li class="on"><a href="javascript:void(0);">选项一</a></li>
+		<li><a href="javascript:void(0);">选项二</a></li>
+		<li><a href="javascript:void(0);">选项三</a></li>
+	</ul>
+	<div id="tabWrap">
+		<div class="tab-main">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</div>
+		<div class="tab-main fn-hide">内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2内容2</div>
+		<div class="tab-main fn-hide">内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3内容3</div>
+	</div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	saogaUI.ui.tab({
+		tabItem:'#tabUl li',
+		tabWrap:'#tabWrap .tab-main',
+		tabEvent:'mouseover'
+	});
+
+});
+</script>

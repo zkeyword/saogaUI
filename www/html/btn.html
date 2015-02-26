@@ -1,163 +1,104 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
-	<meta charset="UTF-8">
-	<title>組件頁面</title>
-    <link rel="stylesheet/less" type="text/less" href="/resources/saogaUI/www/less/styles.less">
-	<script data-main="../js/common2" src="../js/lib/require.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script data-main="../../build/js/common" src="../../build/js/lib/require.js"></script>
 </head>
 <body>
-<!-- 按鈕模塊 button标签 -->
-<div class="fn-clear">
-      <button class="ui-btn ui-btn-primary" type="button">主要</button>
-      <button class="ui-btn ui-btn-success" type="button">成功</button>
-      <button class="ui-btn ui-btn-info" type="button">信息</button>
-      <button class="ui-btn ui-btn-warning" type="button">警告</button>
-      <button class="ui-btn ui-btn-danger" type="button">危险</button>
-      <button class="ui-btn ui-btn-disabled" type="button" disabled="disabled">禁用</button>
-</div>	
-<div class="fn-clear">
-	<button class="ui-btn ui-btn-primary">
-		<i class="icon-font icon-font-10 col-fff" data-uid="983093" >&#983093</i>成功
-	</button>
-	<button class="ui-btn ui-btn-primary">
-		新手上路<i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i>
-	</button>
-	<button class="ui-btn ui-btn-primary">
-		<p><i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i></p>
-		<p>新手上路</p>	
-	</button>
-</div>	
-<div class="fn-clear">
-<div class="ui-btn-dropdown">
-	<button class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown">
-		操作
-		<i class="icon-font icon-font-10 col-fff" data-uid="983721" >&#983721</i>
-	</button>
-
-	<ul class="dropdown-menu">
-		<li>
-			<a href="#">111</a>
-		</li>
-
-		<li>
-			<a href="#">222</a>
-		</li>
-
-		<li>
-			<a href="#">333</a>
-		</li>
-	</ul>
-</div>
-</div>	
-<div class="fn-clear">
-	<div class="ui-btn-group" data-toggle="buttons">
-		<button class="ui-btn ui-btn-primary" type="button">新增</button>
-		<button class="ui-btn ui-btn-primary" type="button">删除</button>
-		<button class="ui-btn ui-btn-primary" type="button">移除</button>
-		<button class="ui-btn ui-btn-primary" type="button">更新成功</button>
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<span class="ui-btn ui-btn-default">span标签按钮</span>
+		<input type="submit" value="input按钮" class="ui-btn ui-btn-default"/>
+		<button class="ui-btn ui-btn-default">button按钮</button>
 	</div>
-</div>
-<!-- 按鈕模塊 a标签 -->
-<div class="fn-clear">
-      <a class="ui-btn ui-btn-primary" href="javascript:;">主要</a>
-      <a class="ui-btn ui-btn-success" href="javascript:;">成功</a>
-      <a class="ui-btn ui-btn-info" href="javascript:;">信息</a>
-      <a class="ui-btn ui-btn-warning" href="javascript:;">警告</a>
-      <a class="ui-btn ui-btn-danger" href="javascript:;">危险</a>
-      <a class="ui-btn ui-btn-disabled" href="javascript:;" disabled="disabled">禁用</a>
-</div>	
-<div class="fn-clear">
-	<a class="ui-btn ui-btn-primary" href="javascript:;">
-		<i class="icon-font icon-font-10 col-fff" data-uid="983093" >&#983093</i>成功
-	</a>
-	<a class="ui-btn ui-btn-primary" href="javascript:;">
-		新手上路<i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i>
-	</a>
-	<a class="ui-btn ui-btn-primary" href="javascript:;">
-		<p><i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i></p>
-		<p>新手上路</p>	
-	</a>
-</div>	
-<div class="fn-clear">
-	<div class="ui-btn-group" data-toggle="buttons">
-		<a class="ui-btn ui-btn-primary" href="javascript:;">新增</a>
-		<a class="ui-btn ui-btn-primary" href="javascript:;">删除</a>
-		<a class="ui-btn ui-btn-primary" href="javascript:;">移除</a>
-		<a class="ui-btn ui-btn-primary" href="javascript:;">更新成功</a>
+	
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<span class="ui-btn ui-btn-default"><i class="icon icon-cog"></i><span>按钮</span></span>
 	</div>
-</div>
+	
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<div class="ui-btn-dropdown">
+			<span class="ui-btn ui-btn-default">下拉<i class="icon icon-angle-down"></i></span>
+			<ul class="ui-btn-dropdown-menu fn-hide">
+				<li>选项一</li>
+				<li>选项二</li>
+				<li>选项三</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<div class="ui-btn-dropdown">
+			<span class="ui-btn ui-btn-default">下拉</span>
+			<i class="ui-btn-dropdown-icon icon icon-angle-down"></i>
+			<ul class="ui-btn-dropdown-menu fn-hide">
+				<li>选项一</li>
+				<li>选项二</li>
+				<li>选项三</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<div class="ui-btn-group">
+			<span class="ui-btn ui-btn-default">
+				按钮组
+			</span>
+			<span class="ui-btn ui-btn-default">
+				按钮组
+			</span>
+			<span class="ui-btn ui-btn-default">
+				<span>按钮组</span>
+				<i class="icon icon-angle-down"></i>
+			</span>
+		</div>
+	</div>
+	
+	<div class="fn-clear ui-pt10 ui-pl10">
+		<span class="ui-btn ui-btn-switch ui-btn-switch-open"><i></i><em>已开启</em></span>
+		<span class="ui-btn ui-btn-switch ui-btn-switch-close"><i></i><em>已关闭</em></span>
+	</div>
+	
+<script type="text/javascript">
 
-<!-- 按鈕模塊 span标签 -->
-<div class="fn-clear">
-      <span class="ui-btn ui-btn-primary" href="javascript:;">主要</span>
-      <span class="ui-btn ui-btn-success" href="javascript:;">成功</span>
-      <span class="ui-btn ui-btn-info" href="javascript:;">信息</span>
-      <span class="ui-btn ui-btn-warning" href="javascript:;">警告</span>
-      <span class="ui-btn ui-btn-danger" href="javascript:;">危险</span>
-      <span class="ui-btn ui-btn-disabled" href="javascript:;" disabled="disabled">禁用</span>
-</div>	
-<div class="fn-clear">
-	<span class="ui-btn ui-btn-primary" href="javascript:;">
-		<i class="icon-font icon-font-10 col-fff" data-uid="983093" >&#983093</i>成功
-	</span>
-	<span class="ui-btn ui-btn-primary" href="javascript:;">
-		新手上路<i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i>
-	</span>
-	<span class="ui-btn ui-btn-primary" href="javascript:;">
-		<p><i class="icon-font icon-font-10 col-fff" data-uid="983089" >&#983089</i></p>
-		<p>新手上路</p>	
-	</span>
-</div>
-<div class="fn-clear">
-	<button class="ui-btn ui-btn-primary" type="button">默认大按钮</button>
-	<button class="ui-btn ui-sm-btn" type="button">中按钮</button>
-	<button class="ui-btn ui-min-btn" type="button">小按钮</button>
-	<button class="ui-btn ui-little-btn" type="button">最小按钮</button>
-	<button class="ui-btn ui-pop-btn" type="button">弹窗按钮</button>
-</div>	
-<div class="fn-clear">
-<div class="ui-btn-dropdown">
-	<span class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown" href="javascript:;">
-		操作
-		<i class="icon-font icon-font-10 col-fff" data-uid="983721" >&#983721</i>
-	</span>
-	<ul class="dropdown-menu fn-hide">
-		<li><a href="#">111</a></li>
-		<li><a href="#">222</a></li>
-		<li><a href="#">333</a></li>
-	</ul>
-</div>
-</div>
-
-<div class="fn-clear">
-	<div class="ui-btn-group" data-toggle="buttons">
-		<span class="ui-btn ui-btn-primary" href="javascript:;">新增</span>
-		<span class="ui-btn ui-btn-primary" href="javascript:;">删除</span>
-		<span class="ui-btn ui-btn-primary" href="javascript:;">移除</span>
-		<span class="ui-btn ui-btn-primary" href="javascript:;">更新成功</span>
-	</div>
-</div>	
-<!-- 表格下拉按钮 -->
-<div class="fn-clear">表格下拉按钮</div>
-<div class="fn-clear">
-	<div class="ui-table-grounp">
-		<a class="ui-btn ui-min-btn" href="javascript:void(0)">活动设计</a>
-		<a class="dropdown-toggle" href="javascript:void(0)"><i class="icon-font icon-font-10 col-fff"  data-uid="983463" >&#983463</i></a>
-		<ul class="dropdown-menu fn-hide">
-			<li><a href="#">111</a></li>
-			<li><a href="#">222</a></li>
-			<li><a href="#">333</a></li>
-		</ul>
-	</div>
-</div>	
-<script>
-require(['app/main2'], function(saogaUI){
-	saogaUI.app.btnDropdown({
-		target:'.ui-btn-dropdown',
-		menu:'.dropdown-menu'
+require(['app/main'], function(saogaUI){
+	
+	saogaUI.ui.btnSwitch({
+		target:'.ui-btn-switch',
+		open:{
+			ajax:{
+				url: "http://127.0.0.1/saogaUI/www/temp/select.php",
+				data: "name=John&location=Boston"
+			},
+			run:function(){
+				console.log(11)
+			}
+		},
+		close:{
+			ajax:{
+				url: "http://127.0.0.1/saogaUI/www/temp/select.php",
+				data: "name=John&location=Boston"
+			},
+			run:function(){
+				console.log(22)
+			}
+		}
 	});
+	
+	/*$('.ui-btn-dropdown .icon').click(function(){
+		var that = $(this),
+			down = that.next();
+			
+		if( down.hasClass('fn-hide') ){
+			down.removeClass('fn-hide');
+		}else{
+			down.addClass('fn-hide')
+		}
+	});*/
 });
+
 </script>
 </body>
 </html>

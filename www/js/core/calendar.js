@@ -49,18 +49,19 @@ define(['core/saogaUI'], function(saogaUI){
 										'q+': Math.floor((quarter + 3) / 3),
 										'S' : millisecond
 									},
-									year = year.toString(),
 									str  = dateFormat;
-									
+								
+								year = year.toString();
+								
 								if( /(y+)/.test(str) ){
 									str = str.replace(/(y+)/, year.substr(4 - Math.min(4, RegExp.$1.length)));
 								}
 								for( var k in o ){
 									if(	new RegExp("("+ k +")").test(str) ){
 										if(	o[k] !== undefined && !isNaN(o[k]) ){
-											str = str.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+											str = str.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
 										}else{
-											str = str.replace(/\s[^\d](.)*/, '')
+											str = str.replace(/\s[^\d](.)*/, '');
 										}
 									}
 								}
@@ -157,9 +158,9 @@ define(['core/saogaUI'], function(saogaUI){
 									i    = 0;
 								html += '<div class="l-ui-calendarWeeks fn-clear">';
 								for(; i < 7; i++){
-									if( i == 0 ){
+									if( i === 0 ){
 										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-sunday">'+ weeks[i] +'</span>';
-									}else if( i == 6 ){
+									}else if( i === 6 ){
 										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-saturday">'+ weeks[i] +'</span>';
 									}else{
 										html += '<span class="l-ui-calendarWeek">'+ weeks[i] +'</span>';
@@ -199,9 +200,9 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								for(; i <= curDayNum; i++){
 									var cls       = '',
-										curDayStr = _core.format(curYear, curMonth, i)
+										curDayStr = _core.format(curYear, curMonth, i);
 									if( day === i ){
-										cls = ' l-ui-calendarDay-current'
+										cls = ' l-ui-calendarDay-current';
 									}
 									html += '<a href="javascript:;" class="l-ui-calendarDay'+ cls +'" title="'+ curDayStr +'" year="'+ curYear +'" month="'+ curMonth +'">'+ i+'</a>';
 								}
@@ -214,6 +215,7 @@ define(['core/saogaUI'], function(saogaUI){
 								return '<div class="l-ui-calendarDays fn-clear">'+ html +'</div>';
 							},
 							
+							/*创建时分秒*/
 							createTime: function(){
 								var hour       = date.getHours(),
 									minute     = date.getMinutes(),
@@ -279,7 +281,7 @@ define(['core/saogaUI'], function(saogaUI){
 								_core.init();
 							},
 							
-							
+							/*关闭日历*/
 							close: function(val){
 								trigger.val(val);
 								main.hide();
@@ -312,8 +314,8 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								main.find('.l-ui-calendarDay').each(function(i){
 									var saturday = i%7 === 6 ? ' l-ui-calendarDay-saturday' : '',
-										sunday   = i%7 === 0 ? ' l-ui-calendarDay-sunday' : ''
-									$(this).addClass(saturday+sunday)
+										sunday   = i%7 === 0 ? ' l-ui-calendarDay-sunday' : '';
+									$(this).addClass(saturday+sunday);
 								}).click(function(){
 									var self = $(this),
 										val  = self.attr('title');
@@ -331,11 +333,31 @@ define(['core/saogaUI'], function(saogaUI){
 										
 										globalDate = _core.getNewDate(curYear, curMonth, curDay);
 									}
+								}).dblclick(function(){
+									if( isShowTime ){
+										var hour     = hourInput.val(),
+											minute   = minuteInput.val(),
+											second   = secondInput.val(),
+											curYear  = globalDate.getFullYear(),  //当前全局date对象
+											curMonth = globalDate.getMonth(),
+											curDay   = globalDate.getDate(),
+											val      = _core.format(curYear, curMonth, curDay, hour, minute, second);
+										
+										_core.close(val);
+									}
+								}).mouseover(function(){
+									var self = $(this);
+									if( !self.hasClass('l-ui-calendarDay-current') ){
+										self.addClass('l-ui-calendarDay-on')
+									}
+								}).mouseout(function(){
+									var self = $(this);
+									self.remove('l-ui-calendarDay-on')
 								});
 								
 								if( isShowTime ){
 									if( !main.find('.l-ui-calendarTime').length ){
-										main.append(_core.createTime())
+										main.append(_core.createTime());
 									}
 				 
 									var hourInput   = main.find('.l-ui-calendarTime-hourInput'),
@@ -351,7 +373,7 @@ define(['core/saogaUI'], function(saogaUI){
 															 .hide();
 														 });
 														o.parent().siblings().find('div').hide();
-													}
+													};
 									
 									hourInput.click(function(){
 										inputTime( $(this) );
@@ -375,7 +397,7 @@ define(['core/saogaUI'], function(saogaUI){
 									});
 								}
 							}
-						}
+						};//end code
 		
 		_core.init();
 		trigger.click(function(){

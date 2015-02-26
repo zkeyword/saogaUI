@@ -1,0 +1,39 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>dialog confirm的API是confirm，需要注意的是该功能是模拟原生代码的confirm，不具备原生的confirm阻断代码的功能，如果要实现类似是功能，请在confirm的按钮回调函数里面实现。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+saogaUI.ui.dialog.confirm({
+	title:"提示信息",
+	text:"是否要删除？",
+	//width:300,
+	//height:200,
+	ok:function(){
+		alert('删除成功');
+	},
+	no:function(){
+		alert('取消');
+	}
+});
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+	saogaUI.ui.dialog.confirm({
+		title:"提示信息",
+		text:"是否要删除？",
+		//width:300,
+		//height:200,
+		ok:function(){
+			alert('删除成功');
+		},
+		no:function(){
+			alert('取消');
+		}
+	});
+});
+</script>

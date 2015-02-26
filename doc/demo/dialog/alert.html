@@ -1,0 +1,31 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>dialog alert的API是alert，需要注意的是该功能是模拟原生代码的alert，不具备原生的alert阻断代码的功能，如果要实现类似是功能，请在alert的按钮回调函数里面实现。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+saogaUI.ui.dialog.alert({
+	title:"提示信息",
+	text:"保存成功!",
+	ok:function(){
+		alert('保存成功!')
+	}
+});
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	saogaUI.ui.dialog.alert({
+		title:"提示信息",
+		text:"保存成功!",
+		ok:function(){
+			alert('保存成功!')
+		}
+	});
+
+});
+</script>

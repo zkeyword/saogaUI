@@ -2,64 +2,105 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>title 提示样式测试页面</title>
-<link rel="stylesheet/less" type="text/less" href="/resources/saogaUI/www/less/styles.less">
-<link rel="stylesheet" type="text/css" href="style.css">
-<!-- <link rel="stylesheet" type="text/css" href="demo/SyntaxHighlighter/shCore.css">
-<link rel="stylesheet" type="text/css" href="demo/SyntaxHighlighter/shThemeDefault.css"> -->
-<script type="text/javascript">
-var str  = location.pathname,
-	arr  = str.split('/'),
-	root = '';
-
-if( arr[2] != 'saogaUI' ){
-	root = '/ecrp';
-}
-	
-</script>
-<script data-main="../www/js/common3" src="../www/js/lib/require.js"></script>
+<title>saogaUI 使用手册</title>
+<link rel="stylesheet" type="text/css" href="theme/build/css/styles.css">
+<script src="../build/js/lib/jquery-1.8.3.min.js"></script>
+<script data-main="../build/js/common" src="../build/js/lib/require.js"></script>
 </head>
 <body>				
 	<div id="demo-wrap">
 		<header id="demo-header">
 			<div id="demo-header-main" class="fn-clear">
-				<a id="demo-logo" href="#" class="fn-left">saogaUI</a>
+				<a id="demo-logo" href="/" class="fn-left">saogaUI</a>
 				<ul id="demo-nav" class="fn-left">
-					<li><a href="#">DEMO</a></li>
-					<li><a href="#">API</a></li>
+					<li><a href="demo/index.html">DEMO</a></li>
+					<li><a href="api/index.html">API</a></li>
+					<li><a href="rules/index.html">开发规范</a></li>
 				</ul>
 			</div>
 		</header>
 		<div id="demo-main" class="fn-clear">
-			<dl id="demo-left" class="fn-left">
-				<dt><a href="#">UI组件</a></dt>
-				<dd>
-					<a href="demo/basic.html">页面基本规范</a>
-					<a href="demo/pop.html">pop 弹出框</a>
-					<a href="demo/tip.html">tip 提示控件</a>
-					<a href="demo/icon.html">icon图标</a>
-					<a href="demo/btn.html">icon图标</a>
-				</dd>
-				<dt><a href="#">页面模块</a></dt>
-				<dd>
-					<dl>
-						<dt>数据分析</dt>
-						<dd>
-							横向排列
-						<dd>
-					</dl>
-				</dd>
-			</dl>
-			<div id="demo-right" class="fn-right">
-				<div id="demo-index">
-					hello saogaUI!
-				</div>
-			</div>
+		
+<div class="block">
+	<h2>saogaUI是什么？</h2>
+	<p>saogaUI是基于 jquery1.8.3、less、requirejs、font-awesome-4.2.0 开发的UI类库，开发时请先了解相关的知识，该库支持IE8+浏览器，若要支持IE67的请自行修改代码。</p>
+</div>
+
+<div class="block">
+	<h2>saogaUI包含什么？</h2>
+	<p>grid表格</p>
+	<p>dialog对话框</p>
+	<p>pop弹出框</p>
+	<p>tip提示块</p>
+	<p>tab标签切换</p>
+	<p>select2下拉(多选)模拟</p>
+	<p>drag拖拽组件</p>
+	<p>calendar日历控件</p>
+</div>
+
+<div class="block">
+<h2>工具安装</h2>
+<p>saogaUI是使用Node.js开发，需要先安装Node.js，再通过npm安装相应的编译和打包工具，如果你不用node.js可以选择其他的方式编译less和打包requirejs。</p>
+<pre>npm install -g</pre>
+<p>修改config-saogaUI.json中的目录地址，运行 run.bat 就可以监听编译less和打包requirejs。</p>
+<pre>
+{
+	"dir":"saogaUI"
+}
+</pre>
+</div>
+
+<div class="block">
+<h2>快速入门</h2>
+<p>引入脚本：</p>
+<pre>
+&lt;script src="../build/js/lib/jquery-1.8.3.min.js"&gt;&lt;/script&gt;
+&lt;script data-main="../build/js/common" src="../build/js/lib/require.js"&gt;&lt;/script&gt;
+</pre>
+<p>引入样式：</p>
+<pre>&lt;link rel="stylesheet" type="text/css" href="../build/css/styles.css"&gt;</pre>
+<p>调用saogaUI：</p>
+<pre>
+require(['app/main'], function(saogaUI){
+	//开始 console.log(saogaUI)
+});
+</pre>
+总体结构：
+<pre>
+&lt;!DOCTYPE HTML&gt;
+&lt;html lang="en-US"&gt;
+&lt;head&gt;
+	&lt;meta charset="UTF-8"&gt;
+	&lt;title&gt;saogaUI&lt;/title&gt;
+	&lt;link rel="stylesheet" type="text/css" href="theme/build/css/styles.css"&gt;
+	&lt;script src="../build/js/lib/jquery-1.8.3.min.js"&gt;&lt;/script&gt;
+	&lt;script data-main="../build/js/common" src="../build/js/lib/require.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;script type="text/javascript"&gt;
+		require(['app/main'], function(saogaUI){
+			//开始 console.log(saogaUI)
+		});
+	&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+
 		</div>
 	</div>
-
+	
+	<script type="text/javascript" src="theme/src/js/prettify.js"></script>
 	<script>
 	require(['app/main'], function(saogaUI){
+	
+		$('pre,.prettyprint').addClass('prettyprint linenums').attr('style', 'overflow:auto');
+		window.prettyPrint && prettyPrint();
+
+		
+		var win       = $(window),
+			winHeight = win.height();
+		$('#demo-index').height(winHeight - 96);
 
 		$('#demo-left a').click(function(){
 			var that  = $(this),
@@ -73,6 +114,7 @@ if( arr[2] != 'saogaUI' ){
 			
 			return false;
 		});
+
 		
 	});
 	</script>

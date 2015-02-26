@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script data-main="../../build/js/common" src="../../build/js/lib/require.js"></script>
+</head>
+<body>
+<form name="test" id="test" class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">必填(required)：</i>
+			<input class="ui-input" type="text" data-validate="required;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">数字(number)：</i>
+			<input class="ui-input" type="text" data-validate="number;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">浮点(floatNumber=2)：</i>
+			<input class="ui-input" type="text" data-validate="floatNumber=2" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">整数(integer)：</i>
+			<input class="ui-input" type="text" data-validate="integer;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">正整数(digits)：</i>
+			<input class="ui-input" type="text" data-validate="digits;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">固定长度(length=4)：</i>
+			<input class="ui-input" type="text" data-validate="length=4;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">最大长度(maxLength=4)：</i>
+			<input class="ui-input" type="text" data-validate="maxLength=4;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">最小长度(minLength=4)：</i>
+			<input class="ui-input" type="text" data-validate="minLength=4;" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">正则(format=正则)：</i>
+			<input class="ui-input" type="text" data-validate="format=\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$" data-validate-formatText="以邮箱为例，请输入正确的邮箱格式" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">邮箱(email)：</i>
+			<input class="ui-input" type="text" data-validate="email" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">网址(url)：</i>
+			<input class="ui-input" type="text" data-validate="url" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">电话(phone)：</i>
+			<input class="ui-input" type="text" data-validate="phone" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">手机(mobile)：</i>
+			<input class="ui-input" type="text" data-validate="mobile" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">单选(check)：</i>
+		</label>
+		<label class="ui-pl10">
+			<input type="radio" class="ui-radio" name="textRaio" value="单选选项1" data-validate="check" />
+			<i class="ui-label ui-radio-label">单选选项1</i>
+		</label>
+		<label class="ui-pl10">
+			<input type="radio" class="ui-radio " name="textRaio" value="单选选项2" data-validate="check"  />
+			<i class="ui-label ui-radio-label">单选选项2</i>
+		</label>
+		<span class="ui-form-message"></span>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">多选(check)：</i>
+		</label>
+		<label class="ui-pl10">
+			<input type="checkbox" class="ui-checkbox" name="checkbox" value="多选选项1" data-validate="check" />
+			<i class="ui-label ui-checkbox-label">多选选项1</i>
+		</label>
+		<label class="ui-pl10">
+			<input type="checkbox" class="ui-checkbox" name="checkbox" value="多选选项1" data-validate="check" />
+			<i class="ui-label ui-checkbox-label">多选选项1</i>
+		</label>
+		<span class="ui-form-message"></span>
+	</div>
+	<div class="fn-clear">
+		<input type="submit" value="input按钮提交"/>
+		<a href="#" id="submitLink">ajax提交</a>
+	</div>
+</form>
+<script type="text/javascript">
+
+require(['app/main'], function(saogaUI){
+	
+	var validator = saogaUI.ui.validator({
+		target:'#test'
+	});
+	
+	$('#submitLink').click(function(){
+		console.log(validator.getStatus())
+		$('#test').submit();
+	});
+});
+
+</script>
+</body>
+</html>

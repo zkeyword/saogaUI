@@ -1,0 +1,113 @@
+.l-grid{position:relative;z-index:2;}
+
+
+	/*公共部分*/
+		/*loading*/
+		.l-grid-loading{position:absolute;width:100%;height:100%;z-index:2;}
+		.l-grid-loadingBg{position:absolute;top:0;left:0;width:100%;height:100%;.opacity(0.1);background:#555}
+		.l-grid-loadingIco{position:absolute;top:0;left:0;width:100%;height:100%;background:url(../images/l-loading.gif) no-repeat center}
+		
+		/*选择框*/
+		.l-checkbox{display:block;width:13px;height:13px;cursor:pointer;background:url(../images/l-checkbox.gif) no-repeat;}
+		.l-checkbox-selected{background-position:0 -13px}
+		
+		/*明细按钮*/
+		.l-grid-row-detailbtn{display:block;width:11px;height:11px;cursor:pointer;}
+		.l-grid-row-detailbtn-open{background:url(../images/l-grid-detail-open.gif)}
+		.l-grid-row-detailbtn-close{background:url(../images/l-grid-detail-close.gif)}
+	
+	
+	/*表格头部*/
+	.l-grid-header table{border-collapse:collapse;border-spacing:0;border:1px solid #d7d5d6;font-size:12px;color:#fff}
+		.l-grid-header th{border:1px solid #d7d5d6;border-bottom:none;background:#929292;padding:5px 8px;}
+			.l-grid-hd-cell-inner{color:#fff;text-align:center}
+				.l-grid-hd-cell-sortWrap{cursor:pointer}
+				.l-grid-hd-cell-inner span{position:relative}
+				.l-grid-hd-cell-inner b{}
+		
+		
+	/*表格内容*/
+	.l-grid1{
+		float:left;
+		position:relative;
+		z-index:1;
+		height:100%;
+		
+		th{
+			width:30px;
+		}
+	}
+	.l-sl-grid2{width:100%}
+	.l-grid-body table{border-collapse:collapse;border-spacing:0;border:1px solid #ddd;font-size:12px;color:#333;background-color:#fff}
+		.l-grid-body td{border:solid 1px #ddd;padding:5px 8px;word-break:break-all;word-wrap:break-word;}
+			/*单元格*/
+			.l-grid-row-cell-inner{width:100%}
+				.l-grid-align-left{text-align:left}
+				.l-grid-align-right{text-align:right}
+				.l-grid-align-center{text-align:center}
+			/*明细*/
+			.l-grid-row-detail{display:none;}
+		
+		/*边框*/
+		.l-grid1 table,
+			.l-grid1 tr,
+				.l-grid1 th,.l-grid1 td{border-right:0 none}
+		.l-grid-header table,.l-grid-header tr,.l-grid-header th{border-bottom:0 none}
+		
+		/*行*/
+		.l-grid-row-even{background:#f9f9f9;}
+		.l-grid-row-hover{background:#fdfdf2;}
+		.l-grid-row-statis{background:#f1f1f1}
+		.l-grid-row-selected{background:#fdfdf2;}
+		//.l-grid-row-selected{background:#fdfddc;}
+			
+		
+	/*表格尾部*/
+	.l-grid-footer{height:40px;border:1px solid #ddd;border-top:0 none;background:#fff}
+		/*下拉选择*/
+		.l-grid-footer-page-select{
+			float:left;
+			
+			select{
+				position: relative;
+				height: 28px;
+				line-height: 28px;
+				padding: 3px;
+				margin:6px 0 0 5px;
+				background: #fff;
+				border: 1px solid #c1bfc1;
+			}
+		}
+		/*按钮*/
+		.l-grid-footer-btns{float:left;}
+		/*分页*/
+		.l-grid-footer-page{float:right;}
+			.l-grid-footer-page-btn{float:left;}
+				.l-grid-footer-page-btn{
+					padding:0 10px 0 0;
+					a, span, em{
+						display:block;
+						height:16px;
+						float:left;
+						padding:6px 8px;
+						margin:6px 0 0 5px;
+					}
+					a, span{
+						
+						background:#e7eaee;
+					}
+					span{
+						color:#929292;
+						cursor: default;
+					}
+					a.on{
+						background:#e76c00;
+						color:#fff
+					}
+				}
+			.l-grid-footer-page-msg{float:left;line-height:40px;}
+			
+	/*暂无数据 */
+	.l-grid-nullText{color:#000;font-weight:bold;float:left;font-size:14px;height:50px;line-height:50px;text-align:center;width:100%;}
+
+	

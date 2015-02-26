@@ -1,0 +1,54 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>ajax翻页缓存的API是isPageCache，默认值为true，表格设计是考虑到ajax请求的效率，点击翻页的时候直接将改页的数据缓存，不需要时设置false即可。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var grid = saogaUI.ui.grid({
+	wrap:'#grid',
+	pageAjax: {
+		url: 'http://127.0.0.1/saogaUI/doc/tmp/grid.php',
+		data:'type=1&sex=man',
+	},
+	isPageCache:true, //false
+	columns: [
+		{ display: '编码.', name: 'id', width: 50},
+		{ display: '姓名', name: 'name', width: 50},
+		{ display: '类别', name: 'type', width: 50},
+		{ display: '性别', name: 'sex', width: 50},
+		{ display: '电话', name: 'tel', width: 50},
+		{ display: 'Email', name: 'email', width: 50}
+	]
+});
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用后效果(可打开chrome控制台查看请求)：</h2>
+	<div id="grid"></div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	var grid = saogaUI.ui.grid({
+		wrap:'#grid',
+		pageAjax: {
+			url: 'http://127.0.0.1/saogaUI/doc/tmp/grid.php',
+			data:'type=1&sex=man',
+		},
+		isPageCache:true, //false
+		columns: [
+			{ display: '编码.', name: 'id', width: 50},
+			{ display: '姓名', name: 'name', width: 50},
+			{ display: '类别', name: 'type', width: 50},
+			{ display: '性别', name: 'sex', width: 50},
+			{ display: '电话', name: 'tel', width: 50},
+			{ display: 'Email', name: 'email', width: 50}
+		]
+	});
+
+});
+</script>

@@ -1,0 +1,77 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>下拉树时直接将接口type设置tree即可，其中selectedData是设置初始化选中值的ID，传入时是数组格式，该数组值的数据类型必须与数据是一直的。</p>
+	<p>该功能依赖tree控件，单独使用时请引用tree.js。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+/*html 代码*/
+&lt;div class=&quot;fn-clear&quot;&gt;
+&lt;input type=&quot;hidden&quot; name=&quot;tree&quot; id=&quot;tree&quot;/&gt;
+&lt;/div&gt;
+
+/*js 代码*/
+var tree = saogaUI.ui.tree({
+	//data:data,
+	target:$('#tree'),
+	data:data,
+	selected:[13, 11],
+	onClick:function(obj, data){
+		console.log(obj, data)
+	},
+	//onRightClick:function(){
+	//	alert(11)
+	//},
+	onLoad:function(){
+		//alert('1');
+	},
+	onMouseOver:function(){
+		
+	},
+	onMouseOut:function(){
+	
+	}
+});
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果：</h2>
+	<div class="fn-clear">
+		<div id="tree"></div>
+	</div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+	var data = 
+[{"id":1,"pId":0,"name":"\u9009\u9879 1","open":true},{"id":11,"pId":1,"name":"\u9009\u9879 11"},{"id":12,"pId":1,"name":"\u9009\u9879 12"},{"id":121,"pId":12,"name":"\u9009\u9879 121"},{"id":122,"pId":12,"name":"\u9009\u9879 122"},{"id":13,"pId":1,"name":"\u9009\u9879 13"},{"id":131,"pId":13,"name":"\u9009\u9879 131"},{"id":132,"pId":13,"name":"\u9009\u9879 132"},{"id":1321,"pId":132,"name":"\u9009\u9879 1321"},{"id":13211,"pId":1321,"name":"\u9009\u9879 13211"},{"id":132111,"pId":13211,"name":"\u9009\u9879 132111"},{"id":132112,"pId":13211,"name":"\u9009\u9879 132112"},{"id":132113,"pId":13211,"name":"\u9009\u9879 132113"},{"id":142,"pId":13,"name":"\u9009\u9879 142"},{"id":2,"pId":0,"name":"\u9009\u9879 2"},{"id":21,"pId":2,"name":"\u9009\u9879 21"},{"id":211,"pId":21,"name":"\u9009\u9879 211"},{"id":3,"pId":0,"name":"\u9009\u9879 3","isParent":true}];
+	
+	var tree = saogaUI.ui.tree({
+		//data:data,
+		target:$('#tree'),
+		data:data,
+		selected:[13, 11],
+		onClick:function(obj, data){
+			console.log(obj, data)
+		},
+		//onRightClick:function(){
+		//	alert(11)
+		//},
+		onLoad:function(){
+			//alert('1');
+		},
+		onMouseOver:function(){
+			
+		},
+		onMouseOut:function(){
+		
+		}
+	});
+	
+	console.log(tree)
+
+});
+</script>

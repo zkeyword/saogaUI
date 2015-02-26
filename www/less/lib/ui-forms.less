@@ -1,122 +1,64 @@
+/* 公共表单样式 */
+button[disabled], html input[disabled], html select[disabled]{background-color:#eee}
+input,button,select,textarea{outline:none}
+textarea{resize:none}
 
-/* 公用按钮背景颜色及边框样式 */
-.ui-input-stauts(@col, @hoverCol, @focusCol, @activeCol){
-	border:1px solid @col;
-	box-shadow:none;
-	&:hover{
-		border:1px solid @hoverCol;
+.ui-form-stauts(@radius: true; @boxSizing: true){
+	background:#fff;
+	border:1px solid @col-form-border;
+	color:@col-font;
+	
+	.radius(@radius) when (@radius = true){
+		.border-radius(4px);
 	}
-	&:focus{
-		border:1px solid @focusCol;
+	.boxSizing(@boxSizing) when (@boxSizing = true){
+		.box-sizing();
 	}
-	&:active{
-		border:1px solid @activeCol;
+	.radius(@radius);
+	.boxSizing(@boxSizing);
+	.transition(All 0.3s ease-in-out);
+
+	&:hover,&:focus{
+		border-color:@col-form-border-hover;
+		.box-shadow(0, 0, 3px, @col-form-border-hover);
 	}
 }
+.ui-form{
+	span,label{float:left}
+	.ui-label{display:block;height:30px;line-height:30px;float:left;cursor:pointer;text-align:right;}
+}
+
+/* input */
 .ui-input{
-	box-sizing: border-box;
-	display:inline-block;
-	font-size: 14px;
-	height:26px;
-	line-height:26px;
-	padding:0 3px;
-	vertical-align: middle;
-	.ui-input-stauts(@col-c1bfc1, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-	.border-radius(0px);
-}
-.ui-textarea {
-	padding:6px;
-	.ui-input-stauts(@col-c1bfc1, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-	.border-radius(0px);
-}
-.ui-select{
-	.ui-input-stauts(@col-c1bfc1, @col-d5d5d5, @col-f59942, @col-d5d5d5);
-	.border-radius(0px);
-	text-align:left;
-	padding:3px;
-	position:relative;
+	height:30px;line-height:30px;padding:0 3px;vertical-align:middle;float:left;
 	
-	.arrow{
-		position:absolute;
-		top:10px;
-		right:10px;
-		.arrow(#333, down, 6px)
-	}
-	
-	.ui-select-init{height:18px;line-height:18px;background:#fff}
-	.ui-select-itemWrap{
-		width:100%;
-		border:1px solid @col-c1bfc1;
+	.ui-form-stauts();
+	&:-webkit-autofill{
 		background:#fff;
-		position:absolute;
-		top:24px;
-		left:-1px;
-		z-index:2;
-		overflow:auto
 	}
-	.ui-select-item{height:26px;line-height:26px;padding:0 5px;cursor: pointer;}
-	.ui-select-itemWrap .selected{background:#f8f8f8}
 }
-.ui-form span{display:inline-block;float:left;}
 
-/*时间*/
-.ui-input-datatime{background:url(../images/app/datePicker.png) right center no-repeat #fff;cursor:default;font-size:12px;}
-/* 公共表单input样式 */
-input[type="checkbox"],input[type="radio"] {vertical-align:middle;margin:-2px 2px 1px;height:auto;}
-input[type="file"]{border:none;height:auto;padding:0;}
-/*全选/取消标签*/
-.ui-select-tag a,.ui-select-tag label{float:left;display:inline-block;margin:0 3px;padding:2px;}
-.ui-select-tag label{padding:2px 0 0;}
-.ui-select-tag a:hover{background:#f0ad4e;.border-radius(2px);color:#fff;}
+/* 时间 */
+.ui-input-datatime{background:url(../images/app/datePicker.png) right center no-repeat @col-white;cursor:default;font-size:12px;}
+
+/* textarea */
+.ui-textarea {
+	padding:6px;float:left;
 	
-/* 表单列表区域样式 */
-.ui-forms{}
-	.ui-forms li{float:left;width:100%;display:inline;margin:2px 0;}
-	.ui-forms span{display:inline-block;margin-right:2px;float:left;line-height:24px;}
-	.ui-forms li .ui-label{text-align:right;height:20px;line-height:23px;}
-	.ui-forms li .ui-btn{display:inline-block;margin-right:5px;}
-	.ui-forms li .right-tip,.ui-forms li .right-tip .icon-font{color:#e76e00;}
-	.ui-forms li .wrong-tip,.ui-forms li .wrong-tip .icon-font{color:red;}
-/*弹窗 表单列表区域样式 */
-.ui-pop-forms{font-size:14px;}
-.ui-pop-forms li{margin:3px 0;}
-.ui-pop-forms li .ui-label{height:26px;}
+	.ui-form-stauts();
+}
 
-/* 条件搜索搜索框样式*/
-.ui-search{background:#f6f7f8;line-height:30px;padding:7px 9px 9px 9px;}
-.ui-search .ui-form{margin:2px 2px 0px 0;float:left;height:27px;line-height:27px;}
-.ui-search .ui-form span{display:inline-block;float:left;}
-.ui-search .ui-form.fn-right{float:right;}
-.ui-search .ui-form.ui-recent-time a{padding:2px;float:left;line-height:30px;}
-.ui-search .ui-form-check{line-height:30px;}
-/* 表单条件搜索标题*/
-.ui-label{text-align:right;}
-.ui-label-15{width:15px;}
-.ui-label-60{width:60px;}
-.ui-label-65{width:65px;}
-.ui-label-70{width:70px;}
-.ui-label-75{width:75px;}
-.ui-label-80{width:80px;}
-.ui-label-90{width:90px;}
-.ui-label-100{width:100px;}
-.ui-label-110{width:110px;}
-.ui-label-120{width:120px;}
-/* 输入框宽度样式*/
-.ui-input-30{width:30px;}
-.ui-input-50{width:50px;}
-.ui-input-100{width:100px;}//时间控件-年月日
-.ui-input-110{width:110px;}
-.ui-input-120{width:120px;}
-.ui-input-130{width:130px;}
-.ui-input-140{width:140px;}
-.ui-input-145{width:145px;}//时间控件-年月日秒
-.ui-input-150{width:150px;}
-.ui-input-180{width:180px;}
-/* 选择框宽度样式*/
-.ui-select-130{width:130px;}
-.ui-select-150{width:150px;}
-.ui-select-160{width:160px;}
-.ui-select-190{width:190px;}
+/* select */
+.ui-select{
+	height:28px;line-height:27px;padding:0 5px;vertical-align:middle;float:left;
+	.ui-form-stauts(true,false);
+}
+.ui-select-disable{background:@col-form-disable;}
 
+/* checkbox&radio */
+.ui-checkbox,.ui-radio{position:absolute;margin:9px 0 0;}
+.ui-checkbox-label,.ui-radio-label{margin-left:16px;}
 
-
+/* 验证 */
+.l-form-error{border:1px solid @col-validator;}
+.ui-form-message{position:relative;margin:0 0 0 10px;height:26px;line-height:26px;}

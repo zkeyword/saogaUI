@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>title 提示样式测试页面</title>
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+ <script src="../js/lib/jquery-1.8.3.min.js"></script>
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+</head>
+<body onunload="alert('The onunload event was triggered')">				
+	<div id="tree">
+	</div>
+	<script>
+		require(['app/main'], function(saogaUI){
+			
+			var data =[
+	 			{ id:1, pId:0, name:"随意勾选 1", open:true},
+	 			{ id:11, pId:1, name:"随意勾选 1-1"},
+	 			{ id:12, pId:1, name:"随意勾选  1-2", open:true},
+	 			{ id:121, pId:12, name:"随意勾选 1-2-1", checked:true},
+	 			{ id:122, pId:12, name:"随意勾选 1-2-2"},
+	 			{ id:123, pId:12, name:"随意勾选 1-2-3"},
+	 			{ id:13, pId:1, name:"随意勾选 1-3"},
+	 			{ id:2, pId:0, name:"随意勾选 2", open:true},
+	 			{ id:23, pId:2, name:"随意勾选 2-3", checked:true, isParent:true},
+	 			{ id:22, pId:2, name:"随意勾选 2-2", open:false},
+	 			{ id:21, pId:2, name:"随意勾选 2-1", isParent:true},
+	 			{ id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
+	 			{ id:222, pId:22, name:"随意勾选 2-2-2"},
+	 			{ id:223, pId:22, name:"随意勾选 2-2-3"},
+	 			{ id:3, pId:0, name:"随意勾选 3", open:true},
+	 			{ id:33, pId:3, name:"随意勾选 3-3", checked:true, isParent:true},
+	 			{ id:32, pId:3, name:"随意勾选 3-2", open:false},
+	 			{ id:31, pId:3, name:"随意勾选 3-1", isParent:true},
+	 			{ id:321, pId:32, name:"随意勾选 3-2-1", checked:true},
+	 			{ id:322, pId:32, name:"随意勾选 3-2-2"},
+	 			{ id:323, pId:32, name:"随意勾选 3-2-3"},
+	 		];
+			
+			var data2 =[
+	 			{ id:1, pId:0, name:"随意勾选 1", open:true},
+	 			{ id:11, pId:1, name:"随意勾选 1-1"}
+	 		];
+			
+			var tree = saogaUI.ui.tree({
+				//data:data,
+				target:$('#tree'),
+				ajax:{
+					url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php',
+					data:{
+						index:'1'
+					}
+				},
+				selected:[13, 11],
+				check:'checkbox',
+				onClick:function(obj, data){
+					console.log(obj, data)
+				},
+				//onRightClick:function(){
+				//	alert(11)
+				//},
+				onLoad:function(){
+					//alert('1');
+				},
+				onMouseOver:function(){
+					
+				},
+				onMouseOut:function(){
+				
+				}
+			});
+			
+			//tree.refresh({
+			//	data: data2
+			//});
+
+			
+		});
+	</script>
+</body>
+</html>

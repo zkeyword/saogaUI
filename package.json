@@ -1,0 +1,32 @@
+{
+  "name": "ProjectName",
+  "version": "0.1.0",
+  "scripts": {
+    "grunt": "grunt",
+    "gulp": "gulp",
+	"jsdoc": "jsdoc saogaUI/www/js/core/ -d saogaUI/doc/api/ -c saogaUI/tools/docstrap/template/jsdoc.conf.json -t saogaUI/tools/docstrap/template",
+    "build": "npm run grunt & gulp"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-jsdoc": "*",
+    "grunt-contrib-requirejs": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-clean": "*",
+	"grunt-livereload": "*",
+	"gulp": "*",
+    "gulp-rename": "*",
+    "gulp-jshint": "*",
+    "gulp-concat": "*",
+    "gulp-uglify": "*",
+    "gulp-sass": "*",
+    "gulp-jsdoc": "*",
+    "gulp-less": "*",
+    "gulp-requirejs": "*",
+    "requirejs": "*",
+	"jsdoc": "*"
+  }
+}

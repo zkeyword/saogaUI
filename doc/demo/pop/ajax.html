@@ -1,0 +1,64 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>ajax方式的API是ajax，另外还有ajaxType、ajaxData、async等三个接口配合使用，分别是ajax的type、data、async。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var pop = saogaUI.ui.pop({
+	title:'弹窗的标题',
+	height:240,
+	width:320,
+	ajax:'http://127.0.0.1/saogaUI/doc/tmp/pop.php',
+	async:false,
+	btns:[
+		{
+			text:'保存修改',
+			closePop:false,
+			onclick:function(id){
+				alert('保存修改')
+				pop.close(id);
+			}
+		},
+		{
+			text:'取消',
+			onclick:function(){
+	
+			}
+		}
+	]
+});
+
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	var pop = saogaUI.ui.pop({
+		title:'弹窗的标题',
+		height:240,
+		width:320,
+		ajax:'http://127.0.0.1/saogaUI/doc/tmp/pop.php',
+		async:false,
+		btns:[
+			{
+				text:'保存修改',
+				closePop:false,
+				onclick:function(id){
+					alert('保存修改')
+					pop.close(id);
+				}
+			},
+			{
+				text:'取消',
+				onclick:function(){
+		
+				}
+			}
+		]
+	});
+
+});
+</script>

@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>DocStrap Source: grid.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">DocStrap</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="saogaUI.html">saogaUI</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="saogaUI.base.html">saogaUI.base</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.html">saogaUI.ui</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.html#dialog">saogaUI.ui.dialog</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.drag.html">saogaUI.ui.drag</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.grid.html">saogaUI.ui.grid</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.pop.html">saogaUI.ui.pop</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.selectArea.html">saogaUI.ui.selectArea</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.tab.html">saogaUI.ui.tab</a>
+						</li>
+						
+						<li>
+							<a href="saogaUI.ui.tip.html">saogaUI.ui.tip</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#getLength">getLength</a>
+						</li>
+						
+						<li>
+							<a href="global.html#toUnicode">toUnicode</a>
+						</li>
+						
+						<li>
+							<a href="global.html#trims">trims</a>
+						</li>
+						
+						<li>
+							<a href="global.html#unicodeTo">unicodeTo</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: grid.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">/**
+ **┏┓　　　┏┓ 
+ *┏┛┻━━━┛┻┓ 
+ *┃　　　　　　　┃ 　 
+ *┃　　　━　　　┃ 
+ *┃　┳┛　┗┳　┃ 
+ *┃　　　　　　　┃ 
+ *┃　　　┻　　　┃ 
+ *┃　　　　　　　┃ 
+ *┗━┓　　　┏━┛ 
+ ****┃　　　┃　　　　 
+ ****┃　　　┃ 神兽保护，代码无bug
+ ****┃　　　┗━━━┓ 
+ ****┃　　　　　　　┣┓ 
+ ****┃　　　　　　　┏┛ 
+ ****┗┓┓┏━┳┓┏┛ 
+ ******┃┫┫　┃┫┫ 
+ ******┗┻┛　┗┻┛  
+*/
+define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
+	
+	'use strict';
+	
+	/**
+	* saogaUI.ui.grid 表格控件
+	* @class saogaUI.ui.grid
+	* @author norion.z
+    * @blog http://zkeyword.com/
+    * @param {Object} o 表格参数
+    * @param {String} o.wrap 表格容器
+    * @param {String} o.id 表格id
+    * @param {Object} o.pageAjax ajax数据
+    * @param {String} o.pageAjax.url ajax请求的url
+    * @param {String} o.pageAjax.type ajax请求类型，默认是post
+    * @param {String} o.pageAjax.data ajax请求的条件
+    * @param {Object} o.data 静态数据
+    * @param {Object} o.columns 列结构
+    * @param {String} o.columns.display 表头名称
+    * @param {String} o.columns.name 数据字段名
+    * @param {Number} o.columns.width 列宽度，这里是占比
+    * @param {Function} o.columns.render 列自定义显示函数
+    * @param {Function} o.columns.statisRender 统计列自定义显示函数
+    * @param {String} o.columns.statisType 统计类型
+    * @param {String} o.columns.statisWrap 统计容器
+    * @param {Object} o.statis 统计
+    * @param {Object} o.detail 表格详细
+    * @param {Object} o.bottomBtns 底部按钮
+    * @param {Boolean} o.isPage 是否显示分页
+    * @param {Boolean} o.isHead 是否显示头部
+    * @param {Boolean} o.showAllRow 显示所有数据，默认false，以分页和显示条数互斥 ，isPage=false、pageSize = total
+    * @param {String} o.pageIndex 分页起始页
+    * @param {String} o.pageSize 每页显示的条数
+    * @param {Array} o.pageSizeOption 可选择设定的每页结果数，默认[10, 20, 50, 100, 200]，不显示时可设置null
+    * @param {Function} o.onPageFn 翻页事件
+    * @param {Boolean} o.isPageCache 翻页时是否缓存当页数据
+    * @param {Boolean} o.isMemory 翻页是否记住选择记录，默认false
+    * @param {Boolean} o.checkbox 是否有checkbox
+    * @param {Function} o.onCheckFn 点击checkbox事件
+    * @param {Function} o.onRowFn 点击行事件
+    * @param {Boolean} o.isOnRowCheckbox 点击行选中checkbox
+    * @param {Function} o.initSelected 初始化选中事件
+    * @param {String}  o.nullText 空文本
+    * @param {Boolean} o.isSort 是否排序，默认false
+    * @param {Boolean} o.isSortCurrent 排序当前页缓存中数据，默认false，使用时isSort必须是true，isPageCache必须是true
+    * @param {Boolean} o.isShowLoading 是否显示loading效果，默认true
+    * @param {String} o.countFont 统计文字
+	* @return {Object} grid对象
+	*/
+	var Grid = function(o){
+		
+		var 
+			/**
+			* 全局对象
+			* @public
+			*/
+			g       = this,
+		
+			/**
+			* 默认配置
+			* @private
+			*/
+			p = {
+				wrap:            $(o.wrap),
+				id:              o.id || 'l-grid-' + (new Date()).valueOf(),	
+				pageAjax:        o.pageAjax || null,
+				data:            o.data || {},                                          //静态数据
+				columns:         o.columns || {},
+				statis:          o.statis || [],                                        //统计
+				detail:          o.detail || {},
+				bottomBtns:      o.bottomBtns || {},                                    //底部按钮
+				isPage:          o.isPage === undefined ? true : o.isPage,              //是否显示分页
+				isHead:          o.isHead === undefined ? true : o.isHead,              //是否显示头部
+				showAllRow:      o.showAllRow ? true : false,                           //显示所有数据，默认false，以分页和显示条数互斥 ，isPage=false、pageSize = total
+				pageIndex:       o.pageIndex || 1,                                      //分页起始页
+				pageSize:        o.pageSize || 10,                                      //每页显示的条数
+				pageSizeOptions: o.pageSizeOptions === undefined ? [10, 20, 50, 100, 200] : o.pageSizeOptions, //可选择设定的每页结果数
+				onPageFn:        o.onPageFn,                                            //翻页事件
+				isPageCache:     o.isPageCache === undefined ? true : o.isPageCache,    //翻页时是否缓存当页数据
+				isMemory:        o.isMemory ? true : false,                             //翻页是否记住选择记录，默认false
+				checkbox:        o.checkbox === undefined ? true : o.checkbox,          //是否有checkbox
+				onCheckFn:       o.onCheckFn || null,                                   //点击checkbox事件
+				onRowFn:         o.onRowFn || null,                                     //点击行事件
+				isOnRowCheckbox: o.isOnRowCheckbox ? true : false,                      //点击行选中checkbox
+				initSelected:    o.initSelected || null,                                //初始化选中事件
+				nullText:        o.nullText ? o.nullText : lang.nullText,               //空文本
+				isSort:          o.isSort ? true : false,                               //是否排序，默认false
+				//sortRender:      o.sortRender || null,                                  //排序条件传递
+				isSortCurrent:   o.isSortCurrent ? true : false,                        //排序当前页缓存中数据，默认false，使用时isSort必须是true，isPageCache必须是true
+				isShowLoading:   o.isShowLoading === undefined ? true : o.isShowLoading,//是否显示loading效果
+				countFont:       o.countFont ? o.countFont : lang.countFont             //统计文字
+			    //isHideColumns: o.isHideColumns ? true : false,
+			},
+		
+			/**
+			* 缓存池
+			* @private
+			*/
+			_cache = {
+				data: [],
+				tmpData: [],
+				rowSelected: [],
+				detailSelected: []
+			},
+			
+			/**
+			* 内部对象
+			* @private
+			*/
+			_core   = {
+				/**
+				* 表格表头内容
+				*/
+				tHeadCreateHtml: function(){
+					var columns   = p.columns,
+						len       = columns.length,
+						detail    = p.detail,   //表格明细
+						checkbox  = p.checkbox, //复选框
+						popup     = g.popup,
+						grid1     = g.grid1,
+						grid2     = g.grid2,
+						isInit    = g.isInit,
+						i         = 0,
+						s1        = '',
+						s2        = '';
+					
+					/*grid1*/
+					s1 += '&lt;table>';
+					s1 += '&lt;tr class="l-grid-hd-row">';
+					if( detail.length ){
+						s1 += '&lt;th class="l-grid-hd-cell l-grid-hd-detail" style="width:13px">&lt;div class="l-grid-row-cell-inner">&lt;span class="l-detailbtn">&lt;/span>&lt;/div>&lt;/th>';
+					}
+					if( checkbox ){
+						s1 += '&lt;th class="l-grid-hd-cell l-grid-hd-checkbox" style="width:13px">&lt;div class="l-grid-hd-cell-inner">&lt;span class="l-checkbox l-grid-hd-checkbox">&lt;/span>&lt;/div>&lt;/th>';
+					}
+					s1 += '&lt;/tr>';
+					s1 += '&lt;/table>&lt;/div>';
+					
+					/*grid2*/
+					s2 += '&lt;table>';
+					s2 += '&lt;tr class="l-grid-hd-row">';
+					for(; i &lt; len; i++){
+						s2 += '&lt;th class="l-grid-hd-cell">&lt;div class="l-grid-hd-cell-inner">&lt;span class="l-grid-hd-cell-span" data-columnName='+ columns[i].name +'>&lt;span class="l-grid-hd-cell-text">'+ columns[i].display +'&lt;/span>&lt;/span>&lt;/div>&lt;/th>';
+					}
+					s2 += '&lt;/tr>';
+					s2 += '&lt;/table>';
+					
+					if( isInit ){
+						grid1.append('&lt;div class="l-grid-header">'+ s1 + '&lt;/div>');
+						grid2.append('&lt;div class="l-grid-header">'+ s2 +'&lt;/div>');
+					}else{
+						grid1.find('.l-grid-header').html(s1);
+						grid2.find('.l-grid-header').html(s2);
+					}
+					
+				},
+				
+				/**
+				* 表格主体内容
+				* @param {Number} index 页面索引
+				*/
+				tBodyCreateHtml: function(index){
+					var columns    = p.columns,
+						len        = columns.length,
+						statis     = p.statis,
+						statisData = [],
+						detail     = p.detail,   //表格明细
+						checkbox   = p.checkbox, //复选框
+						nullText   = p.nullText,
+						pageSize   = p.pageSize,
+						popup      = g.popup,
+						grid       = g.grid,
+						grid1      = g.grid1,
+						grid2      = g.grid2,
+						i          = 0,
+						s1         = '',
+						s2         = '',
+						tmpData    = _cache.tmpData,
+						total      = p.data.total,
+						rows       = p.data.rows,
+						isInit     = g.isInit,
+						index      = index !== undefined ? index - 1 : 0,
+						that       = this;
+					
+					/*grid1*/
+					if( checkbox ){
+						s1 += '&lt;table>';
+						if( total &amp;&amp; rows.length ){
+							for(var i = 0; i&lt;pageSize; i++){
+								if( tmpData[index][i] ){
+									s1 += '&lt;tr class="l-grid-row'+ 
+											  (i%2 == 0 ? '' : ' l-grid-row-even') +
+											  (that.initSelected( tmpData[index][i] ) ? ' l-grid-row-selected' : '') +
+											  '" data-row="'+ i +'">';
+									
+									s1 += '&lt;td style="width:13px">&lt;div class="l-grid-row-cell-inner">&lt;span class="l-checkbox l-grid-row-checkbox">&lt;/span>&lt;/div>&lt;/td>';
+									if( detail.length ){
+										s1 += '&lt;td style="width:13px">&lt;div class="l-grid-row-cell-inner">&lt;span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close">&lt;/span>&lt;/div>&lt;/td>';
+									}
+									s1 += '&lt;/tr>';
+								}
+							}
+							/*判断是否统计*/
+							if( statis ){
+								var sLen = statis.length,
+									n    = 0;
+								for(; n&lt;sLen; n++){
+									s1 += '&lt;tr class="l-grid-row l-grid-row-statis l-grid-row-'+ statis[n].type +'">';
+									s1 += '&lt;td style="width:13px">&lt;div class="l-grid-row-cell-inner">&lt;/div>&lt;/td>';
+									s1 += '&lt;/tr>';
+								}
+							}
+						}else{
+							s1 += '&lt;tr class="l-grid-row">&lt;td>&lt;/td>&lt;/tr>';
+						}
+						s1 += '&lt;/table>';
+					}
+
+					
+					/*grid2*/
+					s2 += '&lt;table>';
+					
+					if( total &amp;&amp; rows.length ){
+						for(var k = 0; k&lt;len; k++){
+							statisData[k] = [];
+						}
+						
+						for(var i = 0; i&lt;pageSize; i++){
+
+							if( tmpData[index][i] ){
+								
+								s2 += '&lt;tr class="l-grid-row' +
+										  (i%2 == 0 ? '' : ' l-grid-row-even') +
+										  (that.initSelected(tmpData[index][i], i) ? ' l-grid-row-selected' : '') +
+										  '" data-row="'+ i +'">';
+								
+								var rowStatis = 0; //行统计和
+								for(var h = 0; h &lt; len; h++){
+									
+									/*统计数据*/
+									if( columns[h].statisType ){
+										var statisRow = Number( tmpData[index][i][columns[h].name] );
+										statisData[h][i] = !isNaN(statisRow) ? statisRow : 0;
+										rowStatis += statisData[h][i];
+										if( columns[h].statis !== undefined ){
+											statisData[h][i] = rowStatis;
+										}
+									}
+									
+									s2 += '&lt;td class="l-grid-row-cell" data-cell="'+ h +'">&lt;div class="l-grid-row-cell-inner l-grid-align-'+ (columns[h].align ? columns[h].align : 'left') +'">';
+
+									if( columns[h].statis !== undefined ){
+										if( columns[h].statisRender !== undefined ){
+											s2 += columns[h].statisRender(rowStatis);
+										}else{
+											s2 += rowStatis;
+										}
+									}else if( columns[h].render !== undefined ){
+										s2 += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name], h);
+									}else{
+										s2 += tmpData[index][i][columns[h].name];
+									}
+									
+									s2 += '&lt;/div>&lt;/td>';
+								}
+								
+								s2 += '&lt;/tr>';
+								
+								if( detail.render !== undefined ){
+									var str    = detail.render(tmpData[index], pageStar),
+										colLen = columns.length + (checkbox ? 1 : 0) + 1;
+									s2 += '&lt;tr class="l-grid-row-cell-detail">&lt;td colspan="'+ colLen +'">'+ str +'&lt;/td>&lt;/tr>';
+								}
+								
+							}
+						}
+												
+						/*判断是否统计*/
+						if( statis ){
+							var sLen = statis.length,
+								n    = 0;
+							for(; n&lt;sLen; n++){
+								s2 += '&lt;tr class="l-grid-row l-grid-row-statis l-grid-row-'+ statis[n].type +'">';
+								for(var m = 0; m &lt; len; m++){
+									s2 += '&lt;td class="l-grid-row-cell">&lt;div class="l-grid-row-cell-inner l-grid-align-'+ (columns[m].align ? columns[m].align : 'left') +'">';
+									if( columns[m].statisWrap ){
+										s2 += statis[n].display;
+									}else{
+										var sData = statisData[m],
+											ssLen = sData.length,
+											ssVal = 0,
+											x     = 0,
+											sum   = 0,
+											avg   = 0,
+											min   = 0,
+											max   = 0;
+										
+										for(; x&lt;ssLen; x++){
+											ssVal += sData[x];
+										}
+										
+										if( columns[m].statisType ){
+											var str  = columns[m].statisType,
+												arr  = str.split(','),
+												d    = 0,
+												dlen = arr.length,
+												dStr = '';
+											
+											for(; d&lt;dlen; d++){
+												if( statis[n].type == arr[d] ){
+													switch(arr[d]){
+														case 'sum':
+															dStr = ssVal.toFixed(2);
+															break;
+														case 'avg':
+															dStr = ( (ssVal*1.0)/x ).toFixed(2);
+															break;
+														case 'min':
+															dStr = Math.min.apply(Math, sData).toFixed(2);
+															break;
+														case 'max':
+															dStr = Math.max.apply(Math, sData).toFixed(2);
+															break;
+													};
+													
+													if( columns[m].statisRender !== undefined ){
+														s2 += columns[m].statisRender(dStr);
+													}else{
+														s2 += dStr;
+													}
+												}
+											}// end for
+											
+										}
+										
+									}
+									s2 += '&lt;/div>&lt;/td>';
+								}
+								s2 += '&lt;/tr>';
+							}
+						}// end if statis
+						
+					}else{
+						s2 += '&lt;tr class="l-grid-row">&lt;td>&lt;div class="l-grid-row-cell-inner l-grid-align-center l-grid-nullText">'+ nullText +'&lt;/div>&lt;/td>&lt;/tr>';
+					}
+					s2 += '&lt;/table>';
+					
+					/*init*/
+					if( isInit ){
+						grid1.append('&lt;div class="l-grid-body">' + s1 +'&lt;/div>');
+						grid2.append('&lt;div class="l-grid-body">' + s2 +'&lt;/div>');
+					}else{
+						grid1.find('.l-grid-body').html(s1);
+						grid2.find('.l-grid-body').html(s2);
+					}
+					
+					/*hover*/
+					grid.off('mouseover', '.l-grid-row')
+						.on('mouseover', '.l-grid-row', function(){
+							var row   = $(this),
+								index = row.attr('data-row');
+							grid1.find('.l-grid-row').eq(index).addClass('l-grid-row-hover');
+							grid2.find('.l-grid-row').eq(index).addClass('l-grid-row-hover');
+						})
+						.off('mouseout', '.l-grid-row')
+						.on('mouseout', '.l-grid-row', function(){
+							var row   = $(this),
+								index = row.attr('data-row');
+							
+							grid1.find('.l-grid-row').eq(index).removeClass('l-grid-row-hover');
+							grid2.find('.l-grid-row').eq(index).removeClass('l-grid-row-hover');
+						});
+					
+					/*set width*/
+					if( checkbox ){
+						grid2.css({'margin-left':grid1.outerWidth()});
+						grid2.parent().css({'margin-right': - grid1.outerWidth()});
+					}
+					
+					that.setCellWidth();
+					if( checkbox ){
+						that.setRowsHeight();
+					}
+					
+					$(window).resize(function(){
+						that.setCellWidth();
+						if( checkbox ){
+							that.setRowsHeight();
+						}
+					});
+					
+					
+					/* 设置ajax模式缓存 */
+					if( !p.isPageCache &amp;&amp; !p.isSortCurrent ){
+						_cache.tmpData[p.pageIndex - 1] = [];
+					}
+				},
+				
+				/**
+				* 设置列宽
+				*/
+				setCellWidth: function(){
+					var columns   = p.columns,
+						len       = columns.length,
+						grid2     = g.grid2,
+						i         = 0,
+						j         = 0,
+						total     = 0,
+						colWidth  = 0;
+										
+					for(; i&lt;len; i++){
+						total += columns[i].width;
+					}
+					
+					for(; j&lt;len; j++){
+						colWidth = columns[j].width/total*100 + '%';
+						
+						grid2.find('.l-grid-hd-cell').eq(j).width(colWidth);
+						grid2.find('.l-grid-row-cell').eq(j).width(colWidth);
+					}
+					
+					/*var columns   = p.columns,
+						len       = columns.length,
+						grid2     = g.grid2,
+						i         = 0,
+						j         = 0,
+						h         = 0,
+						m         = 0,
+						tmp       = 0,
+						tmp2      = 0,
+						total     = 0,
+						gridWidth = grid2.outerWidth(),
+						colWidth;
+										
+					for(; i&lt;len; i++){
+						if( !columns[i].fixedWidth ){
+							total += columns[i].width;
+						}
+					}
+					
+					for(; h&lt;len; h++){
+						if( !columns[h].fixedWidth ){
+							tmp += parseInt(columns[h].width/total*gridWidth);
+							tmp2 += columns[h].width/total*gridWidth;
+						}
+					}
+					
+					for(; j&lt;len; j++){
+						if( !columns[j].fixedWidth ){
+							colWidth = parseInt(columns[j].width/total*gridWidth) - 16;
+							m++;
+							if( m == 1 ){
+								colWidth = colWidth + tmp2 - tmp
+							}
+						}else{
+							colWidth = columns[j].width;
+						}
+						
+						grid2.find('.l-grid-hd-cell').eq(j).width(colWidth);
+						grid2.find('.l-grid-row-cell').eq(j).width(colWidth);
+					}*/
+				},
+				
+				/**
+				* 设置行高
+				*/
+				setRowsHeight: function(){
+					var grid1    = g.grid1,
+						grid2    = g.grid2,
+						pageSize = p.pageSize,
+						i        = 0;
+					
+					grid1.find('.l-grid-hd-row').height( grid2.find('.l-grid-hd-row').outerHeight() );
+					
+					if( pageSize ){
+						for(; i&lt;pageSize; i++){
+							var grid1_row = grid1.find('.l-grid-row').eq(i),
+								grid2_row = grid2.find('.l-grid-row').eq(i),
+								height    = grid2_row.outerHeight();
+							if(!height){return;}
+							grid1_row.height(height);
+							//console.log(grid2_row.innerHeight(), height)
+						}
+					}else{
+						var grid1_row = grid1.find('.l-grid-row').eq(0),
+							grid2_row = grid2.find('.l-grid-row').eq(0),
+							height    = grid2_row.outerHeight();
+						grid1_row.height(height);
+					}
+					
+				},
+				
+				/**
+				* 初始化行选中事件
+				* @param {Object} rowData 行数据
+				* @param {Number} i 行的索引
+				*/
+				initSelected: function(rowData, i){
+					var that         = this,
+						isMemory     = p.isMemory,
+						initSelected = p.initSelected,
+						pageIndex    = p.pageIndex,
+						arr          = _cache.rowSelected[pageIndex-1];
+					
+					if( saogaUI.base.isFunction( initSelected ) ){
+						if( initSelected( rowData ) ){
+							if( isMemory &amp;&amp; i !== undefined ){
+								arr[i] = that.getRowData(i); //选中数据
+								that.initCheckbox();
+							}
+							return true;
+						}
+					}
+					
+					return false;
+				},
+				
+				/**
+				* 内部分页对象
+				* @private
+				*/
+				__pageCore: {
+					/**
+					* 获取数字连接
+					* @private
+					* @param {Number} index 链接索引
+					* @param {String} txt 上下翻页的文本
+					*/
+					getLink: function(index, txt){
+						return '&lt;a href="javascript:;" data-page="'+ index +'"'+ (p.pageIndex === index ? ' class="on"' : '') + '>'+ (txt || index) +'&lt;/a>';
+					},
+					
+					/**
+					* 获取显示的数据
+					* @private
+					* @param {Number} pageSize 每页显示条数
+					* @param {Number} count 数据长度
+					* @param {Number} index 当前位置
+					*/
+					getCount: function(pageSize, count, index){
+						var start   = (index-1)*pageSize + 1,
+							end     = index*pageSize,
+							str     = p.countFont+'',
+							pageNum = Math.ceil(count / pageSize),
+							diff    = pageNum*pageSize - count;
+						
+						str = str.replace('{{start}}', start);     //当前开始位置
+						str = str.replace('{{end}}', (pageNum*pageSize == end ? end - diff : end)); //当前结束位置
+						str = str.replace('{{count}}', count);     //总条数
+						str = str.replace('{{size}}', pageSize);   //每页显示条数
+						str = str.replace('{{pageNum}}', pageNum); //总页数
+						str = str.replace('{{current}}', index);   //当前位置
+						
+						return str;
+					},
+					
+					/**
+					* 获取分页按钮
+					* @private
+					* @param {Number} pageSize 每页显示条数
+					* @param {Number} count 数据长度
+					* @param {Number} index 当前位置
+					*/
+					getBtn: function(pageSize, count, index){
+						var s       = '',
+							begin   = 1,
+							end     = 1,
+							i       = 0,
+							itemNum = 2,
+							pageNum = Math.ceil(count / pageSize);
+							
+						if(index > 1){
+							s += this.getLink(index - 1, lang.prevPage);
+						}else{
+							s += '&lt;span>'+ lang.prevPage +'&lt;/span>';
+						}
+						if(index - itemNum > 1){
+							s += this.getLink(1) + '&lt;em>...&lt;/em>';
+							begin = index - itemNum;
+						}
+						end = Math.min(pageNum, begin + itemNum * 2);
+						if(end === pageNum - 1){
+							end = pageNum;
+						}
+						for(i = begin; i &lt;= end; i++) {
+							s += this.getLink(i);
+						}
+						if(end &lt; pageNum){
+							s += '&lt;em>...&lt;/em>' + this.getLink(pageNum);
+						}
+						if(index &lt; pageNum){
+							s += this.getLink(index + 1, lang.nextPage);
+						}else{
+							s += '&lt;span>'+ lang.nextPage +'&lt;/span> ';
+						}
+						
+						return s;
+					},
+					
+					/**
+					* 获取分页选项
+					* @private
+					*/
+					getPageSelect: function(){
+						var pageSize        = p.pageSize,
+							pageSizeOptions = p.pageSizeOptions;
+						
+						if( pageSizeOptions ){
+							var len = pageSizeOptions.length,
+								i   = 0,
+								s   = ''
+							
+							s += '&lt;select>';
+							for(; i&lt;len; i++){
+								if( pageSize == pageSizeOptions[i] ){
+									s += '&lt;option selected="selected">'+ pageSizeOptions[i] +'&lt;/option>'
+								}else{
+									s += '&lt;option>'+ pageSizeOptions[i] +'&lt;/option>'
+								}
+							}
+							s += '&lt;/select>';
+							return s;
+						}
+						return '';
+					}
+				},
+				
+				/**
+				* 分页内容
+				*/
+				pageCreateHtml: function(){
+					var that      = this,
+						s         = '',
+						total     = p.data.total,
+						pageIndex = p.pageIndex,
+						pageSize  = p.pageSize;
+					
+					/*分页统计*/
+					s += '&lt;div class="l-grid-footer-page-msg">'+ that.__pageCore.getCount(pageSize, total, pageIndex) +'&lt;/div>';
+					
+					/*分页选项*/
+					s += '&lt;div class="l-grid-footer-page-select">'+ that.__pageCore.getPageSelect() +'&lt;/div>';
+
+					/*分页按钮*/
+					s += '&lt;div class="l-grid-footer-page-btn">'+ that.__pageCore.getBtn(pageSize, total, pageIndex) +'&lt;/div>';	
+										
+					/*生成分页*/
+					g.page.html(s);
+					
+					that.initCheckbox();
+				},
+				
+				/**
+				* 分页函数
+				*/
+				pageFn: function(){
+					var page       = g.page,
+						textWrap   = page.find('.l-grid-footer-page-msg'),
+						btnsWrap   = page.find('.l-grid-footer-page-btn'),
+						grid1      = g.grid1,
+						gridHeader = grid1.find('l-gird-header'),
+						gridBody   = grid1.find('l-gird-body'),
+						total      = p.data.total,
+						pageSize   = p.pageSize,
+						onPageFn   = p.onPageFn,
+						that       = this;
+					
+					/*分页事件*/
+					page.off('click', 'a').on('click', 'a', function(){
+					
+						var index = Number( $(this).attr('data-page') );
+						
+						/*修改页面位置*/
+						p.pageIndex = index;
+						
+						/*返回接口，可能修改全局g.o对象，所以前置*/
+						if( saogaUI.base.isFunction(onPageFn) ){
+							onPageFn(index, pageSize);
+						}
+						
+						/*重新获取数据*/
+						if( !_cache.tmpData[index-1].length ){
+							that.getData();
+							_cache.tmpData[index-1] = p.data.rows;
+						}
+												
+						/*重载html*/
+						that.tBodyCreateHtml(index);
+						textWrap.html( that.__pageCore.getCount(pageSize, total, index) );
+						btnsWrap.html( that.__pageCore.getBtn(pageSize, total, index) );
+						
+						/*全部选上时给表头全选*/
+						if( gridBody.find('.l-checkbox-selected').length == pageSize ){
+							gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
+						}else{
+							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+						}
+						
+						/*初始化checkbox*/
+						that.initCheckbox();
+					});
+					
+					/*下拉框事件*/
+					page.off('change', 'select').on('change','select', function(){
+						p.pageSize = $(this).val();
+						g.refresh();
+					});
+				},
+
+				/**
+				* 初始化checkbox
+				*/
+				initCheckbox: function(){
+					var that       = this,
+						pageSize   = p.pageSize,                        //每页显示多少个
+						pageIndex  = p.pageIndex,                       //起始位置
+						grid1      = g.grid1,
+						gridHeader = grid1.find('.l-grid-header'),        //表格头
+						gridBody   = grid1.find('.l-grid-body'),          //表格主体
+						checkbox   = gridBody.find('.l-checkbox'),        //复选框
+						isMemory   = p.isMemory;
+					
+					if( !isMemory ){
+						var len = _cache.rowSelected.length,
+							i   = 0;
+						for(; i&lt;len; i++){
+							_cache.rowSelected[i] = []; //修改选中的数组值
+						}
+						gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+					}else{
+						var selected = Math.min(pageSize, checkbox.length), //已选数量
+							arr      = _cache.rowSelected[pageIndex-1],
+							len      = arr.length,
+							i        = 0,
+							j        = 0;
+						
+						for(; i &lt; len; i++, j++){
+							if( arr[i] ){
+								checkbox.eq(j).addClass('l-checkbox-selected');
+							}
+						}
+						
+						/*全部选上时给表头全选*/
+						if( gridBody.find('.l-checkbox-selected').length === selected ){
+							gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
+						}else{
+							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+						}
+					}
+				},
+				
+				/**
+				* 选择框事件
+				*/
+				checkboxFn: function(){
+					var that        = this,
+						grid1       = g.grid1,
+						grid2       = g.grid2,
+						grid1Header = grid1.find('.l-grid-header'), //表格头
+						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
+						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn   = p.onCheckFn,
+						pageSize    = p.pageSize;
+					
+					/*多选*/
+					grid1Body.off('click', '.l-checkbox').on('click', '.l-checkbox', function(){
+						var self       = $(this),
+							pageIndex  = p.pageIndex,
+							checkbox   = grid1Body.find('.l-checkbox'),
+							i          = checkbox.index(self),
+							selected   = Math.min(pageSize, checkbox.length), //已选数量
+							currentArr = _cache.rowSelected[pageIndex-1],
+							grid1Row   = grid1Body.find('.l-grid-row').eq(i),
+							grid2Row   = grid2Body.find('.l-grid-row').eq(i),
+							tmpData    = _cache.tmpData[p.pageIndex - 1]
+											
+						if( !self.hasClass('l-checkbox-selected') ){
+							self.addClass('l-checkbox-selected');
+							grid1Row.addClass('l-grid-row-selected');
+							grid2Row.addClass('l-grid-row-selected');
+							currentArr[i] = that.getRowData(i); //选中数据
+							
+							/*全部选上时给表头全选*/
+							if( grid1Body.find('.l-checkbox-selected').length === selected ){
+								grid1Header.find('.l-checkbox').addClass('l-checkbox-selected');
+							}
+						}else{
+							currentArr[i] = null;
+							self.removeClass('l-checkbox-selected');
+							grid1Row.removeClass('l-grid-row-selected');
+							grid2Row.removeClass('l-grid-row-selected');
+							grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
+						}
+						
+						/*返回选择数据*/
+						if( saogaUI.base.isFunction(onCheckFn) ){
+							onCheckFn(tmpData[i], grid1Row, grid2Row);
+						}
+					});
+					
+					/*全选*/
+					grid1Header.off('click', '.l-checkbox').on('click', '.l-checkbox', function(e){
+						e.stopPropagation();
+						var self      = $(this),
+							pageIndex = p.pageIndex,
+							arr       = _cache.rowSelected[pageIndex-1],
+							checkbox  = grid1Body.find('.l-checkbox'),
+							grid1Rows = grid1Body.find('.l-grid-row'),
+							grid2Rows = grid2Body.find('.l-grid-row'),
+							len       = checkbox.length,
+							i         = 0,
+							j         = len - 1,
+							tmpData   = _cache.tmpData[p.pageIndex - 1]
+						
+						if( !self.hasClass('l-checkbox-selected') ){
+							self.addClass('l-checkbox-selected');
+							grid1Rows.addClass('l-grid-row-selected');
+							grid2Rows.addClass('l-grid-row-selected');
+							checkbox.addClass('l-checkbox-selected');
+							for(; i &lt; len; i++){
+								arr[i] = that.getRowData(i);
+							}
+						}else{
+							self.removeClass('l-checkbox-selected');
+							checkbox.removeClass('l-checkbox-selected');
+							grid1Rows.removeClass('l-grid-row-selected');
+							grid2Rows.removeClass('l-grid-row-selected');
+							for(; j > -1; j--){
+								arr[j] = null;
+							}
+						}
+						
+						/*返回选择数据*/
+						if( saogaUI.base.isFunction(onCheckFn) ){
+							onCheckFn(tmpData, grid1Rows, grid2Rows);
+						}
+						
+					});
+				},
+				
+				/**
+				* 获取行数据
+				* @param {Number} index 记录的索引值
+				*/
+				getRowData: function(index){
+					var	pageIndex = p.pageIndex,
+						data      = _cache.tmpData[pageIndex - 1]; //表格数据
+	
+					if( index === -1 ){
+						return false;
+					}
+					
+					return data[index];
+				},
+				
+				/**
+				* 明细按钮事件
+				* @param {object} init 和 refresh共享的对象
+				*/
+				detailBtnFn: function(options){
+					
+				},
+				
+				/**
+				* ajax获取数据
+				* @param {Function} callback ajax回调函数
+				*/
+				ajaxGetData: function(callback){
+					var pageAjax      = p.pageAjax,
+						type          = pageAjax.type == undefined ? 'POST' : pageAjax.type,
+						showAllRow    = p.showAllRow,
+						pageIndex     = p.pageIndex,
+						pageSize      = p.pageSize,
+						data          = pageAjax.data,
+						isShowLoading = p.isShowLoading;
+					
+					/*************************临时处理*********************/
+					data = data.replace('{{index}}', pageIndex);
+					data = data.replace(/pageSize=\d*/, '');
+					/*************************临时处理*********************/
+					
+					
+					data += '&amp;pageIndex=' + pageIndex;
+					data += '&amp;pageSize=' + pageSize;
+										
+					data = data.replace(/{{|}}/g,'');
+					data = data.split('&amp;');
+					
+					/*解析URL并转换为json形式，防止特殊字符问题*/
+					var args = {},
+						argsStr = [],
+						param,
+						name,
+						value;
+					
+					for (var i = 0; i &lt; data.length; i++) {
+						param = data[i].split('=');
+						name = param[0],
+						value = param[1];
+						if (name == "")
+							name = "unkown";
+						if (typeof args[name] == "undefined") { //参数尚不存在
+							args[name] = value;
+						} else if (typeof args[name] == "string") { //参数已经存在则保存为数组
+							args[name] = [args[name]];
+							args[name].push(value);
+						} else { //已经是数组的
+							args[name].push(value);
+						}
+					}
+
+					/*var showArg = function (x) { //转换不同数据的显示方式
+						if (typeof(x) == "string" &amp;&amp; !/\d+/.test(x))
+							return "'" + x + "'"; //字符串
+						if (x instanceof Array)
+							return "[" + x + "]"; //数组
+						return x; //数字
+					}*/
+					
+					//console.log(args)
+					
+					/*args.toString = function () { //组装成json格式
+						for (var i in args)
+							argsStr.push(i + ':' + showArg(args[i]));
+						return '{' + argsStr.join(',') + '}';
+					}*/
+					//console.log(args)
+					
+					
+						
+					$.ajax({
+						type: type,
+						url: pageAjax.url,
+						cache: false,
+						async: false,
+						dataType: "json",
+						data: args,
+						beforeSend: function(){
+							if( saogaUI.base.isFunction(pageAjax.beforeSend) ){
+								pageAjax.beforeSend();
+							}
+							if( isShowLoading ){
+								g.loding.fadeIn();
+							}
+							g.onLoaded = false;
+						},
+						success: function(data){
+							if( saogaUI.base.isFunction(pageAjax.success) ){
+								pageAjax.success(data);
+							}
+							if( saogaUI.base.isFunction(callback) ){
+								callback(data);
+							}
+							if( showAllRow ){
+								p.pageSize = data ? data.total : 0;
+								p.isPage   = false;
+							}
+							if( isShowLoading ){
+								g.loding.fadeOut();
+							}
+							g.onLoaded = true;
+						},
+						error: function(data){
+							g.loding.fadeOut();
+							g.jump(data);
+						}
+					});
+				},
+				
+				/**
+				* 获取数据
+				*/
+				getData: function(){
+					if( p.pageAjax ){
+						this.ajaxGetData(function(data){
+							p.data = data;
+						});
+					}
+				},
+				
+				/**
+				* 数据处理
+				*/
+				handleData: function(){
+					//初始化
+					this.getData();
+					
+					//ajax 请求失败或data无指定、data格式不对
+					if( !p.data || p.data.rows === undefined ){
+						var data = p.data;
+						p.data = {
+							rows:[],
+							total:0
+						};
+					}
+						
+					var data     = p.data,
+						pageSize = p.pageSize,
+						len      = Math.ceil(data.total / pageSize),
+						i        = 0,
+						arr      = []; //临时数组
+					
+					for(; i&lt;len; i++){
+						arr[i] = [];
+						_cache.rowSelected[i] = []; //选择中
+						
+						//if( p.pageAjax ){
+							var h = 0;	
+							for(; h&lt; pageSize; h++){
+								var rowData = data.rows[pageSize*i + h];
+								if( rowData ){
+									arr[i][h] = rowData;
+								}
+							}
+						//}
+					}
+					
+					if( p.pageAjax ){
+						arr[p.pageIndex - 1] = data.rows;
+					}
+					
+					_cache.tmpData = arr;
+					
+				},
+				
+				/**
+				* 对比现有数据
+				* @param {String} name 要比较的的字段
+				* @param {String} sortType 排序裂隙
+				*/
+				compareData: function(name, sortType){
+					var index = p.pageIndex - 1,
+						arr   = _cache.tmpData[index],
+						len   = arr.length,
+						i     = 0;
+					
+					/*序顺序(a、b都是数字时按大小，a、b长度都一样是按字母，a、b长度不一时按长度)*/
+					function getJsPercentDataComparator(name){
+						return function(a, b){
+
+							var result = 0;
+							if( a[name] != null &amp;&amp; b[name] != null ){
+								var aStr   = a[name],
+									bStr   = b[name],
+									afloat = parseFloat(aStr),
+									bfloat = parseFloat(bStr);
+								
+								if( !isNaN(bfloat) &amp;&amp; !isNaN(afloat) ){
+									result = (afloat>bfloat) ? 1 : -1;
+								}else{
+									if( aStr.length === bStr.length ){
+										result = aStr.localeCompare(bStr);
+									}else{
+										result = (aStr.length>bStr.length) ? 1 : -1;
+									}
+									
+								}
+							}
+							
+							return result;
+						};
+					}
+					
+					arr.sort( getJsPercentDataComparator(name) );
+					
+					if( sortType === 'desc' ){
+						arr.reverse();
+					}
+					
+					_cache.tmpData[index] = arr;
+					
+					return arr;
+
+				},
+				
+				/**
+				* 表头事件
+				*/
+				tHeadFn: function(){
+					var that           = this,
+						pageSize       = p.pageSize,                  //每页显示多少个
+						pageIndex      = p.pageIndex,                 //起始位置
+						grid1          = g.grid1,
+						grid2          = g.grid2,
+						grid1Header    = grid1.find('.l-grid-header'),        //表格头
+						grid1Body      = grid1.find('.l-grid-body'),          //表格主体
+						grid2Header    = grid2.find('.l-grid-header'),        //表格头
+						grid2Body      = grid2.find('.l-grid-body'),          //表格主体
+						isSort         = p.isSort,
+						isSortCurrent  = p.isSortCurrent;
+						//isHideColumns  = p.isHideColumns;
+					
+					//排序
+					if( isSort ){
+						grid2Header.find('.l-grid-hd-cell-span')
+								   .addClass('l-grid-hd-cell-sortWrap')
+								   .append('&lt;span class="l-grid-hd-cell-sort">&lt;b class="icon-font-10" data-uid="983722">&amp;#983722&lt;/b>&lt;/span>');
+						
+						grid2Header.off('click', '.l-grid-hd-cell-span').on('click', '.l-grid-hd-cell-span', function(){
+							var self     = $(this),
+								name     = self.attr('data-columnName'),
+								sortType = '',
+								sort     = self.find('.l-grid-hd-cell-sort');
+							
+							if( isSortCurrent ){
+								
+								if( sort.hasClass('desc') ){
+									sort.html('&lt;b class="icon-font-10" data-uid="983722" >&amp;#983722&lt;/b>');
+									sort.removeClass('desc');
+									sortType = 'desc';
+								}else{
+									sort.html('&lt;b class="icon-font-10" data-uid="983721" >&amp;#983721&lt;/b>');
+									sort.addClass('desc');
+									sortType = 'asc';
+								}
+								
+								that.compareData(name, sortType);
+								that.tBodyCreateHtml();
+								
+							}else{
+								
+								if( g.onLoaded ){
+									
+									if( sort.hasClass('desc') ){
+										sort.html('&lt;b class="icon-font-10" data-uid="983722" >&amp;#983722&lt;/b>');
+										sort.removeClass('desc');
+										sortType = 'desc';
+									}else{
+										sort.html('&lt;b class="icon-font-10" data-uid="983721" >&amp;#983721&lt;/b>');
+										sort.addClass('desc');
+										sortType = 'asc';
+									}
+	
+									if( /&amp;sort=/.test(p.pageAjax.data) ){
+										p.pageAjax.data = (p.pageAjax.data).replace(/&amp;sort={{\w*}}/, '&amp;sort={{'+ name+ '}}');
+										p.pageAjax.data = (p.pageAjax.data).replace(/&amp;sortType={{\w*}}/, '&amp;sortType={{'+ sortType +'}}');
+									}else{
+										p.pageAjax.data = (p.pageAjax.data) + '&amp;sort={{'+ name+ '}}&amp;sortType={{'+ sortType +'}}';
+									}
+							
+									that.handleData();
+									that.tBodyCreateHtml();
+									
+								}// end if g.onLoaded
+								
+							}
+						});
+						
+					}//end if isSort
+					
+					/*if( isHideColumns ){
+						grid2Header.off('mousedown', '.l-grid-hd-cell').on('mousedown', '.l-grid-hd-cell', function(e){
+							console.log(e.which);
+						});
+					}*/
+				},
+						
+				/**
+				* 行事件
+				*/
+				rowFn: function(){
+					
+					var that   = this,
+						grid1           = g.grid1,
+						grid2           = g.grid2,
+						grid1Body       = grid1.find('.l-grid-body'),   //表格主体						
+						grid2Header     = grid2.find('.l-grid-header'), //表格头
+						grid2Body       = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn       = p.onCheckFn,
+						pageSize        = p.pageSize,
+						onRowFn         = p.onRowFn,
+						isOnRowCheckbox = p.isOnRowCheckbox,
+						isOnRowFn       = saogaUI.base.isFunction(onRowFn);
+						
+					grid2Body.off('mouseover', '.l-grid-row-cell').on('mouseover', '.l-grid-row-cell', function(){
+						var self = $(this),
+							arrt = self.attr('data-cell');
+						
+						self.parent().attr('data-cell', arrt);
+					});
+					
+					grid2Body.off('click', '.l-grid-row').on('click', '.l-grid-row', function(){
+						var self          = $(this),
+							pageIndex     = p.pageIndex,
+							selected      = grid2Body.find('.l-grid-row-selected'),
+							i             = self.attr('data-row'),
+							currentArr    = _cache.rowSelected[pageIndex-1],
+							grid1Row      = grid1Body.find('.l-grid-row').eq(i),
+							grid1Checkbox = grid1Body.find('.l-checkbox').eq(i);
+											
+						if( !self.hasClass('l-grid-row-selected') ){
+							if( !onRowFn ){
+								self.siblings().removeClass('l-grid-row-selected');
+								grid1Row.siblings().removeClass('l-grid-row-selected');
+							}
+							if( isOnRowCheckbox ){
+								grid1Checkbox.addClass('l-checkbox-selected');									
+							}
+							
+							
+							self.addClass('l-grid-row-selected');
+							grid1Row.addClass('l-grid-row-selected');
+
+						}else{
+							self.removeClass('l-grid-row-selected');
+							grid1Row.removeClass('l-grid-row-selected');
+							
+							if( isOnRowCheckbox ){
+								grid1Checkbox.removeClass('l-checkbox-selected');								
+							}
+						}
+						
+						if( isOnRowFn ){
+							if( !self.hasClass('l-grid-row-selected') ){
+								currentArr[i] = that.getRowData(i);
+								
+							}else{
+								_cache.rowSelected[pageIndex-1][i] = null;
+							}
+							onRowFn(that.getRowData(i), self);
+						}
+						
+						
+					});
+				},
+				
+				/**
+				* 列事件
+				*/
+				cellFn: function(){
+					var grid1           = g.grid1,
+						grid2           = g.grid2,
+						grid1Body       = grid1.find('.l-grid-body'),   //表格主体						
+						grid2Header     = grid2.find('.l-grid-header'), //表格头
+						grid2Body       = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn       = p.onCheckFn,
+						pageSize        = p.pageSize,
+						onRowFn         = p.onRowFn,
+						isOnRowCheckbox = p.isOnRowCheckbox,
+						isOnRowFn       = saogaUI.base.isFunction(onRowFn);
+				},
+				
+				/**
+				* 运行 grid 控件
+				*/
+				run: function(){
+					this.handleData();
+					
+					if( p.isHead ){
+						this.tHeadCreateHtml();
+						this.tHeadFn();
+					}
+					
+					this.tBodyCreateHtml();
+					
+					if( g.isInit ){
+						this.rowFn();
+						//this.cellFn();
+						this.checkboxFn();
+						g.isInit = false;
+					}
+					
+					if( p.isPage ){
+						this.pageCreateHtml();
+						this.pageFn();
+					}else{
+						g.footer.remove();
+					}
+				},
+				
+				/**
+				* grid 初始化
+				* @return {Object} grid对象
+				*/
+				init: function(){
+					var grid   = p.wrap.append('&lt;div class="l-grid" id='+ p.id +'>&lt;/div>').find('#'+p.id),
+						loding = grid.append('&lt;div class="l-grid-loding fn-hide">&lt;div class="l-grid-loadingBg">&lt;/div>&lt;div class="l-grid-loadingIco">&lt;/div>&lt;/div>').find('.l-grid-loding'),
+						popup  = grid.append('&lt;div class="l-grid-popup">&lt;/div>').find('.l-grid-popup'),
+						gBody  = grid.append('&lt;div class="l-grid-body fn-clear">&lt;/div>').find('.l-grid-body'),
+						grid1  = gBody.append('&lt;div class="l-grid1">&lt;/div>').find('.l-grid1'),
+						grid2  = gBody.append('&lt;div class="l-sl-grid2">&lt;div class="l-grid2">&lt;/div>&lt;/div>').find('.l-grid2'),
+						footer = grid.append('&lt;div class="l-grid-footer">&lt;/div>').find('.l-grid-footer'),
+						page   = footer.append('&lt;div class="l-grid-footer-page">&lt;/div>').find('.l-grid-footer-page');
+					
+					p.pageIndex = 1;
+					g.loding      = loding;
+					g.popup       = popup;
+					g.grid        = grid;
+					g.grid1       = grid1;
+					g.grid2       = grid2;
+					g.footer      = footer;
+					g.page        = page;
+					g.isInit      = true;
+					g.onLoaded    = false;
+
+					this.run();
+					return g;
+				}
+				
+			};//_core end
+
+		/**
+		* grid 刷新数据源
+		* @method saogaUI.ui.grid.refresh
+		* @param {object} [o] - 数据源pageAjax或data
+		* @return {Object} grid对象
+		*/
+		g.refresh = function(o){
+						
+			if( o ){
+				if( o.pageAjax ){
+					for(var key in o.pageAjax){
+						if( o.pageAjax.hasOwnProperty(key) &amp;&amp; o.pageAjax[key] ){
+							p.pageAjax[key] = o.pageAjax[key];
+						}
+					}
+				}else if( o.data ){
+					p.data = o.data;
+				}
+			}
+			
+			p.pageIndex = 1;
+			_core.run();
+			return g;
+		};
+
+		/**
+		* grid 重设列头
+		* @method saogaUI.ui.grid.reSetColumns
+		* @param {object} 列对象
+		* @return {Object} grid对象
+		*/
+		g.reSetColumns = function(o){
+			p.columns = o.columns;
+			_core.run();
+		};
+
+		/**
+		* grid 修改列名
+		* @method saogaUI.ui.grid.changeHeaderText
+		* @param {Number} i - Columns的引值，checkbox的不算
+		* @param {String} text - 要修改的文本
+		* @return {Object} grid对象
+		*/
+		g.changeHeaderText = function(i, text){
+			g.grid2.find('.l-grid-hd-cell-text').eq(i).html(text);
+			return g;
+		};
+
+		/**
+		* grid 获取当前页数据
+		* @method saogaUI.ui.grid.getCurrentData
+		* @return {Object} grid当前页数据对象
+		*/
+		g.getCurrentData = function(){
+			var pageIndex = p.pageIndex;
+			return _cache.tmpData[pageIndex - 1];
+		};
+
+		/**
+		* grid 获取选中的数据
+		* @method saogaUI.ui.grid.getSelectData
+		* @return {object} grid数据，格式与请求的一样
+		*/
+		g.getSelectData = function(){
+			var arr      = [],
+				i        = 0, 
+				selected = _cache.rowSelected,
+				len      = selected.length,   //记录的长度
+				total    = 0;                 //data个数
+			
+			/*过滤掉records下面的空元素*/
+			for(; i &lt; len; i++){
+				if( selected[i] ){
+					for(var h = 0; h&lt;selected[i].length; h++){
+						if( selected[i][h] ){
+							arr.push( selected[i][h] );
+						}
+					}
+				}
+			}
+			
+			/*组装一个表格适用的data数据*/
+			total = arr.length;
+			
+			return {
+				"rows": arr,
+				"total":total
+			};
+		};
+		
+		/**
+		* grid 跳出执行
+		* @method saogaUI.ui.grid.jump
+		* @return {Boolean} 
+		*/
+		g.jump = function(data){
+			console.log('ajax data error:',data);
+			return false;
+		};
+		
+		/**
+		* grid 扩展
+		* @method saogaUI.ui.grid.methos
+		* @return {object} 
+		*/
+		g.methos = g.methos || {};
+		
+		return _core.init(o);
+	};
+
+	return function(options){
+		return new Grid(options);
+	};
+});</pre>
+	</article>
+</section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		DocStrap Copyright © 2012-2014 The contributors to the JSDoc3 and DocStrap projects.
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a>
+		on Tue Sep 30th 2014 using the <a
+			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<!--<script src="scripts/sunlight.js"></script>-->
+	<script src="scripts/docstrap.lib.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+	<script>
+		$( function () {
+			$( "[id*='$']" ).each( function () {
+				var $this = $( this );
+
+				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+			} );
+
+			$( "#toc" ).toc( {
+				anchorName  : function ( i, heading, prefix ) {
+					return $( heading ).attr( "id" ) || ( prefix + i );
+				},
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : "100px"
+			} );
+
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+			$( '.dropdown-toggle' ).dropdown();
+//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+				var $this = $( this );
+
+				var example = $this.find( "code" );
+				exampleText = example.html();
+				var lang = /{@lang (.*?)}/.exec( exampleText );
+				if ( lang && lang[1] ) {
+					exampleText = exampleText.replace( lang[0], "" );
+					example.html( exampleText );
+					lang = lang[1];
+				} else {
+					lang = "javascript";
+				}
+
+				if ( lang ) {
+
+					$this
+						.addClass( "sunlight-highlight-" + lang )
+						.addClass( "linenums" )
+						.html( example.html() );
+
+				}
+			} );
+
+			Sunlight.highlightAll( {
+				lineNumbers : true,
+				showMenu : true,
+				enableDoclinks : true
+			} );
+		} );
+	 </script>
+
+
+
+	<!--Navigation and Symbol Display-->
+	
+
+
+	<!--Google Analytics-->
+	
+
+</body>
+</html>

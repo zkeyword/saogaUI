@@ -1,79 +1,94 @@
-/*数据分析模块*/
-.ui-analysis-table,.ui-analysis-head,.ui-analysis-charts,.ui-analysis-charts,.ui-analysis-none{width:100%;float:left;}
-.ui-analysis-head{ background:#eef1f8;border-bottom:1px solid #c3cdd9;color:#37475e;height:30px;line-height:30px;text-indent:20px;}
-.ui-analysis-none{ background:#d0e8f9;color:#0070bd;font-size:14px;height:50px;line-height:50px;text-align:center;}
-/*帮助说明文本提示*/
-.ui-operate-tips{
-	background:#f6f7f8;padding:5px 0;position:relative; width:100%;
-	 p {clear:both;float:left;line-height:21px;padding-left:24px; width:98%;}
-	 em {display: inline-block;margin-left:-30px;text-align:right;width:30px;}
-	 p.operate-tips-text{padding-left:30px;width:92%;}
-	 p.operate-tips-text em { margin-left:-30px;}
-}
-/*翻页*/
-.ui-pageBar{width:100%;position:relative;margin:25px 0;font-size:14px;}
-.show-pagenum{position:absolute;}
-.pagination{width:450px;margin:0 auto;text-align:center;}
-.pagination li{display:inline-block;margin:0 2px;}
-.pagination li a{display:block;width:30px;heigiht:30px;text-align:center;line-height:30px;background:#e7eaef;color:#000;font-family:SimSun;}
-.pagination li a:hover,.pagination li.active a{background:#e76c00;color:#fff;}
-/*客户服务-手动催付*/
-.mo-remindpay-list tbody tr td{border:none;}
-.ui-list-title{background:#E3E3E3;padding:4px 0;width:100%;}
-.ui-list-title span{display:inline-block;float:left;margin:0 2px;}
-.ui-countdown{background-color:#eee;border:1px solid #ccc;height:40px; margin:0 auto;width:160px;text-align:center;}
-.ui-countdown span{display:inline-block;line-height:40px;font-size:14px;margin:0 1px;}
-.ui-countdown span lablel{color:#e76c00;padding:0 1px;}
-.num-sum p{line-height:20px;}
-.num-sum p lablel{color:#e76c00;padding:0 1px;}
-.product-list .product-intro{float:left;clear:both;}
-.product-list .product-img,.product-list .product-text{float:left;}
-.product-list .product-text{margin-left:5px;}
-.product-list .product-text p{line-height:18px;}
-.business-status i{margin-left:4px;color:#e76c00;cursor:pointer;}
-.price-num{height:60px;line-height:50px;width:80px;}
-.amount-num{height:60px;line-height:50px;width:70px;}
-/*事物中心-事物处理-事物列表  */
-.ui-operat-tag{
-	background:#eef1f8;width:100%;float:left;
-	li{float:left;}
-	a{padding:10px 20px;display:block;background:#eef1f8;}
-	a:hover,a.cur{background:#c3cdd9;}
-}
-/*新增标签 */
-.ui-add-tag{
-	ul li{float:left;display:inline;margin:0 3px;}
-	a{background:#e76c00;color:#fff;float:left;display:block;padding:2px;}
-	i{color:#fff;}
-	a:hover{background:#c4630e;color:#fff;}
-	a:first-child{.border-left-radius(3px);}
-	a:last-child{.border-right-radius(3px);}
-}
-/*高中低级别显示 */
-.ui-level-tip{display:inline-block;}
-.ui-level-tip label{padding:1px 3px;color:#fff;}
-.ui-level-tip .ui-level-tip-tip{padding:1px 3px;color:#000;}
-.ui-level-tip-high label{background:#ffae00;}
-.ui-level-tip-high .ui-level-tip-tip{background:#fff2d3}
-.ui-level-tip-mid label{background:#288acb;}
-.ui-level-tip-mid .ui-level-tip-tip{background:#bee8f7}
-.ui-level-tip-low label{background:#818c9d;}
-.ui-level-tip-low .ui-level-tip-tip{background:#eef1f8}
-.ui-source-tip label{background:#fff;color:#000;}
+/**************** 宽度 **************/
+.ui-w65{width:65px}
+.ui-w70{width:70px}
+.ui-w75{width:75px}
+.ui-w80{width:80px}
+.ui-w85{width:85px}
+.ui-w90{width:90px}
+.ui-w95{width:95px}
+.ui-w100{width:100px}
+.ui-w105{width:105px}
+.ui-w110{width:110px}
+.ui-w115{width:115px}
+.ui-w120{width:120px}
+.ui-w125{width:125px}
+.ui-w130{width:130px}
+.ui-w135{width:135px}
+.ui-w140{width:140px}
+.ui-w145{width:145px}
+.ui-w150{width:150px}
+.ui-w155{width:155px}
+.ui-w200{width:200px}
+.ui-w400{width:400px}
+.ui-w600{width:600px}
 
-/*事物中心-事物列表 */
-.mo-affair-list{
-	width:100%;float:left;
-	.affair-list-head,.affair-list-body,.affair-list-foot{width:100%;float:left;}
-	.affair-list-head{background:#eef1f8;line-height:30px;}
-}
-/*点击显示隐藏tab*/
-.mo-cutover{
-	width:100%;float:left;
-	.cutover-tab{background:#eef1f8;width:100%;float:left;text-indent:10px;height:30px;line-height:30px;text-indent:10px;margin-bottom:4px;cursor: pointer;}
-	.cutover-tab.active{background:#4d4d65;color:#fff;}
-	.cutover-tab i{margin-right:10px;}
-	.cutover-content{width:100%;float:left;border:1px solid #cfcdce;margin-bottom:4px;}
-}
+/*************** 间隙 *************/
+/* margin */
+.ui-m5{margin:5px}
+.ui-mt5{margin-top:5px}
+.ui-mb5{margin-bottom:5px}
+.ui-ml5{margin-left:5px}
+.ui-mr5{margin-right:5px}
+
+.ui-m10{margin:10px}
+.ui-mt10{margin-top:10px}
+.ui-mb10{margin-bottom:10px}
+.ui-ml10{margin-left:10px}
+.ui-mr10{margin-right:10px}
+
+/* padding */
+.ui-p5{padding:5px}
+.ui-pt5{padding-top:5px}
+.ui-pb5{padding-bottom:5px}
+.ui-pl5{padding-left:5px}
+.ui-pr5{padding-right:5px}
+
+.ui-p10{padding:10px}
+.ui-pt10{padding-top:10px}
+.ui-pb10{padding-bottom:10px}
+.ui-pl10{padding-left:10px}
+.ui-pr10{padding-right:10px}
 
 
+/***************** 字体 ****************/
+.ui-fontBold{font-weight:bold}
+.ui-font12{font-size:12px;}
+.ui-font14{font-size:14px;}
+.ui-font16{font-size:16px;}
+.ui-font18{font-size:18px;}
+
+/***************** 边框 **************/
+.ui-border{border:1px solid @col-border;}
+.ui-borderTop{border-top:1px solid @col-border;}
+.ui-borderBottom{border-bottom:1px solid @col-border;}
+.ui-borderLeft{border-left:1px solid @col-border;}
+.ui-borderRight{border-right:1px solid @col-border;}
+
+/**************** 颜色 **************/
+/* 黑色系 */
+.col-black{color:@col-black}
+.col-black2{color:@col-block2}
+.col-black3{color:@col-block3}
+.col-black4{color:@col-block4}
+
+/* 灰色系 */
+.col-gray{color:@col-gray}
+.col-gray2{color:@col-gray2}
+.col-gray3{color:@col-gray3}
+.col-gray4{color:@col-gray4}
+
+/* 黄色系 */
+.col-yellow{color:@col-yellow}
+.col-yellow2{color:@col-yellow2}
+.col-yellow3{color:@col-yellow3}
+
+/* 蓝色系 */
+.col-blue{color:@col-blue}
+.col-blue2{color:@col-blue2}
+.col-blue3{color:@col-blue3}
+
+/***************** floatCenter ***********/
+/*调用需要给ui-floatCenter重置高度、ui-floatCenter-item重置间距，否则就默认*/
+.ui-floatCenter{position:relative;height:30px;overflow:hidden;}
+	.ui-sl-floatCenter{float:left;position:relative;left:50%}
+		.ui-floatCenter-item{position:relative;right:50%;float:left;margin:0 5px}

@@ -1,0 +1,74 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>render是html接口升级版，render会传鼠标当前经过的jquery对象。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+/*html 代码*/
+&lt;div id="lt-wrap"&gt;
+	&lt;div data-message="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-message="请速发货2！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-message="请速发货3！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-message="请速发货4！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+	&lt;div data-message="请速发货5！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;
+&lt;div/&gt;
+
+/*js 代码*/
+saogaUI.ui.tip({
+	target:'.buyerMessagePop',
+	targetWrap:'#lt-wrap',
+	width:300,
+	render:function(obj){
+		var h = '';
+		h += '&lt;div%gt;买家留言&lt;/div%gt;';
+						
+		if($.trim(obj.attr("data-message"))!=''){
+			h += '&lt;div%gt;'+obj.attr("data-message")+'&lt;/div%gt;';
+		}	
+		else{
+			h += '&lt;div%gt;暂无&lt;/div%gt;';
+		}
+		return h;
+	}
+}); 
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果：</h2>
+	<div id="lt-wrap">
+		<div data-message="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货2！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货3！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货4！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货5！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货6！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+		<div data-message="请速发货7！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+	</div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	saogaUI.ui.tip({
+		target:'.buyerMessagePop',
+		targetWrap:'#lt-wrap',
+		width:300,
+		render:function(obj){
+			var h = '';
+			h += '<div>买家留言</div>';
+							
+			if($.trim(obj.attr("data-message"))!=''){
+				h += '<div>'+obj.attr("data-message")+'</div>';
+			}	
+			else{
+				h += '<div>暂无</div>';
+			}
+			return h;
+		}
+	}); 
+
+});
+</script>

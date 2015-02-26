@@ -1,0 +1,68 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>修改窗体大小的API的modifyWrap，使用时需要传入width、height。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var pop = saogaUI.ui.pop({
+	title:'弹窗的标题',
+	height:240,
+	width:320,
+	ajax:'http://127.0.0.1/saogaUI/doc/tmp/pop.php',
+	async:false,
+	btns:[
+		{
+			text:'保存修改',
+			closePop:false,
+			onclick:function(id){
+				alert('保存修改')
+				pop.close(id);
+			}
+		},
+		{
+			text:'取消',
+			onclick:function(){
+	
+			}
+		}
+	]
+});
+
+pop.modifyWrap(500,300);
+
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	var pop = saogaUI.ui.pop({
+		title:'弹窗的标题',
+		height:240,
+		width:320,
+		ajax:'http://127.0.0.1/saogaUI/doc/tmp/pop.php',
+		async:false,
+		btns:[
+			{
+				text:'保存修改',
+				closePop:false,
+				onclick:function(id){
+					alert('保存修改')
+					pop.close(id);
+				}
+			},
+			{
+				text:'取消',
+				onclick:function(){
+		
+				}
+			}
+		]
+	});
+
+	pop.modifyWrap(500,300);
+
+});
+</script>

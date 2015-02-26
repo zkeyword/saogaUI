@@ -1,0 +1,36 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>dialog error的API是error。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+
+saogaUI.ui.dialog.error({
+	title:"提示信息",
+	text:"保存出错，请确认！",
+	//width:300,
+	//height:200,
+	no:function(){
+		location.reload();
+	}
+});
+
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	saogaUI.ui.dialog.error({
+		title:"提示信息",
+		text:"保存出错，请确认！",
+		//width:300,
+		//height:200,
+		no:function(){
+			location.reload();
+		}
+	});
+});
+</script>

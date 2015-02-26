@@ -3,7 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>弹出框页面</title>
-<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script src="../js/lib/jquery.js"></script>
 <script data-main="../js/common2" src="../js/lib/require.js"></script>
 </head>
 <body>
@@ -12,7 +14,7 @@
 		<p>
 			<pre>
 				$('#pop').click(function(){
-					saogaUI.ui.pop.open({
+					saogaUI.ui.pop({
 						title:'标题',
 						html:'111111',
 						//ajax:''
@@ -30,7 +32,120 @@
 				});
 			</pre>
 		</p>
-	
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+		<p>1</p>
+
 	</div>
 	<div class="fn-clear">
 		<a href="#" id="pop1">确认隐藏</a>
@@ -189,15 +304,18 @@
 			var html = saogaUI.template('test', null);
 			
 			$('#pop').click(function(){
-				saogaUI.ui.pop.open({
+				saogaUI.ui.pop({
 					title:'添加营销活动',//标题
 					html:html,//中间内容
-					height:210,
+					height:500,
 					btns:[  
 						{
 							text:'保存',
+							closePop:false,
 							onclick:function(){
-							
+								saogaUI.ui.dialog.alert({
+									text:'添加营销活动2'
+								});
 							}
 						},{
 							text:'取消',

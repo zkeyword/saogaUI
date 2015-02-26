@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script data-main="../../build/js/common" src="../../build/js/lib/require.js"></script>
+</head>
+<body>
+<form class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
+	<strong>竖排</strong>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w75">输入框：</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w75">下拉框：</i>
+			<select class="ui-select">
+				<option value="">xxxxx</option>
+				<option value="">xxxxx</option>
+			</select>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w75">文本域：</i>
+			<textarea class="ui-textarea"></textarea>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w75">&nbsp;</i>
+			<input type="radio" class="ui-radio" />
+			<i class="ui-label ui-radio-label">单选选项</i>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w75">&nbsp;</i>
+			<input type="checkbox" class="ui-checkbox" name="checkbox" value="多选选项1" checked="checked" disabled="disabled" />
+			<i class="ui-label ui-checkbox-label">多选选项</i>
+		</label>
+	</div>
+	<strong>横排</strong>
+	<div class="fn-clear">
+		<div class="ui-form fn-clear ui-mt10">
+			<label>
+				<i class="ui-label ui-w75">输入框：</i>
+				<input class="ui-input" type="text" />
+			</label>
+			<label class="ui-pl5">
+				<i class="ui-label">下拉框：</i>
+				<select class="ui-select">
+					<option value="">xxxxx</option>
+					<option value="">xxxxx</option>
+				</select>
+			</label>
+			<label class="ui-pl10">
+				<input type="radio" class="ui-radio" />
+				<i class="ui-label ui-radio-label">单选选项</i>
+			</label>
+		</div>
+		<div class="ui-form fn-clear ui-mt10">
+			<label>
+				<i class="ui-label ui-w75">输入框一：</i>
+				<input class="ui-input" type="text" />
+			</label>
+			<label class="ui-pl5">
+				<i class="ui-label">下拉框一：</i>
+				<select class="ui-select" name="select">
+					<option value="0">xxxxxxxxxxxxxx</option>
+					<option value="1">xxxxx</option>
+				</select>
+			</label>
+			<label class="ui-pl10">
+				<input type="radio" class="ui-radio" name="textRaio" value="单选选项1" />
+				<i class="ui-label ui-radio-label">单选选项</i>
+			</label>
+			<label class="ui-pl10">
+				<input type="radio" class="ui-radio " name="textRaio" value="单选选项2"  />
+				<i class="ui-label ui-radio-label">单选选项</i>
+			</label>
+		</div>
+		
+		<div class="ui-form fn-clear">
+			<label class="ui-pl10">
+				<input type="checkbox" class="ui-checkbox" name="testCheckbox[]" value="多选选项1" />
+				<i class="ui-label ui-checkbox-label">多选选项1</i>
+			</label>
+			<label class="ui-pl10">
+				<input type="checkbox" class="ui-checkbox " name="testCheckbox[]" value="多选选项2"  />
+				<i class="ui-label ui-checkbox-label">多选选项2</i>
+			</label>
+			<label class="ui-pl10">
+				<input type="radio" class="ui-radio" name="testRaio" value="单选选项3" />
+				<i class="ui-label ui-radio-label">单选选项3</i>
+			</label>
+			<label class="ui-pl10">
+				<input type="radio" class="ui-radio " name="testRaio" value="单选选项4"  />
+				<i class="ui-label ui-radio-label">单选选项4</i>
+			</label>
+		</div>
+		
+		<div class="fn-clear">
+			<span class="ui-btn ui-btn-switch ui-btn-switch-open"><i></i><em>已开启</em></span>
+			<span class="ui-btn ui-btn-switch ui-btn-switch-close"><i></i><em>已关闭</em></span>
+		</div>
+		
+		<div class="fn-clear icon icon-dot-circle-o"><input type="submit" value="提交"/></div>
+	</div>
+</form>
+<script type="text/javascript">
+
+require(['app/main'], function(saogaUI){
+	var select = saogaUI.ui.select2({
+		target:'select',
+		type:'single'
+	});
+	
+	var checkbox = saogaUI.ui.check({
+		target:':radio'
+	});
+	
+	var checkbox = saogaUI.ui.check({
+		target:':checkbox'
+	})
+	
+	$('.ui-btn-switch').click(function(){
+		var that = $(this);
+		if( that.hasClass('ui-btn-switch-open') ){
+			that.removeClass('ui-btn-switch-open')
+				.addClass('ui-btn-switch-close')
+				.find('em')
+				.html('已关闭');
+		}else{
+			that.removeClass('ui-btn-switch-close')
+				.addClass('ui-btn-switch-open')
+				.find('em')
+				.html('已开启');
+		}
+	})
+});
+
+</script>
+</body>
+</html>

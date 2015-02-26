@@ -1,1 +1,0 @@
-define(["require","jquery","template"],function(e){var t=e("jquery"),n=e("template");return{$:t,T:n}});

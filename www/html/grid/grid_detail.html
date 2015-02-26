@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试页面</title>
+<link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+<script src="../js/lib/jquery-2.1.1.min.js"></script>
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+<!-- <script src="../testData/CustomersData2.js"></script>
+ --></head>
+<body>
+	<div id="grid1"></div>
+	<script>
+		require(['app/main'], function(saogaUI){
+			
+			var grid = saogaUI.ui.grid({
+				wrap:'#grid1',
+				//data:CustomersData,
+				//pageAjax:{
+				//	url: 'http://127.0.0.1/saogaUI/www/testData/data.php',
+				//	data:'index={{index}}'
+				//},
+				data:{
+					rows:[
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1,children:[{id:1},{id:1},{id:1},{id:1}]},
+						{id:1},
+						{id:1}
+					],
+					total:20
+				},
+				checkbox:false,
+				pageSizeOptions:null,
+				columns: [
+					{ display: '表头0...', name: 'title', width: 111, render: function(rdata, rindex, value){
+							var h = '<span style="color:#ddd">'+ value +'</span>';
+							return h;
+						}
+					},
+					{ display: '表头1', name: '', width: 50},
+					{ display: '表头2', name: '', width: 50},
+					{ display: '表头3', name: '', width: 50},
+					{ display: '表头4', name: '', width: 50},
+					{ display: '表头5', name: '', width: 50}
+				],
+				detail:{height:'auto', render:function(rdata){
+						if( rdata.children ){
+							return rdata.children[0].id +'<br>sssssssssssss<br><br>';
+						}
+					}
+				},
+				onPageFn: function(){
+					var s = grid.getSelectData();
+					console.log(s)
+				}
+			});
+			
+			grid.methos.alert = function(){
+			//	console.log(this)
+			}
+
+			grid.methos.alert();
+			//saogaUI.ui.grid.prototype.alert();			
+			
+		});
+	</script>
+</body>
+</html>

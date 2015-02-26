@@ -1,11 +1,8 @@
 requirejs.config({
-    baseUrl: root+'/resources/saogaUI/www/js/lib',
+    baseUrl: '../www/js/lib',
     paths: {
     	jquery: 'jquery-1.8.3.min',
 		core: '../core',
-        app:  '../app',
-        WdatePicker: 'My97DatePicker/WdatePicker'
+        app:  '../app'
     }
 });
-
-require(['less-1.5.0.min']);

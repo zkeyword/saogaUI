@@ -1,35 +1,35 @@
 define(function(require){
-	var saogaUI      = require('core/saogaUI');
-
-	saogaUI.template        = require('template');
-	saogaUI.ui.drag         = require('core/drag');
-	saogaUI.ui.dialog       = require('core/dialog');
-	saogaUI.ui.pop          = require('core/pop');
-	saogaUI.ui.tip          = require('core/tip');
-	saogaUI.ui.tab          = require('core/tab');
-	saogaUI.ui.calendar     = require('core/calendar');
-	saogaUI.ui.validator    = require('core/validator');
-	saogaUI.ui.selectArea   = require('core/selectArea');
-	//saogaUI.ui.grid         = require('core/grid');
-	saogaUI.ui.grid         = require('core/grid_debug');
-	saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
-	saogaUI.ui.select       = require('core/select');
 	
-	/*表格下拉按钮*/
-	saogaUI.app.btnDropdown = require('app/btnDropdown');
+	/**
+	* 载入第三方插件
+	*/
+	/*表单验证*/
+	require('app/jquery.validate');
 	
 	/*ajax分页插件*/
-	require('jquery.pagination');
-	
-	/*表单验证*/
-	require('jquery.validate.min');
-	
+	require('app/jquery.pagination');
+
 	/*表单无刷提交*/
-	require('jquery.form');
+	require('app/jquery.form');
+	
+	/*树形控件*/
+	require('app/jquery.ztree.all-3.3.min-amd');
 	
 	/*日期控件*/
-	require('WdatePicker');
+	//require('app/My97DatePicker/WdatePicker');
 	
+	/*光标插件*/
+	require('app/jquery.insert');
+	
+	/*手风琴*/
+	require('app/jquery.accordion');
+	
+	/*只能输入数字*/
+	require('app/jquery.inputOnlyPositiveNum');	
+	
+	/*页面常用*/
+	var saogaUI = require('app/saogaUI');
+
 	/*页面常用*/
 	require('app/common');
 	

@@ -1,0 +1,46 @@
+.l-tree{	span{		width:16px;		height:16px;		display:block;		cursor:pointer;		outline:none;		background:url(../images/l-tree.png) no-repeat;	}
+	.l-tree-ul{
+		padding:0 0 0 18px;
+	}	
+	.l-tree-line{
+		background:url(../images/l-tree-line.gif) 0 0 repeat-y;
+	}
+	
+	.l-tree-switch{
+		background-position: -56px -18px;
+	}
+	.l-tree-lastSwitch{
+		background-position: -56px -36px;
+	}
+	.l-tree-open{
+		background-position: -92px 0;
+	}
+	.l-tree-close{
+		background-position: -74px 0;
+	}		.l-tree-ico{		background-position: -110px -32px;		margin:0 3px 0 0;	}		.l-tree-text{		cursor:pointer;	}
+
+	.l-tree-parentNode{
+		.l-tree-lastSwitch{
+			background-position: -56px -36px;
+		}
+		.l-tree-open{
+			background-position: -92px -18px;
+		}
+		.l-tree-close{
+			background-position: -74px 0;
+		}		.l-tree-ico{			background-position: -110px -16px;		}
+	}		.l-tree-item{		position:relative;	}
+	
+	.l-tree-lastItem{
+		.l-tree-lastItem .l-tree-parentNode{
+			.l-tree-lastSwitch{
+				background-position: -56px -36px;
+			}
+			.l-tree-open{
+				background-position: -92px -36px;
+			}
+			.l-tree-close{
+				background-position: -74px -36px;
+			}
+		}
+	}}

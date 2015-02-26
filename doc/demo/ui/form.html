@@ -1,0 +1,178 @@
+<div class="block">
+	<h2>input:</h2>
+<pre>
+
+&lt;div class=&quot;ui-form&quot;&gt;
+    &lt;label&gt;
+        &lt;i class=&quot;ui-label&quot;&gt;input:&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+
+</pre>
+</div>
+
+<div class="block">
+	<h2>select:</h2>
+<pre>
+
+&lt;div class=&quot;ui-form&quot;&gt;
+	&lt;label&gt;
+		&lt;i class=&quot;ui-label&quot;&gt;select:&lt;/i&gt;
+		&lt;select class=&quot;ui-select&quot;&gt;
+		&lt;/select&gt;
+	&lt;/label&gt;
+&lt;/div&gt;
+
+</pre>
+</div>
+
+
+<div class="block">
+	<h2>textarea:</h2>
+<pre>
+
+&lt;div class=&quot;ui-form&quot;&gt;
+	&lt;label&gt;
+		&lt;i class=&quot;ui-label&quot;&gt;textarea:&lt;/i&gt;
+		&lt;textarea class=&quot;ui-textarea&quot;&gt;
+		&lt;/textarea&gt;
+	&lt;/label&gt;
+&lt;/div&gt;
+
+</pre>
+</div>
+
+<div class="block">
+	<h2>混合使用:</h2>
+<pre>
+
+/* 单个 */
+&lt;div class=&quot;ui-form&quot;&gt;
+    &lt;label&gt;
+        &lt;i class=&quot;ui-label&quot;&gt;单个:&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+
+/* 范围 */
+&lt;div class=&quot;ui-form&quot;&gt;
+    &lt;label&gt;
+        &lt;i&gt;范围&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+    &lt;/label&gt;
+	&lt;label&gt;
+        &lt;i&gt;-&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+
+/* 多个 */
+&lt;div class=&quot;ui-form&quot;&gt;
+	&lt;span&gt;
+		&lt;label&gt;
+			&lt;i class=&quot;ui-input&quot;&gt;范围&lt;/i&gt;
+			&lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+		&lt;/label&gt;
+		&lt;label&gt;
+			&lt;i class=&quot;ui-input&quot;&gt;-&lt;/i&gt;
+			&lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+		&lt;/label&gt;
+	&lt;/span&gt;
+	&lt;span&gt;
+		&lt;label&gt;
+			&lt;i class=&quot;ui-input&quot;&gt;单个:&lt;/i&gt;
+			&lt;input class=&quot;ui-input&quot; type=&quot;text&quot; /&gt;
+		&lt;/label&gt;
+	&lt;/span&gt;
+&lt;/div&gt;
+
+/* 多行 */
+&lt;div class=&quot;ui-form fn-clear&quot;&gt;
+    &lt;label&gt;
+        &lt;i class=&quot;ui-label&quot;&gt;第一行文字:&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;ui-label&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ui-form fn-clear&quot;&gt;
+    &lt;label&gt;
+    	&lt;i class=&quot;ui-label&quot;&gt;第二行字:&lt;/i&gt;
+    	&lt;input class=&quot;ui-input&quot; type=&quot;ui-label&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ui-form fn-clear&quot;&gt;
+    &lt;label&gt;
+        &lt;i class=&quot;ui-label&quot;&gt;第三行:&lt;/i&gt;
+        &lt;input class=&quot;ui-input&quot; type=&quot;ui-label&quot; /&gt;
+    &lt;/label&gt;
+&lt;/div&gt;
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果:</h2>
+	
+	<strong>单个:</strong>
+	<div class="ui-form fn-clear">
+		<label>
+			<i class="ui-label">范围:</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	
+	<strong>范围:</strong>
+	<div class="ui-form fn-clear">
+		<label>
+			<i class="ui-label">范围:</i>
+			<input class="ui-input" type="text" />
+		</label>
+		<label>
+			<i class="ui-label">-</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	
+	<strong>多个:</strong>
+	<div class="ui-form fn-clear">
+		<span>
+			<label>
+				<i class="ui-label">范围:</i>
+				<input class="ui-input" type="text" />
+			</label>
+			<label>
+				<i class="ui-label ui-pl5 ui-pr5">-</i>
+				<input class="ui-input" type="text" />
+			</label>
+		</span>
+		<span>
+			<label>
+				<i class="ui-label">范围:</i>
+				<input class="ui-input" type="text" />
+			</label>
+		</span>
+	</div>
+	
+	<strong>多行且对齐:</strong>
+	<div class="ui-form fn-clear">
+		<label>
+			<i class="ui-label ui-w65">第一行文字:</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	<div class="ui-form fn-clear">
+		<label>
+			<i class="ui-label ui-w65">第二行字:</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	<div class="ui-form fn-clear">
+		<label>
+			<i class="ui-label ui-w65">第三行:</i>
+			<input class="ui-input" type="text" />
+		</label>
+	</div>
+	
+	
+	
+	
+</div>

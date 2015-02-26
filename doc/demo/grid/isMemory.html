@@ -1,0 +1,116 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<dl>
+		<dt>1)、复选框接接口isMemory</dt>
+		<dd>
+			<p>可以不写，值默认是false，这个记忆只能限于当前页面还没刷新时表格翻页，页面刷新之后之前记住的选项将失效。</p>
+		</dd>
+		<dt>2)、获取已选的接口getSelectData</dt>
+		<dd>
+			<p>该接口必须等表格对象生成之后才能使用，获取的数据格式与表格请求的数据格式是一直到</p>
+		</dd>
+	</dl>
+	
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var staticData = {
+		/*json格式的数据行*/
+		rows:[
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+		],
+		/* 该数据源的总条数 */
+		total:20 
+	};
+	
+var grid = saogaUI.ui.grid({
+	wrap:'#grid',
+	data: staticData,
+	isMemory: true,
+	columns: [
+		{ display: '编码.', name: 'id', width: 50},
+		{ display: '姓名', name: 'name', width: 50},
+		{ display: '类别', name: 'type', width: 50},
+		{ display: '性别', name: 'sex', width: 50},
+		{ display: '电话', name: 'tel', width: 50},
+		{ display: 'Email', name: 'email', width: 50}
+	]
+});
+
+console.log(grid.getSelectData());
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用后效果：</h2>
+	<div id="grid"></div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+	var staticData = {
+			/*json格式的数据行*/
+			rows:[
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+				{id:1,name:'张三',type:'经理',sex:'男',tel:'13400000000',email:'zhangsan@a.com'},
+			],
+			/* 该数据源的总条数 */
+			total:20 
+		};
+		
+	var grid = saogaUI.ui.grid({
+		wrap:'#grid',
+		data: staticData,
+		isMemory: true,
+		columns: [
+			{ display: '编码.', name: 'id', width: 50},
+			{ display: '姓名', name: 'name', width: 50},
+			{ display: '类别', name: 'type', width: 50},
+			{ display: '性别', name: 'sex', width: 50},
+			{ display: '电话', name: 'tel', width: 50},
+			{ display: 'Email', name: 'email', width: 50}
+		]
+	});
+	
+	console.log(grid.getSelectData());
+});
+</script>

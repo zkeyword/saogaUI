@@ -1,4 +1,11 @@
 define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, drag, lang){
+	
+	/**
+	* saogaUI.ui.dialog 拖拽控件
+	* @class saogaUI.ui.dialog
+	* @author norion.z
+    * @blog http://zkeyword.com/
+	*/
 	var dialog = {
 		init: function(options){
 			var o             = options || {},
@@ -21,12 +28,12 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 				isDrag        = o.isDrag === undefined || o.isDrag;                //允许拖拽
 			
 			var h = '';
-				h += '<div class="l-ui l-dialog-wrap" id="'+ id +'">';
+				h += '<div class="l-ui l-dialog-wrap l-ui-current l-ui-mask" id="'+ id +'">';
 				h += '	<table class="l-dialog-table">';
 				h += '		<tr><td colspan="3" class="l-dialog-border l-dialog-border-top">&nbsp;</td></tr>';
 				h += '		<tr>';
 				h += '			<td class="l-dialog-border l-dialog-border-left">&nbsp;</td>';
-				h += '			<td class="l-dialog-main"><div class="l-dialog-content" style="width:'+width+'px;height:'+height+'px">'+ text +'</div></td>';
+				h += '			<td class="l-dialog-main"><div class="l-dialog-content" style="width:'+width+'px;height:'+height+'px"><div class="l-dialog-text">'+ text +'</div></div></td>';
 				h += '			<td class="l-dialog-border l-dialog-border-right">&nbsp;</td>';
 				h += '		</tr>';
 				h += '		<tr><td colspan="3" class="l-dialog-border l-dialog-border-bottom">&nbsp;</td></tr>';
@@ -37,10 +44,11 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			saogaUI.ui.wrap();
 			$('#l-ui-wrap').prepend(h);
 			
-			var zIndex        = saogaUI.ui.zIndex(),
-				dialogWrap    = $('#'+id).css({'z-index':zIndex}),
+			var dialogWrap    = $('#'+id),
 				dialogMain    = dialogWrap.find('.l-dialog-main'),
 				dialogContent = dialogWrap.find('.l-dialog-content');
+			
+			saogaUI.ui.dialog.setZIndex(id);
 			
 			/*标题*/
 			if( title ){
@@ -61,14 +69,22 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			if( btns ){
 				$.each(btns,function(i,item){
 					btnMain.append('<a href="javascript:;" class="'+ (item.cls?'ui-btn ui-btnMain ui-floatCenter-item '+item.cls:'ui-btn ui-btnMain ui-floatCenter-item') +'"><span>'+item.text+'</span></a>');
-					item.onclick && btnMain.find('a').eq(i).click(function(){
+					if( item.onclick ){
+						btnMain.find('a').eq(i).click(function(){
+							item.onclick(i,item);
+							saogaUI.ui.dialog.close(id);
+						});
+					}
+					
+					/*item.onclick && btnMain.find('a').eq(i).click(function(){
 						item.onclick(i,item);
 						saogaUI.ui.dialog.close(id);
-					});
+					});*/
 				});	
 			}else{
 				switch( type ){
 					case 'alert':
+						dialogContent.prepend('<div class="l-dialog-icon"><i class="icon icon-check-square-o"></i></div>');
 						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-floatCenter-item l-dialog-ok"><span>确定</span></a>');
 						btnMain.find('.l-dialog-ok').click(function(){
 							if( saogaUI.base.isFunction(ok) ){
@@ -78,6 +94,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 						});
 						break;
 					case 'confirm':
+						dialogContent.prepend('<div class="l-dialog-icon"><i class="icon icon-question-circle"></i></div>');
 						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-floatCenter-item l-dialog-ok"><span>确定</span></a><a href="javascript:;" class="ui-btn ui-btnMain ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
 						btnMain.find('.l-dialog-ok').click(function(){
 							if( saogaUI.base.isFunction(ok) ){
@@ -93,6 +110,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 						});
 						break;
 					case 'error':
+						dialogContent.prepend('<div class="l-dialog-icon"><i class="icon icon-frown-o"></i></div>');
 						btnMain.append('<a href="javascript:;" class="ui-btn ui-btn-primary ui-btnMain-cancel ui-floatCenter-item l-dialog-no"><span>取消</span></a>');
 						btnMain.find('.l-dialog-no').click(function(){
 							if( saogaUI.base.isFunction(no) ){
@@ -106,12 +124,29 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			
 			
 			/*位置*/
-			var win  = $(window),
-				top  = top || win.scrollTop() + win.height()/2 - dialogWrap.height()/2,
-				left = left || ( win.width() - dialogWrap.width() )/2;
-			dialogWrap.css({top:top,left:left});
+			var win        = $(window),
+				dialogIcon = dialogWrap.find('.l-dialog-icon'),
+				dialogText = dialogWrap.find('.l-dialog-text'),
+				_setSize   = function(){
+					dialogWrap.css({
+						top: top || /*win.scrollTop() +*/ ( win.height() - dialogWrap.height() )/2,
+						left: left || ( win.width() - dialogWrap.width() )/2
+					});
+				}
 			
-			//saogaUI.base.log( dialogWrap.height() );
+			_setSize();	
+			win.resize(_setSize);
+
+			dialogIcon.css({top: (height - dialogIcon.height())/2 + 15 });
+			dialogText.css({'padding-top': (height - dialogText.height())/2 });
+			
+			dialogContent
+				.css({opacity:0.1})
+				.animate({ 
+					opacity: 1
+				}, 500);
+		
+
 			
 			/*遮罩*/
 			if( isMask ){
@@ -130,10 +165,12 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			if( allowClose ){
 			
 				/*添加关闭按钮*/
-				var dialogClose = dialogMain.prepend('<div class="l-dialog-close">x</div>').find('.l-dialog-close');
-				dialogClose.click(function(){
-					saogaUI.ui.dialog.close(id);
-				});
+				dialogMain
+					.prepend('<div class="l-dialog-close"><i class="icon icon-close" title="关闭"></i></div>')
+					.find('.l-dialog-close')
+					.click(function(){
+						saogaUI.ui.dialog.close(id);
+					});
 				
 				/*点击遮罩关闭*/
 				/* if( isMask && isMaskClose ){
@@ -162,8 +199,37 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 		},
 		
 		/**
+		* 设置层级
+		* @param {Object} options drag参数
+		*/
+		setZIndex: function(id){
+			var obj        = $('.l-ui'),
+				i          = 0,
+				len        = obj.length,
+				zIndex     = saogaUI.ui.zIndex(),
+				mask       = $('.l-ui-lock'),
+				maskZindex = Number( mask.css('z-index') ),
+				dialog	   = $('#'+id);
+			if( dialog.hasClass('l-ui-current') ){
+								
+				for(; i<len; i++){
+					obj.eq(i).css({'z-index':maskZindex - i});
+				}
+				
+				obj.removeClass('l-ui-current');
+				dialog.css({'z-index':zIndex});
+			}else{
+				for(; i<len; i++){
+					obj.eq(i).css({'z-index':maskZindex + len - i});
+				}
+				
+			}
+		},
+		
+		/**
 		* 关闭释放
 		* @member saogaUI.ui.dialog
+		* @param {Object} options drag参数
 		*/
 		close: function(id){
 			if( id ){
@@ -174,20 +240,26 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			if( !$('.l-ui-mask').length ){
 				saogaUI.ui.unlock();
 			}
+			saogaUI.ui.dialog.setZIndex(id);
 		},
 		
 		/**
 		* alert
 		* @member saogaUI.ui.dialog
+		* @param {Object} options drag参数
 		*/
 		alert: function(options){
-			var o     = options || {},
-				title = o.title || lang.alert,
-				text  = o.text || '',
-				ok    = o.ok || '';
+			var o      = options || {},
+				title  = o.title || lang.alert,
+				text   = o.text || '',
+				width  = o.width,
+				height = o.height,
+				ok     = o.ok || '';
 			this.init({
 				title:title,
 				text:text,
+				width:width,
+				height:height,
 				type:'alert',
 				ok:ok
 			});
@@ -196,16 +268,21 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 		/**
 		* confirm
 		* @member saogaUI.ui.dialog
+		* @param {Object} options drag参数
 		*/
 		confirm: function(options){
-			var o     = options || {},
-				title = o.title || lang.confirm,
-				text  = o.text || '',
-				ok    = o.ok || '',
-				no    = o.no || '';
+			var o      = options || {},
+				title  = o.title || lang.confirm,
+				text   = o.text || '',
+				width  = o.width,
+				height = o.height,
+				ok     = o.ok || '',
+				no     = o.no || '';
 			this.init({
 				title:title,
 				text:text,
+				width:width,
+				height:height,
 				type:'confirm',
 				ok:ok,
 				no:no
@@ -215,15 +292,20 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 		/**
 		* error
 		* @member saogaUI.ui.dialog
+		* @param {Object} options drag参数
 		*/
 		error: function(options){
-			var o     = options || {},
-				title = o.title || '',
-				text  = o.text || lang.error,
-				no    = o.no || '';
+			var o      = options || {},
+				title  = o.title || '',
+				text   = o.text || lang.error,
+				width  = o.width,
+				height = o.height,
+				no     = o.no || '';
 			this.init({
 				title:title,
 				text:text,
+				width:width,
+				height:height,
 				type:'error',
 				no:no
 			});
@@ -232,6 +314,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 		/**
 		* 小提示框
 		* @member saogaUI.ui.dialog
+		* @param {Object} options drag参数
 		*/
 		prompt: function(options){
 			var o        = options || {},
@@ -257,10 +340,16 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 				dialogWrap = $('#'+id).css({'width':width,'height':height,'z-index':zIndex});
 			
 			//位置
-			var win  = $(window),
-				top  = top || win.scrollTop() + win.height()/2 - dialogWrap.height()/2,
-				left = left || ( win.width() - dialogWrap.width() )/2;
-			dialogWrap.css({top:top,left:left});		
+			var win      = $(window),
+				_setSize = function(){
+					dialogWrap.css({
+						top: top || /*win.scrollTop() +*/ ( win.height() - dialogWrap.height() )/2,
+						left: left || ( win.width() - dialogWrap.width() )/2
+					});
+				}
+			
+			_setSize();	
+			win.resize(_setSize);
 			
 			//遮罩
 			if( isMask ){
@@ -273,7 +362,7 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 				if( endFn && typeof endFn === 'function' ){
 					endFn();
 				}
-			};
+			}
 			setTimeout(show,showTime);
 			
 		}

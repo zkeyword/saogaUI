@@ -1,0 +1,100 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>修改按钮的API是modifyBtns，只要传入和原来的弹窗框的按钮数据格式一致即可。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var html = '&lt;div&gt;这个是一个pop弹出框&lt;/div&gt;';
+
+var pop = saogaUI.ui.pop({
+	title:'弹窗的标题',
+	height:240,
+	width:320,
+	html:html,
+	btns:[
+		{
+			text:'保存修改',
+			closePop:false,
+			onclick:function(id){
+				alert('保存修改')
+				pop.close(id);
+			}
+		},
+		{
+			text:'取消',
+			onclick:function(){
+	
+			}
+		}
+	]
+});
+
+pop.modifyBtns([
+	{
+		text:'保存',
+		closePop:false,
+		onclick:function(id){
+			alert('保存')
+			pop.close(id);
+		}
+	},
+	{
+		text:'关闭',
+		onclick:function(){
+
+		}
+	}
+]);
+
+</pre>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	var html = '这个是一个pop弹出框';
+
+	var pop = saogaUI.ui.pop({
+		title:'弹窗的标题',
+		height:240,
+		width:320,
+		html:html,
+		btns:[
+			{
+				text:'保存修改',
+				closePop:false,
+				onclick:function(id){
+					alert('保存修改')
+					pop.close(id);
+				}
+			},
+			{
+				text:'取消',
+				onclick:function(){
+		
+				}
+			}
+		]
+	});
+
+	pop.modifyBtns([
+		{
+			text:'保存',
+			closePop:false,
+			onclick:function(id){
+				alert('保存')
+				pop.close(id);
+			}
+		},
+		{
+			text:'关闭',
+			onclick:function(){
+
+			}
+		}
+	]);
+
+});
+</script>

@@ -1,0 +1,43 @@
+<div class="block">
+	<h2>接口说明：</h2>
+	<p>该接口的是直接在tip容器中插入html，为了兼容原先的代码，还保留该接口，建议使用升级版render接口，更灵活。</p>
+</div>
+
+<div class="block">
+	<h2>应用代码：</h2>
+<pre>
+var html = '';
+html += '&lt;div id="lt-wrap"&gt;';
+html += '	&lt;div data-message="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop" &gt;鼠标移动到此&lt;div/&gt;';
+html += '&lt;div/&gt;';
+
+saogaUI.ui.tip({
+	target:'.buyerMessagePop',
+	targetWrap:'#lt-wrap',
+	width:100,
+	html:html
+}); 
+</pre>
+</div>
+
+<div class="block">
+	<h2>调用效果：</h2>
+	<div id="lt-wrap">
+		<div data-message="请速发货1！" class="ui-btn ui-btn-primary buyerMessagePop">鼠标移动到此</div>
+	</div>
+</div>
+
+<script>
+require(['app/main'], function(saogaUI){
+
+	var html = '<div>请速发货</div>'
+
+	saogaUI.ui.tip({
+		target:'.buyerMessagePop',
+		targetWrap:'#lt-wrap',
+		width:100,
+		html:html
+	}); 
+
+});
+</script>

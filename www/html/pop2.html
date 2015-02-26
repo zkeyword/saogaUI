@@ -1,4 +1,174 @@
-不用引用requirejs 
-<script>
-	console.log(saogaUI)
-</script>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>弹出框页面</title>
+<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
+ --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script src="../js/lib/jquery.js"></script>
+<script data-main="../js/common2" src="../js/lib/require.js"></script>
+
+</head>
+<body>
+
+<div class="page-loadData">
+	<div class="flow-steps">
+	  <ol class="num4">
+		<li class="current first">1.上传文件</li>
+		<li class="">2.数据预览、匹配字段</li>
+		<li class="last">3.确认导入</li>
+	  </ol>
+	</div>
+        
+	<div class="fn-clear">
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">导入批次名称：</span>
+				<span><input type="input" class="ui-input ui-input-180" /></span>
+				<span>(*名称不允许与其他批次重复)</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">导入批次名称：</span>
+				<span>
+					<select name="" id="" class="ui-select">
+						<option value=""></option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">导入文件：</span>
+				<span><input type="file" class="ui-input ui-input-180" /></span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">分隔符：</span>
+				<span>
+					<select name="" id="" class="ui-select">
+						<option value=""></option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">第一行包含字段名：</span>
+				<span>
+					<select name="" id="" class="ui-select">
+						<option value=""></option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">说明：</span>
+				<span>
+					(*名称不允许与其他批次重复)
+				</span>
+			</div>
+		</div>
+	</div>
+
+	
+	<div class="fn-clear">
+		<div class="l-grid-body fn-clear">
+			<table>
+				<thead>
+					<tr class="l-grid-hd-row">
+						<th class="l-grid-hd-cell">
+							<div class="l-grid-hd-cell-inner">
+								<span class="l-grid-hd-cell-text">宝贝</span>
+							</div>
+						</th>
+						<th class="l-grid-hd-cell ui-td-width120">
+							<div class="l-grid-hd-cell-inner">
+								<span class="l-grid-hd-cell-text">单价(元)</span>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>									
+					<tr class="l-grid-row" data-row="0">
+						<td class="l-grid-row-cell">
+							<div class="l-grid-row-cell-inner l-grid-align-left">
+								adsadfadfa
+							</div>
+						</td>
+						<td class="l-grid-row-cell">
+							<div class="l-grid-row-cell-inner l-grid-align-left">
+								adsadfadfa
+							</div>
+						</td>
+					</tr>
+					<tr class="l-grid-row l-grid-row l-grid-row-even" data-row="1">
+						<td class="l-grid-row-cell">
+							<div class="l-grid-row-cell-inner l-grid-align-left">
+								adsadfadfa
+							</div>
+						</td>
+						<td class="l-grid-row-cell">
+							<div class="l-grid-row-cell-inner l-grid-align-left">
+								adsadfadfa
+							</div>
+						</td>
+					</tr>
+				</tbody>	
+			</table>
+		</div>
+		<div class="fn-clear mt6">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">客户ID：</span>
+				<span>
+					<select name="" id="" class="ui-select">
+						<option value=""></option>
+					</select>
+				</span>
+				<span>(*名称不允许与其他批次重复)</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">客户ID：</span>
+				<span>
+					<select name="" id="" class="ui-select">
+						<option value=""></option>
+					</select>
+				</span>
+				<span>(*名称不允许与其他批次重复)</span>
+			</div>
+		</div>
+	</div>	
+	
+	
+	<div class="fn-clear">
+		<div class="fn-clear msgBlock">
+			温馨提示：在未确认导入前，请勿刷新页面。
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">上传文件记录数：</span>
+				<span>(*名称不允许与其他批次重复)</span>
+			</div>
+		</div>
+		<div class="fn-clear">
+			<div class="ui-forms">
+				<span class="ui-label ui-label-110">客户ID：</span>
+				<span>(*名称不允许与其他批次重复)</span>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="fn-clear">
+		<a href="javascript:;" class="ui-btn ui-btn-primary"><span>下一步</span></a>
+	</div>
+</div>
+
+
+</body>
+</html>

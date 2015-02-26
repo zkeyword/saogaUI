@@ -17,10 +17,109 @@
  ******┃┫┫　┃┫┫ 
  ******┗┻┛　┗┻┛  
 */
-define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
+define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saogaUI, lang, select){
 	
-	var BaseGrid = function(){
-		var g       = this,
+	'use strict';
+	
+	/**
+	* saogaUI.ui.grid 表格控件
+	* @class saogaUI.ui.grid
+	* @author norion.z
+    * @blog http://zkeyword.com/
+    * @param {Object} o 表格参数
+    * @param {String} o.wrap 表格容器
+    * @param {String} o.id 表格id
+    * @param {Object} o.pageAjax ajax数据
+    * @param {String} o.pageAjax.url ajax请求的url
+    * @param {String} o.pageAjax.type ajax请求类型，默认是post
+    * @param {String} o.pageAjax.data ajax请求的条件
+    * @param {Object} o.data 静态数据
+    * @param {String|Number} o.width 表格宽度
+    * @param {Boolean} o.isFixedWidth 表宽度是否为固定宽度，默认为false，会去对比grid外框的宽度和o.columns.width，而达到自适应列的目的
+    * @param {Object} o.columns 列结构
+    * @param {String} o.columns.display 表头名称
+    * @param {String} o.columns.name 数据字段名
+    * @param {Number} o.columns.width 列宽度，这里是占比
+    * @param {Function} o.columns.render 列自定义显示函数
+    * @param {Function} o.columns.statisRender 统计列自定义显示函数
+    * @param {String} o.columns.statisType 统计类型
+    * @param {String} o.columns.statisWrap 统计容器
+    * @param {Object} o.statis 统计
+    * @param {Object} o.detail 表格详细
+    * @param {Object} o.bottomBtns 底部按钮
+    * @param {Boolean} o.isPage 是否显示分页
+    * @param {Boolean} o.isHead 是否显示头部
+    * @param {Boolean} o.showAllRow 显示所有数据，默认false，以分页和显示条数互斥 ，isPage=false、pageSize = total
+    * @param {String} o.pageIndex 分页起始页
+    * @param {String} o.pageSize 每页显示的条数
+    * @param {Array} o.pageSizeOptions 可选择设定的每页结果数，默认[10, 20, 50, 100, 200]，不显示时可设置null
+    * @param {Function} o.onPageFn 翻页事件
+    * @param {Boolean} o.isPageCache 翻页时是否缓存当页数据
+    * @param {Boolean} o.isMemory 翻页是否记住选择记录，默认false
+    * @param {Boolean} o.checkbox 是否有checkbox
+    * @param {Function} o.onCheckFn 点击checkbox事件
+    * @param {Function} o.onRowFn 点击行事件
+    * @param {Boolean} o.isSelectSingleRow 点击是否选中单行,onRowFn有设置时才生效
+    * @param {Boolean} o.isOnRowCheckbox 点击行选中checkbox
+    * @param {Function} o.initSelected 初始化选中事件
+    * @param {String}  o.nullText 空文本
+    * @param {String}  o.requestText 请求文本
+    * @param {Boolean} o.isSort 是否排序，默认false
+    * @param {Boolean} o.isSortCurrent 排序当前页中数据，默认false，使用时isSort必须是true，isPageCache必须是true
+    * @param {Boolean} o.isShowLoading 是否显示loading效果，默认true
+    * @param {String} o.countFont 统计文字
+    * @param {String} o.refreshIndex 刷新当前页索引pageIndex,默认false
+    * @param {String} o.isHideColumns 是否要隐藏列Columns
+	* @return {Object} grid对象
+	*/
+	var Grid = function(o){
+		
+		var 
+			/**
+			* 全局对象
+			* @public
+			*/
+			g       = this,
+		
+			/**
+			* 默认配置
+			* @private
+			*/
+			p = {
+				wrap:            $(o.wrap),
+				id:              o.id || 'l-grid-' + (new Date()).valueOf(),	
+				pageAjax:        o.pageAjax || null,
+				data:            o.data || {},                                           //静态数据
+				width:           o.width || 'auto',
+				isFixedWidth:    o.isFixedWidth  === undefined ? false : o.isFixedWidth, //表宽度是否为固定宽度，默认为false，为true时会去对比width和grid外框的宽度
+				columns:         o.columns || {},
+				statis:          o.statis || [],                                         //统计
+				detail:          o.detail || null,
+				bottomBtns:      o.bottomBtns || {},                                     //底部按钮
+				isPage:          o.isPage === undefined ? true : o.isPage,               //是否显示分页
+				isHead:          o.isHead === undefined ? true : o.isHead,               //是否显示头部
+				showAllRow:      o.showAllRow ? true : false,                            //显示所有数据，默认false，以分页和显示条数互斥 ，isPage=false、pageSize = total
+				pageIndex:       o.pageIndex || 1,                                       //分页起始页
+				pageSize:        o.pageSize || 10,                                       //每页显示的条数
+				pageSizeOptions: o.pageSizeOptions === undefined ? [10, 20, 50, 100, 200] : o.pageSizeOptions, //可选择设定的每页结果数
+				onPageFn:        o.onPageFn,                                             //翻页事件
+				isPageCache:     o.isPageCache === undefined ? true : o.isPageCache,     //翻页时是否缓存当页数据
+				isMemory:        o.isMemory ? true : false,                              //翻页是否记住选择记录，默认false
+				checkbox:        o.checkbox === undefined ? true : o.checkbox,           //是否有checkbox
+				onCheckFn:       o.onCheckFn || null,                                    //点击checkbox事件
+				onRowFn:         o.onRowFn || null,                                      //点击行事件
+				isSelectSingleRow: o.isSelectSingleRow === undefined ? false : o.isSelectSingleRow, //点击是否选中单行
+				isOnRowCheckbox: o.isOnRowCheckbox ? true : false,                       //点击行选中checkbox
+				initSelected:    o.initSelected || null,                                 //初始化选中事件
+				nullText:        o.nullText ? o.nullText : lang.nullText,                //空文本
+				requestText:     o.requestText ? o.requestText : lang.requestText,       //请求文本
+				isSort:          o.isSort ? true : false,                                //是否排序，默认false
+				isSortCurrent:   o.isSortCurrent ? true : false,                         //排序当前页缓存中数据，默认false，使用时isSort必须是true，isPageCache必须是true
+				isShowLoading:   o.isShowLoading === undefined ? true : o.isShowLoading, //是否显示loading效果
+				countFont:       o.countFont ? o.countFont : lang.countFont,             //统计文字
+				refreshIndex:    o.refreshIndex === undefined ? false : o.refreshIndex,  //刷新当前页索引pageIndex,默认false
+			    isHideColumns:   o.isHideColumns === undefined ? false : o.isHideColumns //是否要隐藏列Columns
+			},
 		
 			/**
 			* 缓存池
@@ -28,8 +127,11 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			*/
 			_cache = {
 				data: [],
-				rowselected: [],
-				detailSelected: []
+				tmpData: [],
+				columns: [],
+				rowSelected: [],
+				detailSelected: [],
+				width:0
 			},
 			
 			/**
@@ -38,295 +140,810 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			*/
 			_core   = {
 				/**
-				* 内部表格表头内容
-				* @param {object} init 和 refresh共享的对象
+				* 表格表头内容
 				*/
-				tHeadCreateHtml: function(options){
-					var columns   = options.columns,
-						len       = columns.length,
-						width     = options.width,    //考虑去掉
-						detail    = options.detail,   //表格明细
-						checkbox  = options.checkbox, //复选框
-						i         = 0,
-						s         = '';
-					
-					//取出宽度最大的列
-					var tmpWidth = 0;
-					for(var h = 0; h < columns.length; h++){
-						tmpWidth = Math.max(columns[h].width, tmpWidth);
-					}
-					
-					s += '<div class="l-grid-header"><table style="width:100%">';
-					s += '<tr class="l-grid-hd-row">';
-					if( detail.length ){
-						s += '<th class="l-grid-hd-cell l-grid-hd-detail" style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn"></span></div></th>';
+				tHeadCreateHtml: function(){
+					var isHideColumns = p.isHideColumns,
+						columns       = p.columns,
+						detail        = p.detail,   //表格明细
+						checkbox      = p.checkbox, //复选框
+						popup         = g.popup,
+						grid1         = g.grid1,
+						grid2         = g.grid2,
+						isInit        = g.isInit,
+						i             = 0,
+						s1            = '',
+						s2            = '',
+						s3            = '';
+						
+					/*grid1*/
+					s1 += '<table>';
+					s1 += '<tr class="l-grid-hd-row">';
+					if( detail ){
+						s1 += '<th class="l-grid-hd-cell l-grid-hd-detail" style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn"></span></div></th>';
 					}
 					if( checkbox ){
-						s += '<th class="l-grid-hd-cell l-grid-hd-checkbox" style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
+						s1 += '<th class="l-grid-hd-cell l-grid-hd-checkbox" style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
 					}
-					for(; i < len; i++){
-						var colWidth, innerWidth;
-						if( columns[i].width === tmpWidth ){
-							innerWidth = '';
-							colWidth = 'auto';
-						}else{
-							innerWidth = ' style="width:'+ (columns[i].width - 10) +'px"';
-							colWidth = columns[i].width + 'px';
+					s1 += '</tr>';
+					s1 += '</table>';
+					
+					/*grid2*/
+					if( isInit && !saogaUI.base.cookie.get(p.id) ){
+						_cache.columns = columns;
+					}
+					
+					if( isHideColumns ){
+						columns = _cache.columns;
+						for(var h = 0; h < p.columns.length; h++){
+							var popupSelected = '';
+							for(var j = 0; j<columns.length; j++){
+								if( p.columns[h].display === columns[j].display ){
+									popupSelected = ' l-checkbox-selected';
+								}
+							}
+							s3 += '<div class="l-grid-popup-item fn-clear"><span class="l-checkbox'+ popupSelected +'"></span><span class="l-grid-popup-text">'+ p.columns[h].display +'</span></div>';
 						}
-						s += '<th class="l-grid-hd-cell" style="width:'+ colWidth +'"><div class="l-grid-hd-cell-inner"'+ innerWidth +'>'+ columns[i].display +'</div></th>';
+						
+						popup.html(s3)
+					}else if( columns.length ){
+						columns = _cache.columns;
 					}
-					s += '</tr>';
-					s += '</table></div>';
-					return s;
+
+					s2 += '<table>';
+					s2 += '<tr class="l-grid-hd-row">';
+					for(; i < columns.length; i++){
+						s2 += '<th class="l-grid-hd-cell"><div class="l-grid-hd-cell-inner"><span class="l-grid-hd-cell-span" data-columnName='+ columns[i].name +'><span class="l-grid-hd-cell-text">'+ columns[i].display +'</span></span></div></th>';
+					}
+					s2 += '</tr>';
+					s2 += '</table>';
+
+					if( isInit ){
+						grid1.append('<div class="l-grid-header">'+ s1 + '</div>');
+						grid2.append('<div class="l-grid-header">'+ s2 +'</div>');
+					}else{
+						grid1.find('.l-grid-header').html(s1);
+						grid2.find('.l-grid-header').html(s2);
+					}
 				},
 				
 				/**
-				* 内部表格主体内容
-				* @param {object} init 和 refresh共享的对象
+				* 表格主体内容
+				* @param {Number} index 页面索引
 				*/
-				tBodyCreateHtml: function(options, index){
-					var columns   = options.columns,
-						pageSize  = options.pageSize,
-						width     = options.width,
-						checkbox  = options.checkbox,                      //选择框
-						detail    = options.detail,                        //行明细
-						nullText  = options.nullText,
-						s         = '',
-						tmpData   = options.tmpData,
-						total     = options.data.total,
-						index     = index !== undefined ? index - 1  : 0;
+				tBodyCreateHtml: function(index){
+					var columns    = _cache.columns.length ? _cache.columns : p.columns,
+						len        = columns.length,
+						statis     = p.statis,
+						statisData = [],
+						detail     = p.detail,   //表格明细
+						checkbox   = p.checkbox, //复选框
+						nullText   = g.loding.is(':visible') ? p.requestText : p.nullText,
+						pageSize   = p.pageSize,
+						popup      = g.popup,
+						grid       = g.grid,
+						grid1      = g.grid1,
+						grid2      = g.grid2,
+						i          = 0,
+						s1         = '',
+						s2         = '',
+						tmpData    = _cache.tmpData,
+						total      = p.data.total,
+						rows       = p.data.rows,
+						isInit     = g.isInit,
+						that       = this;
 					
-					//取出宽度最大的列
-					var tmpWidth = 0;
-					for(var h = 0; h < columns.length; h++){
-						tmpWidth = Math.max(columns[h].width, tmpWidth);
+					/*修改索引值，从1开始，所以减1*/
+					index = index !== undefined ? index - 1 : 0;
+
+					/*grid1*/
+					if( checkbox || detail ){
+						s1 += '<table>';
+						if( total && rows.length ){
+							for(var i = 0; i<pageSize; i++){
+								if( tmpData[index][i] ){
+									s1 += '<tr class="l-grid-row'+ 
+											  (i%2 === 0 ? '' : ' l-grid-row-even') +
+											  (that.initSelected( tmpData[index][i] ) ? ' l-grid-row-selected' : '') +
+											  '" data-row="'+ i +'">';
+
+									if( detail ){
+										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn l-grid-row-detailbtn-close"></span></div></td>';
+									}
+									if( checkbox ){
+										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
+									}
+									s1 += '</tr>';
+								}
+							}
+							/*判断是否统计*/
+							if( statis ){
+								var sLen = statis.length,
+									n    = 0;
+								for(; n<sLen; n++){
+									s1 += '<tr class="l-grid-row l-grid-row-statis l-grid-row-'+ statis[n].type +'">';
+									s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"></div></td>';
+									s1 += '</tr>';
+								}
+							}
+						}else{
+							s1 += '<tr class="l-grid-row"><td></td></tr>';
+						}
+						s1 += '</table>';
 					}
+
+					/*grid2*/
+					s2 += '<table>';
+					
+					if( total && rows.length ){
+						for(var k = 0; k<len; k++){
+							statisData[k] = [];
+						}
 						
-					s += '<table style="width:100%">';
-					
-					if( total ){
-					
 						for(var i = 0; i<pageSize; i++){
+
 							if( tmpData[index][i] ){
-														
-								s += '<tr class="l-grid-row'+ (i%2 == 0 ? '' : ' l-grid-row-even') +'">';
 								
-								if( detail.length ){
-									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-detailbtn l-grid-row-detailbtn l-detailbtn-close"></span></div></td>';
-								}
+								s2 += '<tr class="l-grid-row' +
+										  (i%2 === 0 ? '' : ' l-grid-row-even') +
+										  (that.initSelected(tmpData[index][i], i) ? ' l-grid-row-selected' : '') +
+										  '" data-row="'+ i +'">';
 								
-								if( checkbox ){
-									s += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
-								}
-								
-								for(var h = 0; h < columns.length; h++){
-									var colWidth, innerWidth;
-									if( columns[h].width === tmpWidth ){
-										innerWidth = '';
-										colWidth = 'auto';
-									}else{
-										innerWidth = ' style="width:'+ (columns[h].width - 10) +'px"';
-										colWidth = columns[h].width + 'px';
+								var rowStatis = 0; //行统计和
+								for(var h = 0; h < len; h++){
+									
+									/*统计数据*/
+									if( columns[h].statisType ){
+										var statisRow = Number( tmpData[index][i][columns[h].name] );
+										statisData[h][i] = !isNaN(statisRow) ? statisRow : 0;
+										rowStatis += statisData[h][i];
+										if( columns[h].statis !== undefined ){
+											statisData[h][i] = rowStatis;
+										}
 									}
-									s += '<td style="width:'+colWidth+'"><div class="l-grid-row-cell-inner"'+ innerWidth +'>';
-									if( columns[h].render !== undefined ){
-										s += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name]);
+									
+									s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columns[h].align ? columns[h].align : 'left') +'">';
+
+									if( columns[h].statis !== undefined ){
+										if( columns[h].statisRender !== undefined ){
+											s2 += columns[h].statisRender(rowStatis);
+										}else{
+											s2 += rowStatis;
+										}
+									}else if( columns[h].render !== undefined ){
+										s2 += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name], h);
 									}else{
-										s += tmpData[index][i][columns[h].name];
+										s2 += tmpData[index][i][columns[h].name];
 									}
-									s += '</div></td>';
+									
+									s2 += '</div></td>';
 								}
 								
-								s += '</tr>';
+								s2 += '</tr>';
 								
-								if( detail.render !== undefined ){
-									var str    = detail.render(tmpData[index], pageStar),
+								if( detail && detail.render !== undefined ){
+									var str    = detail.render(tmpData[index][i]),
 										colLen = columns.length + (checkbox ? 1 : 0) + 1;
-									s += '<tr class="l-grid-row-cell-detail"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
+									s2 += '<tr class="l-grid-row-detail'+ (i%2 === 0 ? '' : ' l-grid-row-even') +'"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
 								}
 								
 							}
+						}
+
+						/*判断是否统计*/
+						if( statis ){
+							var sLen = statis.length,
+								n    = 0;
+							for(; n<sLen; n++){
+								s2 += '<tr class="l-grid-row l-grid-row-statis l-grid-row-'+ statis[n].type +'">';
+								for(var m = 0; m < len; m++){
+									s2 += '<td class="l-grid-row-cell"><div class="l-grid-row-cell-inner l-grid-align-'+ (columns[m].align ? columns[m].align : 'left') +'">';
+									if( columns[m].statisWrap ){
+										s2 += statis[n].display;
+									}else{
+										var sData = statisData[m],
+											ssLen = sData.length,
+											ssVal = 0,
+											x     = 0,
+											sum   = 0,
+											avg   = 0,
+											min   = 0,
+											max   = 0;
+										
+										for(; x<ssLen; x++){
+											ssVal += sData[x];
+										}
+										
+										if( columns[m].statisType ){
+											var str  = columns[m].statisType,
+												arr  = str.split(','),
+												d    = 0,
+												dlen = arr.length,
+												dStr = '';
+											
+											for(; d<dlen; d++){
+												if( statis[n].type === arr[d] ){
+													switch(arr[d]){
+														case 'sum':
+															dStr = ssVal.toFixed(2);
+															break;
+														case 'avg':
+															dStr = ( (ssVal*1.0)/x ).toFixed(2);
+															break;
+														case 'min':
+															dStr = Math.min.apply(Math, sData).toFixed(2);
+															break;
+														case 'max':
+															dStr = Math.max.apply(Math, sData).toFixed(2);
+															break;
+													};
+													
+													if( columns[m].statisRender !== undefined ){
+														s2 += columns[m].statisRender(dStr);
+													}else{
+														s2 += dStr;
+													}
+												}
+											}// end for
+											
+										}
+										
+									}
+									s2 += '</div></td>';
+								}
+								s2 += '</tr>';
+							}
+						}// end if statis
+						
+					}else{
+						s2 += '<tr class="l-grid-row"><td><div class="l-grid-row-cell-inner l-grid-align-center l-grid-nullText">'+ nullText +'</div></td></tr>';
+					}
+					s2 += '</table>';
+					
+					
+					/*init*/
+					if( isInit ){
+						grid1.append('<div class="l-grid-body">' + s1 +'</div>');
+						grid2.append('<div class="l-grid-body">' + s2 +'</div>');
+					}else{
+						grid1.find('.l-grid-body').html(s1);
+						grid2.find('.l-grid-body').html(s2);
+					}
+					
+					/*hover*/
+					grid
+						.off('mouseover', '.l-grid-row')
+						.on('mouseover', '.l-grid-row', function(){
+							var row   = $(this),
+								index = row.attr('data-row');
+								
+							grid1
+								.find('.l-grid-row')
+								.eq(index)
+								.addClass('l-grid-row-hover');
+								
+							grid2
+								.find('.l-grid-row')
+								.eq(index)
+								.addClass('l-grid-row-hover')
+								.next('.l-grid-row-detail')
+								.addClass('l-grid-row-hover');
+						})
+						.off('mouseout', '.l-grid-row')
+						.on('mouseout', '.l-grid-row', function(){
+							var row   = $(this),
+								index = row.attr('data-row');
+							
+							grid1
+								.find('.l-grid-row')
+								.eq(index)
+								.removeClass('l-grid-row-hover');
+								
+							grid2
+								.find('.l-grid-row')
+								.eq(index)
+								.removeClass('l-grid-row-hover')
+								.next('.l-grid-row-detail')
+								.removeClass('l-grid-row-hover');
+						});
+					
+					/*set size*/
+					that.setCellWidth();
+					if( checkbox ){
+						that.setRowsHeight();
+					}
+					
+					$(window).resize(function(){
+						that.setCellWidth();
+						if( checkbox ){
+							that.setRowsHeight();
+						}
+					});
+					
+					/* 设置ajax模式缓存 */
+					if( !p.isPageCache && !p.isSortCurrent ){
+						_cache.tmpData[p.pageIndex - 1] = [];
+					}
+				},
+				
+				/**
+				* 设置列宽
+				*/
+				setCellWidth: function(){
+					var columns      = _cache.columns.length ? _cache.columns : p.columns,
+						len          = columns.length,
+						wrapWidth    = p.wrap.width(),
+						grid         = g.grid,
+						slGrid       = grid.find('.l-sl-grid2'),
+						grid1        = g.grid1,
+						checkbox     = p.checkbox,
+						grid1Width   = checkbox ? grid1.outerWidth() : 0,
+						grid2        = g.grid2,
+						i            = 0,
+						j            = 0,
+						total        = 0,
+						colWidth     = 0,
+						isFixedWidth = p.isFixedWidth,
+						_fixedWidth  = function(width){
+										width = width === undefined ? p.width : width;
+										for(; j<len; j++){
+											grid2.find('.l-grid-hd-cell').eq(j).width(columns[j].width);
+											grid2.find('.l-grid-row-cell').eq(j).width(columns[j].width);
+										}
+										grid.width(width);
+										slGrid.css({
+											width: width - grid1Width,
+											//width: checkbox ? width - grid1Width - 1 : width,  //FIXME chrome外框多1px会乱掉  chrome放大所致
+											overflow:'auto',
+											marginRight:0
+										});
+										grid2.css({
+											width: total,
+											marginLeft:0
+										});
+									},
+						_autoWidth   = function(){
+										if( checkbox ){
+											grid2.css({'margin-left':grid1Width});
+											grid2.parent().css({'margin-right': - grid1Width});
+										}
+										for(; j<len; j++){
+											colWidth = columns[j].width/total*100 + '%';
+											grid2.find('.l-grid-hd-cell').eq(j).width(colWidth);
+											grid2.find('.l-grid-row-cell').eq(j).width(colWidth);
+										}
+										grid.width('auto');
+										slGrid.css({
+											width:'100%',
+											overflow:'inherit',
+											marginRight:-grid1Width
+										});
+										grid2.css({
+											width: 'auto',
+											marginLeft:grid1Width
+										});
+									};
+					
+					for(; i<len; i++){
+						total += columns[i].width;
+					}
+					
+					//console.log(total,p.wrap.width(),p.wrap.width() > total)
+					
+					if( p.width === 'auto' ){
+						_autoWidth();
+					}else{
+						if( isFixedWidth ){
+							_fixedWidth();
+						}else{
+							if( wrapWidth > total || wrapWidth < p.width ){
+								_autoWidth();
+							}else{
+								_fixedWidth( wrapWidth );
+							}
+						}
+					}
+				},
+				
+				/**
+				* 设置行高
+				*/
+				setRowsHeight: function(){
+					var grid1    = g.grid1,
+						grid2    = g.grid2,
+						pageSize = p.statis ? p.pageSize + p.statis.length : p.pageSize,
+						i        = 0;
+					
+					grid1.find('.l-grid-hd-row').height( grid2.find('.l-grid-hd-row').outerHeight() );
+					
+					if( pageSize ){
+						for(; i<pageSize; i++){
+							var grid1_row       = grid1.find('.l-grid-row').eq(i),
+								grid2_row       = grid2.find('.l-grid-row').eq(i),
+								grid2_rowDetail = grid2_row.next('.l-grid-row-detail'),
+								height          = grid2_row.outerHeight(),
+								detailHeight    = grid2_rowDetail.length ? grid2_rowDetail[0].offsetHeight : 0;
+
+							if(!height){return;}
+							grid1_row.height(height+detailHeight);
 						}
 					}else{
-						s += '<tr class="l-grid-row"><td><div class="l-grid-row-cell-inner">'+ nullText +'</div></td></tr>';
+						var grid1_row = grid1.find('.l-grid-row').eq(0),
+							grid2_row = grid2.find('.l-grid-row').eq(0),
+							height    = grid2_row.outerHeight();
+						grid1_row.height(height);
 					}
-					s += '</table>';
-					return s;
-				},
-				
-				PagerCreateHtml: function(){
 					
 				},
 				
 				/**
-				* 内部分页函数
-				* @param {object} init 和 refresh共享的对象
+				* 初始化行选中事件
+				* @param {Object} rowData 行数据
+				* @param {Number} i 行的索引
 				*/
-				pagerFn: function(options){
-					var columns     = options.columns,                   //表格columns
-						id          = options.id,                        //表格ID
-						pageSize    = options.pageSize,                  //每页显示多少个
-						pageIndex   = options.pageIndex,                 //起始位置
-						count       = options.data.total || 0,           //记录总个数
-						onPageFn    = options.onPageFn,                  //记录总个数
-						isMemory    = options.isMemory,                  //翻页是否记住选择记录
-						itemNum     = 2,                                 //当前页两边显示个数
-						grid        = $('#'+id),
-						gridHeader  = grid.find('.l-grid-header'),       //表格头
-						gridBody    = grid.find('.l-grid-body'),         //表格主体
-						pager       = grid.find('.l-grid-footer-pager'), //分页容器
-						html        = '',
+				initSelected: function(rowData, i){
+					var that         = this,
+						isMemory     = p.isMemory,
+						initSelected = p.initSelected,
+						pageIndex    = p.pageIndex,
+						arr          = _cache.rowSelected[pageIndex-1];
+					
+					if( saogaUI.base.isFunction( initSelected ) ){
+						if( initSelected( rowData ) ){
+							if( isMemory && i !== undefined ){
+								arr[i] = that.getRowData(i); //选中数据
+								that.initCheckbox();
+							}
+							return true;
+						}
+					}
+					
+					return false;
+				},
+				
+				/**
+				* 内部分页对象
+				* @private
+				*/
+				__pageCore: {
+					/**
+					* 获取数字连接
+					* @private
+					* @param {Number} index 链接索引
+					* @param {String} txt 上下翻页的文本
+					*/
+					getLink: function(index, txt){
+						return '<a href="javascript:;" data-page="'+ index +'"'+ (p.pageIndex === index ? ' class="current"' : '') + '>'+ (txt || index) +'</a>';
+					},
+					
+					/**
+					* 获取显示的数据
+					* @private
+					* @param {Number} pageSize 每页显示条数
+					* @param {Number} count 数据长度
+					* @param {Number} index 当前位置
+					*/
+					getCount: function(pageSize, count, index){
+						var start   = (index-1)*pageSize + 1,
+							end     = index*pageSize,
+							str     = p.countFont+'',
+							pageNum = Math.ceil(count / pageSize),
+							diff    = pageNum*pageSize - count;
 						
-						/**
-						* 获取数字连接
-						* @private
-						* @param {Number} 
-						* @param {String} 上下翻页的文本
-						*/
-						_getLink    = function(index, txt){
-							return '<a href="javascript:;" data-page="'+ index +'"'+ (options.current === index ? ' class="on"' : '') + '>'+ (txt || index) +'</a>';
-						},
+						str = str.replace('{{start}}', start);     //当前开始位置
+						str = str.replace('{{end}}', (pageNum*pageSize === end ? end - diff : end)); //当前结束位置
+						str = str.replace('{{count}}', count);     //总条数
+						str = str.replace('{{size}}', pageSize);   //每页显示条数
+						str = str.replace('{{pageNum}}', pageNum); //总页数
+						str = str.replace('{{current}}', index);   //当前位置
 						
-						/**
-						* 获取显示的数据
-						* @private
-						* @param {Number} 每页显示条数
-						* @param {Number} 数据长度
-						* @param {Number} 当前位置
-						*/
-						_getCount   = function(pageSize, count, index){
-							var start   = (index-1)*pageSize + 1,
-								end     = index*pageSize,
-								str     = lang.countFont+'',
-								pageNum = Math.ceil(count / pageSize);
+						return str;
+					},
+					
+					/**
+					* 获取分页按钮
+					* @private
+					* @param {Number} pageSize 每页显示条数
+					* @param {Number} count 数据长度
+					* @param {Number} index 当前位置
+					*/
+					getBtn: function(pageSize, count, index){
+						var s       = '',
+							begin   = 1,
+							end     = 1,
+							i       = 0,
+							itemNum = 2,
+							pageNum = Math.ceil(count / pageSize);
 							
-							str = str.replace('{{start}}', start);     //当前开始位置
-							str = str.replace('{{end}}', end);         //当前结束位置
-							str = str.replace('{{count}}', count);     //总条数
-							str = str.replace('{{size}}', pageSize);   //每页显示条数
-							str = str.replace('{{pageNum}}', pageNum); //总页数
-							str = str.replace('{{current}}', index);   //当前位置
-							
-							return str;
-						},
+						if(index > 1){
+							s += this.getLink(index - 1, lang.prevPage);
+						}else{
+							s += '<span class="prev">'+ lang.prevPage +'</span>';
+						}
+						if(index - itemNum > 1){
+							s += this.getLink(1) + '<span>...</span>';
+							begin = index - itemNum;
+						}
+						end = Math.min(pageNum, begin + itemNum * 2);
+						if(end === pageNum - 1){
+							end = pageNum;
+						}
+						for(i = begin; i <= end; i++) {
+							s += this.getLink(i);
+						}
+						if(end < pageNum){
+							s += '<span>...</span>' + this.getLink(pageNum);
+						}
+						if(index < pageNum){
+							s += this.getLink(index + 1, lang.nextPage);
+						}else{
+							s += '<span class="next">'+ lang.nextPage +'</span> ';
+						}
 						
-						/**
-						* 获取分页按钮
-						* @private
-						* @param {Number} 每页显示条数
-						* @param {Number} 数据长度
-						* @param {Number} 当前位置
-						*/
-						_getBtn     = function(pageSize, count, index){
-							var s       = '',
-								begin   = 1,
-								end     = 1,
-								i       = 0,
-								pageNum = Math.ceil(count / pageSize);
-								
-							if(index > 1){
-								s += _getLink(index - 1,'上一页');
-							}else{
-								s += '<span>'+ lang.prevPage +'</span>';
-							}
-							if(index - itemNum > 1){
-								s += _getLink(1) + '<em>...</em>';
-								begin = index - itemNum;
-							}
-							end = Math.min(pageNum, begin + itemNum * 2);
-							if(end === pageNum - 1){
-								end = pageNum;
-							}
-							for(i = begin; i <= end; i++) {
-								s += _getLink(i);
-							}
-							if(end < pageNum){
-								s += '<em>...</em>' + _getLink(pageNum);
-							}
-							if(index < pageNum){
-								s += _getLink(index + 1, lang.nextPage);
-							}else{
-								s += '<span>'+ lang.nextPage +'</span> ';
-							}
-							
-							return s;
-						},
+						return s;
+					},
+					
+					/**
+					* 获取分页选项
+					* @private
+					*/
+					getPageSelect: function(){
+						var pageSize        = p.pageSize,
+							pageSizeOptions = p.pageSizeOptions;
 						
-						/**
-						* 设置是否记录选择框的选择结果
-						* @private
-						*/
-						_setMemory  = function(){
-							if( !isMemory ){
-								for(var i = 0; i<_cache.rowselected.length; i++){
-									_cache.rowselected[i] = []; //修改选中的数组值
+						if( pageSizeOptions ){
+							var len = pageSizeOptions.length,
+								i   = 0,
+								s   = '';
+							
+							s += '<select class="ui-select">';
+							for(; i<len; i++){
+								if( pageSize === pageSizeOptions[i] ){
+									s += '<option selected="selected" value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
+								}else{
+									s += '<option value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
 								}
-							}else{
-								_core.initCheckbox(options, _cache.rowselected); //初始化选中状态
 							}
-						};
-						
-	
+							s += '</select>';
+							return s;
+						}
+						return '';
+					}
+				},
+				
+				/**
+				* 分页内容
+				*/
+				pageCreateHtml: function(){
+					var that      = this,
+						s         = '',
+						total     = p.data.total,
+						pageIndex = p.pageIndex,
+						pageSize  = p.pageSize;
+					
 					/*分页统计*/
-					html += '<div class="l-grid-footer-pager-msg">'+ _getCount(pageSize, count, pageIndex) +'</div>';
+					s += '<div class="l-grid-footer-page-msg">'+ that.__pageCore.getCount(pageSize, total, pageIndex) +'</div>';
 					
-					/*分页按钮*/
-					html += '<div class="l-grid-footer-pager-btn">'+ _getBtn(pageSize, count, pageIndex) +'</div>';				
-					
-					/*生成分页*/
-					pager.html(html);
-					
-					/*初始化records.rowselected*/
-					_setMemory();
+					if( total ){
+						/*分页选项*/
+						s += '<div class="l-grid-footer-page-select">'+ that.__pageCore.getPageSelect() +'</div>';
+
+						/*分页按钮*/
+						s += '<div class="l-grid-footer-page-btn ui-pagination">'+ that.__pageCore.getBtn(pageSize, total, pageIndex) +'</div>';	
+					}
 										
-					/*分页事件*/
-					pager.on('click','a',function(){
+					/*生成分页*/
+					g.page.html(s);
 					
-						var gridpageMsg = pager.find('.l-grid-footer-pager-msg'),
-							gridpageBtn = pager.find('.l-grid-footer-pager-btn'),
-							index       = Number( $(this).attr('data-page') ); // attr返回 string
+					that.initCheckbox();
+					
+					/*if( p.pageSizeOptions ){
+						select({
+							target:'.l-grid-footer-page-select select',
+							type:'single'
+						})
+					}*/
+				},
+				
+				/**
+				* 分页函数
+				*/
+				pageFn: function(){
+					var page       = g.page,
+						grid1      = g.grid1,
+						gridHeader = grid1.find('l-gird-header'),
+						gridBody   = grid1.find('l-gird-body'),
+						pageSize   = p.pageSize,
+						onPageFn   = p.onPageFn,
+						that       = this;
+					
+					/*分页事件*/
+					page.off('click', 'a').on('click', 'a', function(){
+					
+						var index = Number( $(this).attr('data-page') );
 						
-						/*修改全局g.o的 pageIndex 成员*/
-						options.pageIndex = index;
-						options.current = index;
+						/*修改页面位置*/
+						p.pageIndex = index;
 						
 						/*返回接口，可能修改全局g.o对象，所以前置*/
 						if( saogaUI.base.isFunction(onPageFn) ){
 							onPageFn(index, pageSize);
 						}
 						
-						/*重新获取数据*/
-						if( !options.tmpData[index-1].length ){
-							options.data = _core.splitData(options, index);
-							options.tmpData[index-1] = options.data.rows;
+						if( !_cache.tmpData[index-1] || !_cache.tmpData.length ){
+							/*获取数据并重载 Html*/
+							that.getData();
+						}else{
+							/*重载 html*/
+							that.tBodyCreateHtml(index);
+							that.pageCreateHtml();
 						}
-						
-						/*重载html*/
-						gridBody.html( _core.tBodyCreateHtml(options, index) );
-						gridpageMsg.html( _getCount(pageSize, count, index) );
-						gridpageBtn.html( _getBtn(pageSize, count, index) );
-						
+
 						/*全部选上时给表头全选*/
-						if( gridBody.find('.l-checkbox-selected').length == pageSize ){
+						if( gridBody.find('.l-checkbox-selected').length === pageSize ){
 							gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
 						}else{
 							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
 						}
 						
-						/*修改records.rowselected*/
-						_setMemory();
+						/*初始化checkbox*/
+						that.initCheckbox();
+					});
+					
+					/*下拉框事件*/
+					page.off('change', 'select').on('change','select', function(){
+						_cache.tmpData = [];
+						p.pageSize = Number( $(this).val() );
+						p.pageIndex = 1;
+						g.refresh();
+					});
+				},
+
+				/**
+				* 初始化checkbox
+				*/
+				initCheckbox: function(){
+					var that       = this,
+						pageSize   = p.pageSize,                        //每页显示多少个
+						pageIndex  = p.pageIndex,                       //起始位置
+						grid1      = g.grid1,
+						gridHeader = grid1.find('.l-grid-header'),        //表格头
+						gridBody   = grid1.find('.l-grid-body'),          //表格主体
+						checkbox   = gridBody.find('.l-checkbox'),        //复选框
+						isMemory   = p.isMemory;
+					
+					if( !isMemory ){
+						var len = _cache.rowSelected.length,
+							i   = 0;
+						for(; i<len; i++){
+							_cache.rowSelected[i] = []; //修改选中的数组值
+						}
+						gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+					}else{
+						var selected = Math.min(pageSize, checkbox.length), //已选数量
+							arr      = _cache.rowSelected[pageIndex-1],
+							len      = arr.length,
+							i        = 0,
+							j        = 0;
+						
+						for(; i < len; i++, j++){
+							if( arr[i] ){
+								checkbox.eq(j).addClass('l-checkbox-selected');
+							}
+						}
+						
+						/*全部选上时给表头全选*/
+						if( gridBody.find('.l-checkbox-selected').length === selected ){
+							gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
+						}else{
+							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+						}
+					}
+				},
+				
+				/**
+				* 选择框事件
+				*/
+				checkboxFn: function(){
+					var that        = this,
+						grid1       = g.grid1,
+						grid2       = g.grid2,
+						grid1Header = grid1.find('.l-grid-header'), //表格头
+						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
+						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn   = p.onCheckFn,
+						pageSize    = p.pageSize;
+					
+					/*多选*/
+					grid1Body.off('click', '.l-checkbox').on('click', '.l-checkbox', function(){
+						var self        = $(this),
+							pageIndex   = p.pageIndex,
+							checkbox    = grid1Body.find('.l-checkbox'),
+							i           = checkbox.index(self),
+							selected    = Math.min(pageSize, checkbox.length), //已选数量
+							currentArr  = _cache.rowSelected[pageIndex-1],
+							grid1Row    = grid1Body.find('.l-grid-row').eq(i),
+							grid2Row    = grid2Body.find('.l-grid-row').eq(i),
+							grid2Detail = grid2Row.next('.l-grid-row-detail'),
+							tmpData     = _cache.tmpData[p.pageIndex - 1];
+											
+						if( !self.hasClass('l-checkbox-selected') ){
+							self.addClass('l-checkbox-selected');
+							grid1Row.addClass('l-grid-row-selected');
+							grid2Row.addClass('l-grid-row-selected');
+							grid2Detail.addClass('l-grid-row-selected');
+							currentArr[i] = that.getRowData(i); //选中数据
+							
+							/*全部选上时给表头全选*/
+							if( grid1Body.find('.l-checkbox-selected').length === selected ){
+								grid1Header.find('.l-checkbox').addClass('l-checkbox-selected');
+							}
+						}else{
+							currentArr[i] = null;
+							self.removeClass('l-checkbox-selected');
+							grid1Row.removeClass('l-grid-row-selected');
+							grid2Row.removeClass('l-grid-row-selected');
+							grid2Detail.removeClass('l-grid-row-selected');
+							grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
+						}
+						
+						/*返回选择数据*/
+						if( saogaUI.base.isFunction(onCheckFn) ){
+							onCheckFn(tmpData[i], grid1Row, grid2Row);
+						}
+					});
+					
+					/*全选*/
+					grid1Header.off('click', '.l-checkbox').on('click', '.l-checkbox', function(e){
+						e.stopPropagation();
+						var self        = $(this),
+							pageIndex   = p.pageIndex,
+							arr         = _cache.rowSelected[pageIndex-1],
+							checkbox    = grid1Body.find('.l-checkbox'),
+							grid1Rows   = grid1Body.find('.l-grid-row'),
+							grid2Rows   = grid2Body.find('.l-grid-row'),
+							grid2Detail = grid2Rows.next('.l-grid-row-detail'),
+							len         = checkbox.length,
+							i           = 0,
+							j           = len - 1,
+							tmpData     = _cache.tmpData[p.pageIndex - 1];
+						
+						if( !self.hasClass('l-checkbox-selected') ){
+							self.addClass('l-checkbox-selected');
+							grid1Rows.addClass('l-grid-row-selected');
+							grid2Rows.addClass('l-grid-row-selected');
+							grid2Detail.addClass('l-grid-row-selected');
+							checkbox.addClass('l-checkbox-selected');
+							for(; i < len; i++){
+								arr[i] = that.getRowData(i);
+							}
+						}else{
+							self.removeClass('l-checkbox-selected');
+							checkbox.removeClass('l-checkbox-selected');
+							grid1Rows.removeClass('l-grid-row-selected');
+							grid2Rows.removeClass('l-grid-row-selected');
+							grid2Detail.removeClass('l-grid-row-selected');
+							for(; j > -1; j--){
+								arr[j] = null;
+							}
+						}
+						
+						/*返回选择数据*/
+						if( saogaUI.base.isFunction(onCheckFn) ){
+							onCheckFn(tmpData, grid1Rows, grid2Rows);
+						}
+						
 					});
 				},
 				
 				/**
-				* 内部获取行数据
-				* @param {Object} init 和 refresh共享的对象
-				* @param {Number} 记录的索引值
+				* 获取行数据
+				* @param {Number} index 记录的索引值
 				*/
-				getRowData: function(options, index){
-					var	current = options.current,
-						data    = options.tmpData[current - 1]; //表格数据
-
+				getRowData: function(index){
+					var	pageIndex = p.pageIndex,
+						data      = _cache.tmpData[pageIndex - 1]; //表格数据
+	
 					if( index === -1 ){
 						return false;
 					}
@@ -335,467 +952,709 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				},
 				
 				/**
-				* 初始化选择框
-				* @param {object} init 和 refresh共享的对象
-				*/
-				initCheckbox: function(options, selectedRecords){
-
-					var pageSize   = options.pageSize,                  //每页显示多少个
-						pageIndex  = options.pageIndex,                  //起始位置
-						current    = options.current,
-						id         = options.id,                         //表格ID
-						grid       = $('#'+id),
-						gridHeader = grid.find('.l-grid-header'),        //表格头
-						gridBody   = grid.find('.l-grid-body'),          //表格主体
-						checkbox   = gridBody.find('.l-checkbox'),       //复选框
-						arr        = selectedRecords[current-1],
-						len        = arr.length,
-						i          = pageSize*(pageIndex-1),
-						j          = 0,
-						selected   = Math.min(pageSize, checkbox.length); //已选数量
-					
-					for(; i < len; i++, j++){
-						if( arr[i] ){
-							checkbox.eq(j).addClass('l-checkbox-selected');
-						}
-					}
-	
-					/*全部选上时给表头全选*/
-					if( gridBody.find('.l-checkbox-selected').length === selected ){
-						gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
-					}
-				},
-				
-				/**
-				* 选择框事件
-				* @param {object} init 和 refresh共享的对象
-				*/
-				checkboxFn: function(options){
-					var id         = options.id,                  //表格ID
-						grid       = $('#'+id),
-						gridHeader = grid.find('.l-grid-header'), //表格头
-						gridBody   = grid.find('.l-grid-body'),   //表格主体
-						onCheckFn  = options.onCheckFn;           //点击后执行
-	
-					/*多选*/
-					gridBody.on('click', '.l-checkbox', function(){
-						var self       = $(this),
-							current    = g.o.current,
-							pageSize   = g.o.pageSize,                        //每次触发重新查找pageSize
-							checkbox   = gridBody.find('.l-checkbox'),
-							i          = checkbox.index(self),
-							selected   = Math.min(pageSize, checkbox.length), //已选数量
-							currentArr = _cache.rowselected[current-1];
-
-											
-						if( !self.hasClass('l-checkbox-selected') ){
-							self.addClass('l-checkbox-selected');
-							currentArr[i] = _core.getRowData(options, i);
-	
-							/*全部选上时给表头全选*/
-							if( gridBody.find('.l-checkbox-selected').length === selected ){
-								gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
-							}
-						}else{
-							currentArr[i] = null;
-							self.removeClass('l-checkbox-selected');
-							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
-						}
-						
-						/*返回选择数据*/
-						if( saogaUI.base.isFunction(onCheckFn) ){
-							onCheckFn();
-						}
-	
-					});
-					
-					/*全选*/
-					gridHeader.on('click', '.l-checkbox', function(){
-						var self      = $(this),
-							current   = g.o.current,
-							pageSize  = g.o.pageSize,
-							arr       = _cache.rowselected[current-1],
-							checkbox  = gridBody.find('.l-checkbox'),
-							len       = checkbox.length,
-							i         = 0,
-							j         = len - 1;
-						
-						if( !self.hasClass('l-checkbox-selected') ){
-							self.addClass('l-checkbox-selected');
-							checkbox.addClass('l-checkbox-selected');
-							for(; i < len; i++){
-								arr[i] = _core.getRowData(g.o, i);
-							}
-						}else{
-							self.removeClass('l-checkbox-selected');
-							checkbox.removeClass('l-checkbox-selected');
-							for(; j > -1; j--){
-								arr[i] = null;
-							}
-						}
-						
-						
-						/*返回选择数据*/
-						if( saogaUI.base.isFunction(onCheckFn) ){
-							onCheckFn();
-						}
-					});
-				},
-				
-				/**
 				* 明细按钮事件
 				* @param {object} init 和 refresh共享的对象
 				*/
 				detailBtnFn: function(options){
-					var id         = options.id,                  //表格ID
-						grid       = $('#'+id),
-						gridBody   = grid.find('.l-grid-body'),   //表格主体
-						isMemory   = options.isMemory,            //是否记住选择
-						onCheckFn  = options.onCheckFn;           //点击后执行
+					var that        = this,
+						grid1       = g.grid1,
+						grid2       = g.grid2,
+						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
+						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+						pageSize    = p.pageSize;
 						
-					gridBody.on('click', '.l-detailbtn', function(){
-						var self = $(this),
-							next = self.parents('tr').next('.l-grid-row-cell-detail');
-						
-						if( self.hasClass('l-detailbtn-close') ){
-							self.removeClass('l-detailbtn-close');
-							next.show();
+					grid1Body.on('click','.l-grid-row-detailbtn',function(){
+						var self         = $(this),
+							parents      = self.parents('.l-grid-row'),
+							index        = parents.attr('data-row'),
+							grid2_row    = grid2Body.find('.l-grid-row').eq(index),
+							detail       = grid2Body.find('.l-grid-row-detail').eq(index);
+
+						if( self.hasClass('l-grid-row-detailbtn-close') ){
+							detail.show();
+							self.removeClass('l-grid-row-detailbtn-close')
+								.addClass('l-grid-row-detailbtn-open');
+							parents.height(grid2_row[0].offsetHeight + detail[0].offsetHeight);
 						}else{
-							self.addClass('l-detailbtn-close');
-							next.hide();
+							detail.hide();
+							self.removeClass('l-grid-row-detailbtn-open')
+								.addClass('l-grid-row-detailbtn-close');
+								
+							parents.height(grid2_row[0].offsetHeight);
 						}
 					});
 				},
 				
 				/**
 				* ajax获取数据
+				* @param {Function} callback ajax回调函数
 				*/
-				ajaxGetData: function(options, index, callback){
-					var type = options.pageAjax.type == undefined ? 'POST' : options.pageAjax.type;
+				ajaxGetData: function(callback){
+					var pageAjax      = p.pageAjax,
+						type          = pageAjax.type === undefined ? 'POST' : pageAjax.type,
+						showAllRow    = p.showAllRow,
+						pageIndex     = p.pageIndex,
+						pageSize      = p.pageSize,
+						data          = pageAjax.data,
+						isShowLoading = p.isShowLoading;
+					
+					/*************************临时处理*********************/
+					data = data.replace('{{index}}', pageIndex);
+					data = data.replace(/pageSize=\d*/, '');
+					/*************************临时处理*********************/
+					
+					
+					data += '&pageIndex=' + pageIndex;
+					data += '&pageSize=' + pageSize;
+										
+					data = data.replace(/{{|}}/g,'');
+					data = data.split('&');
+					
+                    /*解析URL并转换为json形式，防止特殊字符问题*/
+					var args = {},
+						argsStr = [],
+						param,
+						name,
+						value;
+					
+					for (var i = 0; i < data.length; i++) {
+						param = data[i].split('=');
+						name = param[0],
+						value = param[1];
+						if(name === ""){
+							name = "unkown";
+						}
+						if(typeof(args[name]) === "undefined"){ //参数尚不存在
+							args[name] = value;
+						}else if(typeof(args[name]) === "string"){ //参数已经存在则保存为数组
+							args[name] = [args[name]];
+							args[name].push(value);
+						}else{ //已经是数组的
+							args[name].push(value);
+						}
+					}
+
+					/*var showArg = function (x) { //转换不同数据的显示方式
+						if (typeof(x) == "string" && !/\d+/.test(x))
+							return "'" + x + "'"; //字符串
+						if (x instanceof Array)
+							return "[" + x + "]"; //数组
+						return x; //数字
+					}*/
+					
+					//console.log(args)
+					
+					/*args.toString = function () { //组装成json格式
+						for (var i in args)
+							argsStr.push(i + ':' + showArg(args[i]));
+						return '{' + argsStr.join(',') + '}';
+					}*/
+					//console.log(args)
+					
 					$.ajax({
 						type: type,
-						url: options.pageAjax.url,
+						url: pageAjax.url,
 						cache: false,
-						async: false,
 						dataType: "json",
-						data: (options.pageAjax.data).replace('{{index}}',index),
+						data: args,
 						beforeSend: function(){
-							if( saogaUI.base.isFunction(options.pageAjax.beforeSend) ){
-								options.pageAjax.beforeSend();
+							if( saogaUI.base.isFunction(pageAjax.beforeSend) ){
+								pageAjax.beforeSend();
 							}
+							if( isShowLoading ){
+								g.loding.fadeIn();
+							}
+							g.onLoaded = false;
 						},
 						success: function(data){
-							if( saogaUI.base.isFunction(options.pageAjax.success) ){
-								options.pageAjax.success(data);
+							if( saogaUI.base.isFunction(pageAjax.success) ){
+								pageAjax.success(data);
 							}
 							if( saogaUI.base.isFunction(callback) ){
-								callback(data);
+								setTimeout(function(){
+									callback(data);
+									if( isShowLoading ){
+										g.loding.fadeOut();
+									}
+								}, 500);
 							}
+							if( showAllRow ){
+								p.pageSize = data ? data.total : 0;
+								p.isPage   = false;
+							}
+
+							g.onLoaded = true;
 						},
 						error: function(data){
-							if( saogaUI.base.isFunction(options.pageAjax.error) ){
-								options.pageAjax.error(data);
-							}
+							callback();
+							g.loding.fadeOut();
+							g.jump(data);
 						}
 					});
 				},
 				
 				/**
-				* 分割数据
-				* @param {number}
+				* 获取数据
 				*/
-				splitData: function(options, index){
-				
-					//需优化
-					var splitData = [];
-					if( options.pageAjax ){
-						_core.ajaxGetData(options, index, function(data){
-							g.o.data       = {};
-							g.o.data.rows  = data.rows;
-							g.o.data.total = data.total;
-						});
-					}else{
-						var i         = 0,
-							data      = options.data.rows,
-							pageSize  = options.pageSize,
-							dataLen   = options.data.total,                    //记录总数
-							pageStar  = index*pageSize,                        //当前记录的起始
-							pageEnd   = Math.min((index+1)*pageSize, dataLen); //当前记录的结束
-
-						for(; pageStar < pageEnd; pageStar++){
-							if( data[pageStar] ){
-								splitData[i] = data[pageStar];
-							}
-							i++;
-						}
+				getData: function(){
+					var that      = this,
+						pageIndex = p.pageIndex,
+						nullText  = p.nullText;
 						
-						g.o.data = {};
-						g.o.data.rows = data;
-						g.o.data.total = dataLen;
-
+					if( p.pageAjax ){
+						p.data = {rows:[],total:0};
+						that.ajaxGetData(function(data){
+							p.data = data = !data ? p.data : ((!data.rows || !data.total) ? p.data : data);
+							that.handleData(false);
+							that.tBodyCreateHtml(pageIndex);
+							that.pageCreateHtml();
+							if( !data.total ){
+								g.grid2.find('.l-grid-nullText').html(nullText);
+							}
+						});
 					}
-					return g.o.data;
 				},
 				
-				
+				/**
+				* 设置在cookie中的columns数据
+				*/
+				setCacheColumns: function(){
+					var columns   = p.columns,
+						len       = columns.length,
+						i         = 0,
+						h         = 0,
+						cookieStr = saogaUI.base.cookie.get(p.id),
+						cookieArr = cookieStr.split(','),
+						cookieLen = cookieArr.length;
+						
+					if( cookieStr ){
+						_cache.columns = [];
+					}
+					
+					for(; i<len; i++){
+						for(var j = 0; j<cookieLen; j++){
+							if( columns[i].display === cookieArr[j] ){
+								_cache.columns[h] = columns[i];
+								h++;
+							}
+						}
+					}
+				},
+
 				/**
 				* 数据处理
+				* XXX: 待优化
+				*@param {boolean} isGetData 防止ajax请求数据时死循环
 				*/
-				handleData: function(options){
-					var tmpArr  = [],
-						tmpPage = 0,
-						tm      = 1;
-
-					options.data = _core.splitData(options, 1);
+				handleData: function(isGetData){
+					var that      = this,
+					    data      = p.data = !p.data ? {rows:[],total:0} : ((!p.data.rows || !p.data.total) ? {rows:[],total:0} : p.data),
+						pageAjax  = p.pageAjax,
+						pageSize  = p.pageSize,
+						pageIndex = p.pageIndex,
+						len       = Math.ceil(data.total / pageSize),
+						i         = 0,
+						arr       = []; //临时数组
+				
+					/*初始化*/
+					isGetData = isGetData == undefined ? true : isGetData;
+					if( isGetData ){
+						that.getData(); //获取数据并重载 Html
+					}
 					
-					//ajax 请求失败或data无指定
-					if( !options.data || options.data.rows === undefined ){
-						options.data = {
-							rows:[],
-							total:0
+					/*分割数据*/
+					for(; i<len; i++){
+						
+						if( !_cache.rowSelected[i] ){
+							_cache.rowSelected[i] = []; //已选行数据
+						}
+						
+						/*分割静态数据给arr*/
+						if( !pageAjax ){
+							var h = 0;	
+							
+							arr[i] = [];
+							
+							for(; h< pageSize; h++){
+								var rowData = data.rows[pageSize*i + h];
+								if( rowData ){
+									arr[i][h] = rowData;
+								}
+							}
+						}
+					}
+					
+					if( pageAjax ){
+						_cache.tmpData[pageIndex - 1] = p.data.rows;
+					}else{
+						_cache.tmpData = arr;
+					}
+					
+					/*设置列的cookie*/
+					if( p.isHideColumns ){
+						that.setCacheColumns();
+					}
+				},
+				
+				/**
+				* 对比现有数据
+				* @param {String} name 要比较的的字段
+				* @param {String} sortType 排序裂隙
+				*/
+				compareData: function(name, sortType){
+					var index = p.pageIndex - 1,
+						arr   = _cache.tmpData[index],
+						len   = arr.length,
+						i     = 0;
+					
+					/*序顺序(a、b都是数字时按大小，a、b长度都一样是按字母，a、b长度不一时按长度)*/
+					function getJsPercentDataComparator(name){
+						return function(a, b){
+
+							var result = 0;
+							if( a[name] !== null && b[name] !== null ){
+								var aStr   = a[name],
+									bStr   = b[name],
+									afloat = parseFloat(aStr),
+									bfloat = parseFloat(bStr);
+								
+								if( !isNaN(bfloat) && !isNaN(afloat) ){
+									result = (afloat>bfloat) ? 1 : -1;
+								}else{
+									if( aStr.length === bStr.length ){
+										result = aStr.localeCompare(bStr);
+									}else{
+										result = (aStr.length>bStr.length) ? 1 : -1;
+									}
+									
+								}
+							}
+							
+							return result;
 						};
 					}
 					
-					tmpArr[0]    = options.data.rows;
-					tmpPage      = Math.ceil(options.data.total / options.pageSize);
-					_cache.rowselected[0] = [];
+					arr.sort( getJsPercentDataComparator(name) );
 					
-					//tm = 1是因为splitData初始化的时候已经为0
-					for(; tm<tmpPage; tm++){
-						if( !options.pageAjax ){
-							options.data = _core.splitData(options, tm + 1);
-							tmpArr[tm]   = options.data;
-						}else{
-							tmpArr[tm] = [];
-						}
-						_cache.rowselected[tm] = []; //选择中
+					if( sortType === 'desc' ){
+						arr.reverse();
 					}
-					options.tmpData = tmpArr;
-					return options;
+					
+					_cache.tmpData[index] = arr;
+					
+					return arr;
 				},
 				
-				//表头事件
+				/**
+				* 表头事件
+				*/
 				tHeadFn: function(){
-					$('.l-grid-hd-cell').on('contextmenu', '.l-grid-hd-cell-inner', function(e){
-						console.log(e.which) 
-						return false;
-					}).on('mousedown', '.l-grid-hd-cell-inner', function(e){
-						console.log(e.which)
+					var that           = this,
+						pageSize       = p.pageSize,                  //每页显示多少个
+						pageIndex      = p.pageIndex,                 //起始位置
+						grid1          = g.grid1,
+						grid2          = g.grid2,
+						grid1Header    = grid1.find('.l-grid-header'),        //表格头
+						grid1Body      = grid1.find('.l-grid-body'),          //表格主体
+						grid2Header    = grid2.find('.l-grid-header'),        //表格头
+						grid2Body      = grid2.find('.l-grid-body'),          //表格主体
+						isSort         = p.isSort,
+						isSortCurrent  = p.isSortCurrent,
+						popup          = g.popup,
+						isHideColumns  = p.isHideColumns,
+						isShow         = true;
+					
+					//排序
+					if( isSort ){
+						grid2Header.find('.l-grid-hd-cell-span')
+								   .addClass('l-grid-hd-cell-sortWrap')
+								   .append('<span class="l-grid-hd-cell-sort"><b class="icon-font-10" data-uid="983722">&#983722</b></span>');
+						
+						grid2Header.off('click', '.l-grid-hd-cell-span').on('click', '.l-grid-hd-cell-span', function(){
+							var self     = $(this),
+								name     = self.attr('data-columnName'),
+								sortType = '',
+								sort     = self.find('.l-grid-hd-cell-sort');
+							
+							if( isSortCurrent ){
+								
+								if( sort.hasClass('desc') ){
+									sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+									sort.removeClass('desc');
+									sortType = 'desc';
+								}else{
+									sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+									sort.addClass('desc');
+									sortType = 'asc';
+								}
+								
+								that.compareData(name, sortType);
+								that.tBodyCreateHtml();
+								
+							}else{
+								
+								if( g.onLoaded ){
+									
+									if( sort.hasClass('desc') ){
+										sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+										sort.removeClass('desc');
+										sortType = 'desc';
+									}else{
+										sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+										sort.addClass('desc');
+										sortType = 'asc';
+									}
+	
+									if( /&sort=/.test(p.pageAjax.data) ){
+										p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
+										p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
+									}else{
+										p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+									}
+							
+									that.handleData();
+									that.tBodyCreateHtml();
+									
+								}// end if g.onLoaded
+								
+							}
+						});
+						
+					}//end if isSort
+					
+					if( isHideColumns ){
+						grid2Header.off('contextmenu', '.l-grid-hd-cell').on('contextmenu', '.l-grid-hd-cell', function(e){
+							var self           = $(e.currentTarget),
+								popup          = g.popup,
+								popupWidth     = popup.outerWidth(),
+								grid           = g.grid,
+								gridWidth      = grid.outerWidth(),
+								gridOffsetLeft = g.grid.offset().left,
+								mousePosition  = saogaUI.ui.mousePosition(e),
+								x              = mousePosition.positionX - gridOffsetLeft;
+								
+							if( gridWidth - x > popupWidth ){
+								popup.css({'left':x});
+							}else{
+								popup.css({'left':x - popupWidth});
+							}
+							
+							isShow = true;
+							popup.show();
+							return false;
+						});
+						
+						popup
+							.off('click')
+							.on('click',function(e){
+								isShow = true;
+								e.stopPropagation();
+							})
+							.off('click', '.l-checkbox')
+							.on('click', '.l-checkbox', function(e){
+								var self = $(e.currentTarget);
+								
+								if( self.hasClass('l-checkbox-selected') ){
+									if( popup.find('.l-checkbox-selected').length <= 1 ){ return false; }
+									self.removeClass('l-checkbox-selected');
+								}else{
+									self.addClass('l-checkbox-selected');
+								}
+								
+								var selected = popup.find('.l-checkbox-selected').next(),
+									len      = selected.length,
+									i        = 0,
+									arr      = [];
+									
+								for(; i<len; i++){
+									arr[i] = selected.eq(i).html();
+								}
+								saogaUI.base.cookie.set(p.id, arr.join(), 200000);
+								that.setCacheColumns();
+								that.tHeadCreateHtml();
+								that.tBodyCreateHtml();
+								e.stopPropagation();
+							})
+							.off('click', '.l-grid-popup-text')
+							.on('click', '.l-grid-popup-text', function(e){
+								var self  = $(e.currentTarget);
+								self.prev().trigger('click');
+								saogaUI.ui.onselectstart(self);
+								e.stopPropagation();
+							});
+						
+						$(window).on('click', function(){
+							if( isShow ){
+								popup.hide();
+								isShow = false;
+							}
+						});
+					}
+				},
+						
+				/**
+				* 行事件
+				*/
+				rowFn: function(){
+					
+					var that   = this,
+						grid1             = g.grid1,
+						grid2             = g.grid2,
+						grid1Body         = grid1.find('.l-grid-body'),   //表格主体						
+						grid2Header       = grid2.find('.l-grid-header'), //表格头
+						grid2Body         = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn         = p.onCheckFn,
+						pageSize          = p.pageSize,
+						onRowFn           = p.onRowFn,
+						isOnRowCheckbox   = p.isOnRowCheckbox,
+						isSelectSingleRow = p.isSelectSingleRow,
+						isOnRowFn         = saogaUI.base.isFunction(onRowFn);
+						
+					grid2Body.off('mouseover', '.l-grid-row-cell').on('mouseover', '.l-grid-row-cell', function(){
+						var self = $(this),
+							arrt = self.attr('data-cell');
+						
+						self.parent().attr('data-cell', arrt);
+					});
+					
+					grid2Body.off('click', '.l-grid-row').on('click', '.l-grid-row', function(){
+						var self          = $(this),
+							pageIndex     = p.pageIndex,
+							//selected      = grid2Body.find('.l-grid-row-selected'),
+							selfDetail    = self.next('.l-grid-row-detail'),
+							i             = self.attr('data-row'),
+							currentArr    = _cache.rowSelected[pageIndex-1],
+							grid1Row      = grid1Body.find('.l-grid-row').eq(i),
+							grid1Checkbox = grid1Body.find('.l-checkbox').eq(i);
+											
+						if( !self.hasClass('l-grid-row-selected') ){
+							if( !onRowFn || isSelectSingleRow ){
+								self.siblings().removeClass('l-grid-row-selected');
+								grid1Row.siblings().removeClass('l-grid-row-selected');
+							}
+							if( isOnRowCheckbox ){
+								grid1Checkbox.addClass('l-checkbox-selected');									
+							}
+														
+							self.addClass('l-grid-row-selected');
+							selfDetail.addClass('l-grid-row-selected');
+							grid1Row.addClass('l-grid-row-selected');
+
+						}else{
+							if( !isSelectSingleRow ){
+								self.removeClass('l-grid-row-selected');
+								selfDetail.removeClass('l-grid-row-selected');
+								grid1Row.removeClass('l-grid-row-selected');
+							}
+							if( isOnRowCheckbox ){
+								grid1Checkbox.removeClass('l-checkbox-selected');								
+							}
+						}
+						
+						if( isOnRowFn ){
+							if( !self.hasClass('l-grid-row-selected') ){
+								currentArr[i] = that.getRowData(i);
+								
+							}else{
+								_cache.rowSelected[pageIndex-1][i] = null;
+							}
+							onRowFn(that.getRowData(i), self);
+						}
 					});
 				},
 				
-				//排序
-				dataSort: function(){
-				
-				},
-				
-				//行事件
-				rowFn: function(){
-				
-				},
-				
-				//列事件
+				/**
+				* 列事件
+				* TODO
+				*/
 				cellFn: function(){
-				
+					var grid1           = g.grid1,
+						grid2           = g.grid2,
+						grid1Body       = grid1.find('.l-grid-body'),   //表格主体						
+						grid2Header     = grid2.find('.l-grid-header'), //表格头
+						grid2Body       = grid2.find('.l-grid-body'),   //表格主体
+						onCheckFn       = p.onCheckFn,
+						pageSize        = p.pageSize,
+						onRowFn         = p.onRowFn,
+						isOnRowCheckbox = p.isOnRowCheckbox,
+						isOnRowFn       = saogaUI.base.isFunction(onRowFn);
 				},
 				
-				//代码内部函数初始化
+				/**
+				* 运行 grid 控件
+				*/
+				run: function(reRequest){
+					var that = this;
+					
+					reRequest = reRequest === undefined ? true : reRequest;
+					
+					that.handleData(reRequest);
+					
+					if( p.isHead ){
+						that.tHeadCreateHtml();
+						that.tHeadFn();
+					}
+					
+					that.tBodyCreateHtml();
+					
+					if( g.isInit ){
+						that.rowFn();
+						//this.cellFn();
+						that.checkboxFn();
+						that.detailBtnFn();
+						g.isInit = false;
+						saogaUI.ui.onselectstart(g.grid1);
+					}
+					
+					if( p.isPage ){
+						that.pageCreateHtml();
+						that.pageFn();
+					}else{
+						g.footer.remove();
+					}
+					
+					console.log(1)
+				},
+				
+				/**
+				* grid 初始化
+				* @return {Object} grid对象
+				*/
 				init: function(){
-					this.handleData();
-					this.tHeadCreateHtml();
-					this.tBodyCreateHtml();
-					this.checkboxFn();
-					this.checkboxFn();
-					this.pageFn();
-					this.tHeadFn();
-					this.tRowFn();
+					var grid   = p.wrap.append('<div class="l-grid" id='+ p.id +'></div>').find('#'+p.id),
+						loding = grid.append('<div class="l-grid-loading fn-hide"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>').find('.l-grid-loading'),
+						popup  = grid.append('<div class="l-grid-popup"></div>').find('.l-grid-popup'),
+						gBody  = grid.append('<div class="l-grid-body fn-clear"></div>').find('.l-grid-body'),
+						grid1  = gBody.append('<div class="l-grid1"></div>').find('.l-grid1'),
+						grid2  = gBody.append('<div class="l-sl-grid2"><div class="l-grid2"></div></div>').find('.l-grid2'),
+						footer = grid.append('<div class="l-grid-footer"></div>').find('.l-grid-footer'),
+						page   = footer.append('<div class="l-grid-footer-page"></div>').find('.l-grid-footer-page');
+					
+					p.pageIndex = 1;
+					g.loding      = loding;
+					g.popup       = popup;
+					g.grid        = grid;
+					g.grid1       = grid1;
+					g.grid2       = grid2;
+					g.footer      = footer;
+					g.page        = page;
+					g.isInit      = true;
+					g.onLoaded    = false;
+
+					this.run();
+					return g;
 				}
 				
-			};
-		
-		/**
-		* 表格初始化
-		* @member saogaUI.ui.BaseGrid
-		* @param {Object} options 页面传过来的对象
-		* @param {Object} options.data json数据源
-		* @param {Object} options.columns 表格列信息
-		* @param {String} options.wrap 收纳表格的容器
-		* @param {String} options.id 表格ID
-		* @param {Object} options.bottomBtns 底部按钮
-		* @param {Boolean} options.isPager 是否分页
-		* @param {Number} options.pageSize 每页显示条数
-		* @param {Number} options.pageIndex 默认当前页
-		* @param {Function} options.onPageFn 击分页加载的事件
-		* @param {Boolean} options.checkbox 是否有checkbox
-		* @param {Boolean} options.onCheckFn 选择事件(复选框)
-		* @param {Number} options.width 表格总宽度
-		* @param {Boolean} options.isMemory 翻页是否记住选择记录
-		* @param {String} options.nullText 数据为空时的提示文本
-		* @param {Object} options.detail 表格详细
-		* @param {Object} options.pageAjax 表格数据ajax调用
-		* @return {Object} saogaUI.ui.baseGrid
-		*/
-		g.init = function(o){
-			if(!o){return false;}
-			var options = {
-					data:         o.data || {},
-					columns:      o.columns || {},
-					wrap:         $(o.wrap),
-					id:           o.id || 'l-grid-' + (new Date()).valueOf(),
-					bottomBtns:   o.bottomBtns || {},
-					isPager:      o.isPager ? false : true,
-					pageIndex:    o.pageIndex || 1,
-					pageSize:     o.pageSize || 10,
-					onPageFn:     o.onPageFn,
-					checkbox:     o.checkbox ? true : false,
-					width:        o.width || 'auto',
-					onCheckFn:    o.onCheckFn || null,
-					isMemory:     o.isMemory ? true : false,
-					nullText:     o.nullText ? o.nullText : lang.nullText,
-					detail:       o.detail || {},
-					pageAjax:     o.pageAjax || null,
-					current:      1
-				};
-			
-			//需要优化--获取缓存数据
-			options = _core.handleData(options);
-			if( !options ){return false;}
+			};//_core end
 
-			/*复制options共享g.o对象*/
-			for(var key in options){
-				if( options.hasOwnProperty(key) ){
-					g.o[key] = options[key];
+		/**
+		* grid 刷新对象
+		* @method saogaUI.ui.grid.refresh
+		* @param {object} [o] - 刷新grid新的配置项
+		* @return {Object} grid对象
+		*/
+		g.refresh = function(o){
+			if( o ){
+				for(var key in o){
+					if( o.hasOwnProperty(key) && o[key] !== undefined ){
+						if( p.pageAjax && o.pageAjax ){
+							for(var key2 in o.pageAjax){
+								p[key][key2] = o.pageAjax[key2];
+							}
+						}else{
+							p[key] = o[key];
+						}
+					}
 				}
 			}
 			
-			/*生成表格*/
+			if( o && !o.refreshIndex ){
+				p.pageIndex = 1;
+			}
 			
-				/*插入容器*/
-				options.wrap.append('<div class="l-gird" id="'+ options.id +'"></div>');
-				var grid  = $('#' + options.id),
-					width = (options.width === 'auto' ? grid.width() : options.width);
-				
-				options.width = width;
-				
-				/*表头*/
-				var tHeadHtml = _core.tHeadCreateHtml(options);
-				grid.append(tHeadHtml);
-				
-				/*内容*/
-				if( options.tmpData.length ){
-					var tBodyHtml = _core.tBodyCreateHtml(options);
-					grid.append('<div class="l-grid-body">'+ tBodyHtml +'</div>');
-				}else{
-					grid.append('<div class="l-grid-body">'+ options.nullText +'</div>');
-				}
-								
-				/*底部*/
-				
-					/*底部结构*/
-					var tFootHtml = '';
-					tFootHtml += '<div class="l-grid-footer">';
-					if( options.bottomBtns.length ){ // 是否有底部按钮
-						tFootHtml += '<div class="l-grid-footer-btns"></div>';
-					}
-					if( options.isPager ){ // 是否显示分页
-						tFootHtml += '<div class="l-grid-footer-pager"></div>';
-					}
-					tFootHtml += '</div>';
-					grid.append(tFootHtml);
-			
-					var gridFooter = grid.find('.l-grid-footer');
-						
-					/*按钮*/
-					if( gridFooter.find('.l-grid-footer-btns') ){
-						var gridFooterBtn = gridFooter.find('.l-grid-footer-btns'),
-							btnData       = options.bottomBtns;
-	
-						$.each(btnData, function(i, item){
-							gridFooterBtn.append('<a href="#btn" id="'+ item.id +'" class="l-btn ui-btn"><span class="ui-btnItem">'+ item.text +'</span></a>')
-							item.onclick && gridFooterBtn.find('.l-btn').eq(i).click(function(){
-								item.onclick(i, item);
-							});
-						});
-					}
-					
-					/*分页*/
-					if( gridFooter.find('.l-grid-footer-pager') ){
-						_core.pagerFn(g.o);
-					}
-				
-				/*选择框*/
-				_core.checkboxFn(g.o);
-				
-				/*明细*/
-				_core.detailBtnFn(g.o);
-	
+			_core.run();
 			return g;
 		};
 		
 		/**
-		* 表格全局数据源
-		* @member saogaUI.ui.BaseGrid
+		* grid 获取列头
+		* @method saogaUI.ui.grid.getColumns
+		* @return {Array} grid对象的列头数据
 		*/
-		g.o = {};
-		
-		/**
-		* 表格刷新数据源
-		* @member saogaUI.ui.BaseGrid
-		* @param {Object} 数据源
-		* @param {Number} 页面值索引
-		* @param {Boolean} 是否缓存
-		* @return {Object} saogaUI.ui.BaseGrid
-		*/
-		g.refresh = function(o){
-			if(!o){return false;}
-			var id        = g.o.id,
-				grid      = $('#'+id),
-				gridBody  = grid.find('.l-grid-body'),
-				tBodyHtml = '';
-			
-			for(var key in o.pageAjax){
-				if( o.pageAjax.hasOwnProperty(key) && o.pageAjax[key] ){
-					g.o.pageAjax[key] = o.pageAjax[key];
-				}
+		g.getColumns = function(){
+			if( _cache.columns.length ){
+				return _cache.columns;
 			}
+			return p.columns;
+		},
 
-			g.o.current   = 1;
-			g.o.pageIndex = 1;
+		/**
+		* grid 重设列头
+		* @method saogaUI.ui.grid.reSetColumns
+		* @param {object} 列对象
+		* @return {Object} grid对象
+		*/
+		g.reSetColumns = function(o){
+			 p.columns = _cache.columns = o.columns;
+			_core.run(false);
+		};
+
+		/**
+		* grid 修改列名
+		* @method saogaUI.ui.grid.changeHeaderText
+		* @param {Number|String} i - 为Number时Columns的引值，checkbox的不算；为string时是Columns的name
+		* @param {String} text - 要修改的文本
+		* @return {Object} grid对象
+		*/
+		g.changeHeaderText = function(i, text){
+			var grid2    = g.grid2,
+				isString = isNaN(Number(i));
 				
-			//需要优化--获取缓存数据
-			options = _core.handleData(g.o);	
-				
-			tBodyHtml = _core.tBodyCreateHtml(options);
-			gridBody.html(tBodyHtml);
 			
-			/*分页*/
-			if( grid.find('.l-grid-footer-pager') ){
-				_core.pagerFn(options);
+			if( isString ){
+				var obj = grid2.find('.l-grid-hd-cell-span'),
+					len = obj.length,
+					j   = 0;
+				for(; j<len; j++){
+					if( obj.eq(j).attr('data-columnname') === i ){
+						obj.eq(j).find('.l-grid-hd-cell-text').html(text);
+					}
+				}
+			}else{
+				grid2.find('.l-grid-hd-cell-text').eq(i).html(text);
 			}
 			
 			return g;
-		},
-			
+		};
+
 		/**
-		* 获取选中的数据，并组装成表格可用的数据格式
-		* @member saogaUI.ui.BaseGrid
-		* @return {Object} 返回一个表格数据源
+		* grid 获取当前页数据，只支持静态数据，使用ajax数据时请用pageAjax提供的success方式获取
+		* @method saogaUI.ui.grid.getCurrentData
+		* @return {Object} grid当前页数据对象
+		*/
+		g.getCurrentData = function(){
+			var pageIndex = p.pageIndex;
+			return _cache.tmpData[pageIndex - 1];
+		};
+
+		/**
+		* grid 获取选中的数据
+		* @method saogaUI.ui.grid.getSelectData
+		* @return {object} grid数据，格式与请求的一样
 		*/
 		g.getSelectData = function(){
 			var arr      = [],
 				i        = 0, 
-				Selected = _cache.rowselected,
-				len      = Selected.length, //记录的长度
-				total    = 0;              //data个数
-				
-			//console.log(Selected)
+				selected = _cache.rowSelected,
+				len      = selected.length,   //记录的长度
+				total    = 0;                 //data个数
 			
 			/*过滤掉records下面的空元素*/
 			for(; i < len; i++){
-				if( Selected[i] ){
-					for(var h = 0; h<Selected[i].length; h++){
-						if( Selected[i][h] ){
-							arr.push( Selected[i][h] );
+				if( selected[i] ){
+					for(var h = 0; h<selected[i].length; h++){
+						if( selected[i][h] ){
+							arr.push( selected[i][h] );
 						}
 					}
 				}
@@ -810,15 +1669,78 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			};
 		};
 		
+		/**
+		* grid 获取当前页索引
+		* @method saogaUI.ui.grid.getPageIndex
+		* @return {Boolean} 
+		*/
+		g.getPageIndex = function(){
+			return p.pageIndex;
+		};
+		
+		/**
+		* grid 取消的选中的行
+		* @method saogaUI.ui.grid.uncheckRow
+		* @param {Number} i 取消的选中的行，值为当前页
+		* @return {Object} grid对象
+		*/
+		g.uncheckRow = function(i, pageIndex){
+			if( i !== undefined ){
+				var grid1       = g.grid1,
+					grid2       = g.grid2,
+					grid1Header = grid1.find('.l-grid-header'), //表格头
+					grid1Body   = grid1.find('.l-grid-body'),   //表格主体
+					grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+					grid1Row    = grid1Body.find('.l-grid-row').eq(i),
+					grid2Row    = grid2Body.find('.l-grid-row').eq(i),
+					checkbox    = grid1Body.find('.l-checkbox').eq(i),
+					currentArr  = _cache.rowSelected[pageIndex-1];
+				
+				checkbox.removeClass('l-checkbox-selected');
+				grid1Row.removeClass('l-grid-row-selected');
+				grid2Row.removeClass('l-grid-row-selected');
+				grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
+				currentArr[i] = null;
+				
+				_core.initCheckbox();
+			}
+			return g;
+		};
+		
+		/*g.uncheckRow2 = function(key, val){
+			var data = _cache.rowSelected;
+			
+			for(var i = 0; i<data.length; i++){
+				var dataItem = data[i];
+				for(var h = 0; h<dataItem.length; h++){
+					if( dataItem[h][key] !== undefined && dataItem[h][key] === val ){
+						
+					}
+				}
+			}
+		};*/
+		
+		/**
+		* grid 跳出执行
+		* @method saogaUI.ui.grid.jump
+		* @return {Boolean} 
+		*/
+		g.jump = function(data){
+			console.log('ajax data error:',data);
+			return false;
+		};
+		
+		/**
+		* grid 扩展
+		* @method saogaUI.ui.grid.methos
+		* @return {object} 
+		*/
+		g.methos = g.methos || {};
+		
+		return _core.init(o);
 	};
 
-	/**
-	 * grid实例化
-	 * @dest 封装在saogaUI.ui.grid里，可创建多个saogaUI.ui.grid，又避免多个表格this互相影响
-	 */
 	return function(options){
-		var grid = new BaseGrid();
-		return grid.init(options);
+		return new Grid(options);
 	};
-	
 });
