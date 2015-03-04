@@ -822,7 +822,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 					}else{
 						var selected = Math.min(pageSize, checkbox.length), //已选数量
 							arr      = _cache.rowSelected[pageIndex-1],
-							len      = arr.length,
+							len      = arr ? arr.length : 0,
 							i        = 0,
 							j        = 0;
 						
@@ -999,15 +999,15 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 						isShowLoading = p.isShowLoading;
 					
 					/*************************临时处理*********************/
-					data = data.replace('{{index}}', pageIndex);
-					data = data.replace(/pageSize=\d*/, '');
+					//data = data.replace('{{index}}', pageIndex);
+					//data = data.replace(/pageSize=\d*/, '');
 					/*************************临时处理*********************/
 					
 					
 					data += '&pageIndex=' + pageIndex;
 					data += '&pageSize=' + pageSize;
 										
-					data = data.replace(/{{|}}/g,'');
+					//data = data.replace(/{{|}}/g,'');
 					data = data.split('&');
 					
                     /*解析URL并转换为json形式，防止特殊字符问题*/
@@ -1513,7 +1513,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 						g.footer.remove();
 					}
 					
-					console.log(1)
 				},
 				
 				/**
@@ -1571,6 +1570,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 			if( o && !o.refreshIndex ){
 				p.pageIndex = 1;
 			}
+			
+			_cache.tmpData = [];
+			_cache.rowSelected = [];
+			_cache.detailSelected = [];
 			
 			_core.run();
 			return g;

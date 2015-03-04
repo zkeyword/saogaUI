@@ -67,15 +67,15 @@
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
-			<i class="ui-label ui-w155">正则(format=正则)：</i>
-			<input class="ui-input" type="text" data-validate="format=\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$" data-validate-formatText="以邮箱为例，请输入正确的邮箱格式" />
+			<i class="ui-label ui-w155">邮箱(email)：</i>
+			<input class="ui-input" type="text" data-validate="email" />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
-			<i class="ui-label ui-w155">邮箱(email)：</i>
-			<input class="ui-input" type="text" data-validate="email" />
+			<i class="ui-label ui-w155">正则(format=正则)：</i>
+			<input class="ui-input" type="text" data-validate="format=\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$" data-validate-formatText="以邮箱为例，请输入正确的邮箱格式" />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
@@ -97,6 +97,13 @@
 		<label>
 			<i class="ui-label ui-w155">手机(mobile)：</i>
 			<input class="ui-input" type="text" data-validate="mobile" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">ajax(ajax)：</i>
+			<input class="ui-input" type="text" data-validate="ajax=http://127.0.0.1/saogaUI/www/temp/validate.php?id=1&pid=2&name={{value}}" data-ajax-formatText="name字段不能为空"  />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
@@ -131,6 +138,7 @@
 	<div class="fn-clear">
 		<input type="submit" value="input按钮提交"/>
 		<a href="#" id="submitLink">ajax提交</a>
+		<a href="#" id="reset">重置</a>
 	</div>
 </form>
 <script type="text/javascript">
@@ -142,9 +150,15 @@ require(['app/main'], function(saogaUI){
 	});
 	
 	$('#submitLink').click(function(){
-		console.log(validator.getStatus())
+		
+        //validator.validatorAll();
 		$('#test').submit();
+        
 	});
+    
+    $('#reset').click(function(){
+        validator.reset();
+    });
 });
 
 </script>

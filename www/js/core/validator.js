@@ -51,7 +51,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					if(  oItem[0].type === 'radio' && !$("input:radio[name='"+ oItem[0].name +"']:checked").attr('checked') ){
 						return '必须勾选！';
 					}
-					
 				},
 				
 				/* 非空 */
@@ -108,7 +107,6 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				/* 数字 */
 				number: function(sVal){
 					sVal = sVal.trims();
-					console.log(Number(sVal))
 					if( isNaN(Number(sVal)) || !sVal.length ){
 						return '请输入一个正确的数字';
 					}
@@ -158,13 +156,28 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 					}
 				},
 				
-				ajax: function(sVal, sParam){
+				ajax: function(sVal, sParam, oItem, oMessage){
 					$.ajax({
-						
+						type: 'POST',
+						url: sParam,
+						cache: false,
+						dataType: "json",
+						beforeSend: function(){
+							
+						},
+						success: function(data){
+                            if( !data ){
+                                oItem.addClass('l-form-error');
+                                oMessage.html( oItem.attr('data-ajax-formatText') );
+                            }
+						},
+						error: function(data){
+							console.log(data);
+						}
 					});
 				},
 				
-				route: function(sVal, sRule, oItem){
+				route: function(sVal, sRule, oItem, oMessage){
 					var oThat      = this,
 						aRule      = sRule.split(';'),
 						len        = aRule.length,
@@ -178,12 +191,23 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							fRule = null;
 						
 						if( rCode.test(aRule[i]) ){
-							var aChild = rFormat.test(aRule[i]) ? ['format', aRule[i].replace(rFormat,'')] : aRule[i].split('=');
+							var aChild = aRule[i].split('=');
+							
+							if( rFormat.test(aRule[i]) ){
+								if( aChild[0] === 'format' ){
+									aChild = ['format', aRule[i].replace(rFormat,'')];
+								}else{
+									var tmpVal = '';
+									tmpVal = aRule[i].replace(rFormat,'');
+									tmpVal = tmpVal.replace(/{{value}}/, sVal);
+									aChild = ['ajax', tmpVal];
+								}
+							}
 							
 							fRule = oThat[aChild[0]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, aChild[1], oItem);
+								sText = fRule(sVal, aChild[1], oItem, oMessage);
 							}
 							
 						}else{
@@ -191,11 +215,9 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 							fRule = oThat[aRule[i]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, oItem);
+								sText = fRule(sVal, oItem, oMessage);
 							}
 						}
-						
-						
 
 						if( sText ){
 							return sText;
@@ -204,28 +226,29 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 				},
 				
 				run: function(){
-					var oThat     = this,
-						oTarget   = p.target,
-						bPass     = false,
-						fAction   = function(oSelf){
+					var oThat      = this,
+						oTarget    = p.target,
+						bPass      = false,
+						fAction    = function(oSelf){
 										var sVal    = oSelf.val(),
 											sRule   = oSelf.attr('data-validate'),
-											html    = oThat.route(sVal, sRule, oSelf),
 											parents = oSelf.parents('.ui-form'),
-											message = parents.find('.ui-form-message')
+											message = parents.find('.ui-form-message'),
+                                            html    = null;
 											
-										if( !html ){ return false; }
-										
 										if( oSelf.next('.ui-form-message').length ){
 											message = oSelf.next('.ui-form-message');
 										}
-										
-										oSelf.addClass('l-form-error');
-										message.html(html);
-										
-										return true;
+
+										if( html = oThat.route(sVal, sRule, oSelf, message) ){
+                                            oSelf.addClass('l-form-error');
+                                            message.html(html);
+                                            return true;
+                                        }
+                                        
+                                        return false;
 									},
-						fUnAction = function(oSelf){
+						fUnAction  = function(oSelf){
 										var sVal    = oSelf.val(),
 											parents = oSelf.parents('.ui-form'),
 											message = parents.find('.ui-form-message');
@@ -233,9 +256,27 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 										if( oSelf.next('.ui-form-message').length ){
 											message = oSelf.next('.ui-form-message');
 										}
-										
-										oSelf.removeClass('l-form-error');
+
+                                        if( oSelf[0].type === 'checkbox' || oSelf[0].type === 'radio' ){
+                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error');
+                                        }else{
+                                            oSelf.removeClass('l-form-error');
+                                        }
+                                        
 										message.empty();
+									},
+						fActionAll = function(){
+										var oItem   = oTarget.find('[data-validate]'),
+											len     = oItem.length,
+											i       = 0,
+											bSumbit = false;
+											
+										for(; i<len; i++){
+											bSumbit = !fAction( oItem.eq(i) );
+											if( bSumbit ){
+												fUnAction( oItem.eq(i) );
+											}
+										}
 									}
 						
 					oTarget.on('blur', '[data-validate]', function(e){
@@ -246,21 +287,15 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 						fUnAction( $(e.currentTarget) );
 					});
 					
-					oTarget.on('submit', function(e){
-						var oSelf   = $(e.currentTarget),
-							oItem   = oSelf.find('[data-validate]'),
-							len     = oItem.length,
-							i       = 0,
-							bSumbit = false;
-							
-						for(; i<len; i++){
-							bSumbit = !fAction( oItem.eq(i) );
-							if( bSumbit ){
-								fUnAction( oItem.eq(i) );
-							}
-						}
-						
-						return false;
+					oTarget.on('submit', function(){
+						fActionAll();
+                        if( !g.getStatus() ){
+                            return false;
+                        }
+					});
+					
+					oTarget.on('all', function(){
+						fActionAll();
 					});
 				},
 				
@@ -278,11 +313,28 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 			};
 			
 		g.reset = function(){
-			
+			var oTarget  = p.target,
+                oItem    = oTarget.find('[data-validate]'),
+                oMessage = oTarget.find('.ui-form-message'),
+                len      = oItem.length,
+                i        = 0;
+            
+            for(; i<len; i++){
+                oItem
+                    .eq(i)
+                    .val('')
+                    .removeClass('l-form-error');
+                oMessage.eq(i).empty();
+            }
 		}
 		
 		g.getStatus = function(){
-			return !$('.l-form-error').length;
+			return !p.target.find('.l-form-error').length;
+		}
+		
+		g.validatorAll = function(){
+			p.target.trigger('all');
+            return g.getStatus();
 		}
 
 		return c.init(o);
