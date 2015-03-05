@@ -100,7 +100,7 @@ define(['core/saogaUI'], function(saogaUI){
                                             for( ; j<selectedLen; j++ ){
                                                 if( Number(selected[j]) === Number(data[i].id) ){
                                                     _cache.selected.push(data[i]);
-													selectCls = ' l-tree-itemSelect';
+													selectCls = ' l-tree-selectedNode';
                                                 }
                                             }
 											
@@ -118,7 +118,7 @@ define(['core/saogaUI'], function(saogaUI){
 												lastSwitch = ' l-tree-lastSwitch';
 												lastIco    = ' l-tree-lastIco';
 											}
-											
+
 											/*判断最后一个*/
 											if( !isLast ){
 												lineCls = ' l-tree-line';
@@ -131,6 +131,7 @@ define(['core/saogaUI'], function(saogaUI){
 											/*判断子有没有存在*/											
 											if( sonHtml ){
 												if( !isOpen ){
+                                                    openCls  = '';
 													closeCls = ' l-tree-close';
 												}
 												sonWrap +=	'<ul class="l-tree-ul'+ lineCls + (closeCls?' fn-hide':'') +'">';
@@ -145,10 +146,10 @@ define(['core/saogaUI'], function(saogaUI){
 											}
 											
 											html += '<li class="fn-clear l-tree-level-'+ level + lastCls +'">';
-											html += 	'<div class="l-tree-item l-tree-itemLevel-'+ level + parentNode + selectCls +'">';
+											html += 	'<div class="l-tree-item l-tree-itemLevel-'+ level + parentNode + '">';
 											html += 		'<span class="l-tree-switch'+ openCls + closeCls + lastSwitch +'"></span>';
 											html +=         checkHtml;
-											html += 		'<a class="l-tree-node" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" title="'+ data[i].name +'">';
+											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" title="'+ data[i].name +'">';
 											html += 			'<span class="l-tree-ico'+ lastIco +'"></span>';
 											html += 			'<i class="l-tree-text">'+ data[i].name +'</i>';
 											html += 		'</a>';
@@ -244,6 +245,7 @@ define(['core/saogaUI'], function(saogaUI){
 										};
 
 						target
+                            .off('click', '.l-tree-node')
 							.on('click', '.l-tree-node', function(e){
 								var that = $(e.currentTarget),
 									data = itemData(that);
@@ -266,6 +268,7 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								return false;
 							})
+                            .off('dblclick', '.l-tree-node')
 							.on('dblclick', '.l-tree-node', function(e){
 								var that      = $(e.currentTarget),
 									data      = itemData(that),
@@ -285,6 +288,7 @@ define(['core/saogaUI'], function(saogaUI){
                                 
 								return false;
 							})
+                            .off('contextmenu', '.l-tree-node')
 							.on('contextmenu', '.l-tree-node', function(e){
 								if( saogaUI.base.isFunction(p.onRightClick) ){
 									var that = $(e.currentTarget),
@@ -295,6 +299,7 @@ define(['core/saogaUI'], function(saogaUI){
 									return false;
 								}
 							})
+                            .off('mouseover', '.l-tree-node')
 							.on('mouseover', '.l-tree-node', function(e){
 								if( saogaUI.base.isFunction(p.onMouseOver) ){
 									var that = $(e.currentTarget),
@@ -303,6 +308,7 @@ define(['core/saogaUI'], function(saogaUI){
 									p.onMouseOver(that, data);
 								}
 							})
+                            .off('mouseout', '.l-tree-node')
 							.on('mouseout', '.l-tree-node', function(e){
 								if( saogaUI.base.isFunction(p.onMouseOut) ){
 									var that = $(e.currentTarget),
@@ -311,9 +317,12 @@ define(['core/saogaUI'], function(saogaUI){
 									p.onMouseOut(that, data);
 								}
 							})
+                            .off('click', '.l-tree-switch')
 							.on('click', '.l-tree-switch', function(e){
 								var that = $(e.currentTarget),
 									son  = that.parent('.l-tree-item').next('.l-tree-ul');
+                                    
+                                saogaUI.ui.onselectstart(that);
 									
 								if( that.hasClass('l-tree-open') ){
 									that.addClass('l-tree-close')
@@ -327,6 +336,7 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								return false;
 							})
+                            .off('click', '.l-tree-checkbox')
 							.on('click', '.l-tree-checkbox', function(e){
 								var that    = $(e.currentTarget),
 									level   = Number(that.attr('data-level')),
@@ -409,6 +419,7 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								checkFn(that, level, true);
 							})
+                            .off('click', '.l-tree-radio')
 							.on('click', '.l-tree-radio', function(e){
 								var that    = $(e.currentTarget),
 									level   = Number(that.attr('data-level')),

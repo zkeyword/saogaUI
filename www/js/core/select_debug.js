@@ -887,8 +887,8 @@ define(['core/saogaUI'], function(saogaUI){
 									});
 								
 						selected = tree.getSelected();
-						input.val(selected[0].name);
-						target.val(selected[0].id);
+						input.val(selected.length ? selected[0].name : '');
+						target.val(selected.length ? selected[0].name : '');
 
 						wrap
 							.off('click', input)
