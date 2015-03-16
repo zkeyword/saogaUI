@@ -42,11 +42,9 @@ define(['core/saogaUI'], function(saogaUI){
 					*/
 					createHtml: function(){
 						var target  = p.target,
-							type    = target[0].type,
 							len     = p.target.length,
+							type    = len ? target[0].type : null,
 							i       = 0;
-						
-						if( type !== 'radio' || type !== 'checkbox' ){}
 						
 						p.wrap = p.target.parent();
 						
@@ -81,7 +79,7 @@ define(['core/saogaUI'], function(saogaUI){
 							browser = saogaUI.base.browser;
 							
 						saogaUI.ui.onselectstart(wrap.parent());
-
+                        
 						wrap
 							.off('click','.l-check-wrap')
 							.on('click','.l-check-wrap',function(e){

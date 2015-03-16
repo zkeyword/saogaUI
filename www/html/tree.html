@@ -3,33 +3,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>title 提示样式测试页面</title>
-<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
- --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
- <script src="../js/lib/jquery-1.8.3.min.js"></script>
-<script data-main="../js/common2" src="../js/lib/require.js"></script>
+<link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
+<script data-main="../../build/js/common" src="../../build/js/lib/require.js"></script>
 </head>
 <body onunload="alert('The onunload event was triggered')">				
 	<div id="tree">
 	</div>
+    <a href="#" id="click">click</a>
 	<script>
 		require(['app/main'], function(saogaUI){
 			
 			var data =[
-	 			{ id:1, pid:0, name:"随意勾选 1", open:false},
-	 			{ id:11, pid:1, name:"随意勾选 1-1"},
-	 			{ id:12, pid:1, name:"随意勾选  1-2", open:false},
+	 			{ id:1, pid:0, name:"随意勾选 1", open:false, icon:'http://127.0.0.1/saogaUI/build/images/app/2.png'},
+	 			{ id:11, pid:1, name:"随意勾选 1-1", icon:'http://127.0.0.1/saogaUI/build/images/app/3.png'},
+	 			{ id:12, pid:1, name:"随意勾选  1-2", open:false, icon:'http://127.0.0.1/saogaUI/build/images/app/5.png'},
 	 			{ id:121, pid:12, name:"随意勾选 1-2-1"},
 	 			{ id:122, pid:12, name:"随意勾选 1-2-2"},
 	 			{ id:123, pid:12, name:"随意勾选 1-2-3"},
 	 			{ id:13, pid:1, name:"随意勾选 1-3"},
-	 			{ id:2, pid:0, name:"随意勾选 2", open:true},
+	 			{ id:2, pid:1, name:"随意勾选 2", open:true},
 	 			{ id:23, pid:2, name:"随意勾选 2-3"},
 	 			{ id:22, pid:2, name:"随意勾选 2-2", open:false},
 	 			{ id:21, pid:2, name:"随意勾选 2-1", isParent:true},
 	 			{ id:221, pid:22, name:"随意勾选 2-2-1"},
 	 			{ id:222, pid:22, name:"随意勾选 2-2-2"},
 	 			{ id:223, pid:22, name:"随意勾选 2-2-3"},
-	 			{ id:3, pid:0, name:"随意勾选 3", open:true},
+	 			{ id:3, pid:1, name:"随意勾选 3", open:true},
 	 			{ id:33, pid:3, name:"随意勾选 3-3", checked:true},
 	 			{ id:32, pid:3, name:"随意勾选 3-2", open:false},
 	 			{ id:31, pid:3, name:"随意勾选 3-1", isParent:true},
@@ -75,7 +74,11 @@
 			//	data: data2
 			//});
 
+           tree.getSelected()
 			
+            $('#click').click(function(){
+                console.log( tree.getSelected() )
+            });
 		});
 	</script>
 </body>

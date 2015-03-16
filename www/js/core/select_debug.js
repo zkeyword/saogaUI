@@ -119,8 +119,13 @@ define(['core/saogaUI'], function(saogaUI){
 						
 						/*遍历多个target*/						
 						for(; i<len; i++){
-							var selectItem      = target.eq(i),
-								selectItemWidth = selectItem.outerWidth(),
+                            var selectItem      = target.eq(i);
+                            
+                            if( selectItem.parent().hasClass('l-select-wrap') ){
+                                continue;
+                            }
+                            
+							var selectItemWidth = selectItem.outerWidth(),
 								selectItemClass = selectItem[0].className,
 								selectItemVal   = selectItem.wrap('<div class="l-select-wrap"></div>')
 															.after('<div class="l-select-single"><div class="l-select-single-init '+ selectItemClass +'"></div><div class="l-select-down fn-hide"><ul class="l-select-single-ul"></ul></div></div>')
@@ -177,7 +182,7 @@ define(['core/saogaUI'], function(saogaUI){
 						/*遍历多个target*/						
 						for(; i<len; i++){
 							var selectItem      = target.eq(i),
-								selectItemWidth = selectItem.outerWidth(),
+                                selectItemWidth = selectItem.outerWidth(),
 								selectItemVal   = selectItem.val(),
 								selectedItem    = selectItem.find('option:selected'),
 								option          = selectItem.find('option'),
@@ -864,7 +869,7 @@ define(['core/saogaUI'], function(saogaUI){
 													return false;
 												}
 											}
-											
+											console.log(data)
 											input.val(data.name);
 											target.val(data.id);
 											
@@ -888,7 +893,7 @@ define(['core/saogaUI'], function(saogaUI){
 								
 						selected = tree.getSelected();
 						input.val(selected.length ? selected[0].name : '');
-						target.val(selected.length ? selected[0].name : '');
+						target.val(selected.length ? selected[0].id : '');
 
 						wrap
 							.off('click', input)

@@ -5590,8 +5590,13 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 						
 						/*遍历多个target*/						
 						for(; i<len; i++){
-							var selectItem      = target.eq(i),
-								selectItemWidth = selectItem.outerWidth(),
+                            var selectItem      = target.eq(i);
+                            
+                            if( selectItem.parent().hasClass('l-select-wrap') ){
+                                continue;
+                            }
+                            
+							var selectItemWidth = selectItem.outerWidth(),
 								selectItemClass = selectItem[0].className,
 								selectItemVal   = selectItem.wrap('<div class="l-select-wrap"></div>')
 															.after('<div class="l-select-single"><div class="l-select-single-init '+ selectItemClass +'"></div><div class="l-select-down fn-hide"><ul class="l-select-single-ul"></ul></div></div>')
@@ -5648,7 +5653,7 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 						/*遍历多个target*/						
 						for(; i<len; i++){
 							var selectItem      = target.eq(i),
-								selectItemWidth = selectItem.outerWidth(),
+                                selectItemWidth = selectItem.outerWidth(),
 								selectItemVal   = selectItem.val(),
 								selectedItem    = selectItem.find('option:selected'),
 								option          = selectItem.find('option'),
@@ -6335,7 +6340,7 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 													return false;
 												}
 											}
-											
+											console.log(data)
 											input.val(data.name);
 											target.val(data.id);
 											
@@ -6359,7 +6364,7 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 								
 						selected = tree.getSelected();
 						input.val(selected.length ? selected[0].name : '');
-						target.val(selected.length ? selected[0].name : '');
+						target.val(selected.length ? selected[0].id : '');
 
 						wrap
 							.off('click', input)
@@ -7507,7 +7512,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], f
 					data += '&pageIndex=' + pageIndex;
 					data += '&pageSize=' + pageSize;
 										
-					//data = data.replace(/{{|}}/g,'');
+					data = data.replace(/{{|}}/g,'');
 					data = data.split('&');
 					
                     /*解析URL并转换为json形式，防止特殊字符问题*/
@@ -7768,7 +7773,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], f
 					if( isSort ){
 						grid2Header.find('.l-grid-hd-cell-span')
 								   .addClass('l-grid-hd-cell-sortWrap')
-								   .append('<span class="l-grid-hd-cell-sort"><b class="icon-font-10" data-uid="983722">&#983722</b></span>');
+								   .append('<span class="l-grid-hd-cell-sort"><b class="icon icon-angle-up"></b></span>');
 						
 						grid2Header.off('click', '.l-grid-hd-cell-span').on('click', '.l-grid-hd-cell-span', function(){
 							var self     = $(this),
@@ -7779,11 +7784,11 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], f
 							if( isSortCurrent ){
 								
 								if( sort.hasClass('desc') ){
-									sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+									sort.html('<b class="icon icon-angle-up"></b');
 									sort.removeClass('desc');
 									sortType = 'desc';
 								}else{
-									sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+									sort.html('<b class="icon icon-angle-down"></b');
 									sort.addClass('desc');
 									sortType = 'asc';
 								}
@@ -7796,11 +7801,11 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], f
 								if( g.onLoaded ){
 									
 									if( sort.hasClass('desc') ){
-										sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+										sort.html('<b class="icon icon-angle-up"></b');
 										sort.removeClass('desc');
 										sortType = 'desc';
 									}else{
-										sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+										sort.html('<b class="icon icon-angle-down"></b');
 										sort.addClass('desc');
 										sortType = 'asc';
 									}
@@ -9043,7 +9048,8 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
                 
             /* 缓存池 */
             _cache = {
-                selected: []
+                selected: [],
+                init: false
             },
             
 			c = {
@@ -9080,10 +9086,13 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 												selectCls    = '',
 												isParent     = data[i].isParent === undefined ? false : data[i].isParent,
 												isOpen       = data[i].open === undefined ? false : data[i].open,
+                                                icon         = data[i].icon ? ' style="background:url('+ data[i].icon +') 0 0 no-repeat;"' : '',
 												parentNode   = isParent ? ' l-tree-parentNode' : '',
                                                 j            = 0,
                                                 selected     = p.selected,
                                                 selectedLen  = selected ? selected.length : 0,
+                                                isChecked    = data[i].checked === undefined ? false : data[i].checked,
+                                                checkedStr   = '',
 												checkHtml    = '';
                                              
                                             /* 获取选中数据 */
@@ -9093,9 +9102,13 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 													selectCls = ' l-tree-selectedNode';
                                                 }
                                             }
+                                            
+                                            if( isChecked ){
+                                                checkedStr = ' data-checked="true"';
+                                            }
 											
 											if( isCheckBox ){
-												checkHtml = '<span class="l-tree-check l-tree-checkbox l-tree-check-'+ level +'" data-level="'+ level +'"></span>';
+												checkHtml = '<span class="l-tree-check l-tree-checkbox l-tree-check-'+ level +'" data-level="'+ level +'"'+ checkedStr +'></span>';
 											}
 											
 											if( isRadio ){
@@ -9139,8 +9152,8 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 											html += 	'<div class="l-tree-item l-tree-itemLevel-'+ level + parentNode + '">';
 											html += 		'<span class="l-tree-switch'+ openCls + closeCls + lastSwitch +'"></span>';
 											html +=         checkHtml;
-											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" title="'+ data[i].name +'">';
-											html += 			'<span class="l-tree-ico'+ lastIco +'"></span>';
+											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" data-name="'+ data[i].name +'" title="'+ data[i].name +'">';
+											html += 			'<span class="l-tree-ico'+ lastIco +'"'+ icon +'></span>';
 											html += 			'<i class="l-tree-text">'+ data[i].name +'</i>';
 											html += 		'</a>';
 											html += 	'</div>';
@@ -9284,7 +9297,7 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 									var that = $(e.currentTarget),
 										data = itemData(that);
 										
-									p.onRightClick(that, data);
+									p.onRightClick(that, data, e);
 									
 									return false;
 								}
@@ -9330,6 +9343,7 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 							.on('click', '.l-tree-checkbox', function(e){
 								var that    = $(e.currentTarget),
 									level   = Number(that.attr('data-level')),
+                                    isInit  = _cache.init,
 									checkFn = function(obj, level, isCurrent){
 													var isChecked      = obj.hasClass('l-tree-checkbox-checked'),
 														isPartChecked  = obj.hasClass('l-tree-checkbox-checked-part'),
@@ -9359,8 +9373,10 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 															obj.addClass('l-tree-checkbox-checked');
 															children.addClass('l-tree-checkbox-checked');
 														}else{
-															obj.removeClass('l-tree-checkbox-checked');
-															children.removeClass('l-tree-checkbox-checked');
+															if( !isInit ){
+																obj.removeClass('l-tree-checkbox-checked');
+																children.removeClass('l-tree-checkbox-checked');
+															}
 														}
 														
 														/* 获取已选数量 */
@@ -9446,6 +9462,21 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 								checkFn(that);
 							});
 					},
+                    
+                    /**
+					* 初始化checks
+					*/
+                    initCheckFn: function(){
+
+                        var checked = p.target.find('.l-tree-checkbox[data-checked="true"]'),
+                            len     = checked.length,
+                            i       = 0;
+                        
+                        for(; i<len; i++){
+                           checked.eq(i).trigger('click');
+                        }
+
+                    },
 					
 					/**
 					* 创建树对象
@@ -9456,6 +9487,9 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 						}
 						this.createHtml();
 						this.eventFn();
+                        if( p.check ){
+                            this.initCheckFn();
+                        }
 					},
 					
 					/**
@@ -9508,7 +9542,26 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 		* 获取选中数据，不能获取初始化选中数据
 		*/
         g.getSelected = function(){
-			return _cache.selected;
+            if( p.check ){
+                var checkbox = p.target.find('.l-tree-checkbox'),
+                    len      = checkbox.length,
+                    i        = 0;
+
+                _cache.selected = [];
+                
+                for(; i<len; i++){
+                    var item = checkbox.eq(i)
+                    if( item.hasClass('l-tree-checkbox-checked') || item.hasClass('l-tree-checkbox-checked-part') ){
+                        var node = item.next('.l-tree-node'),
+                            id   = node.attr('data-id'),
+                            pid  = node.attr('data-pid'),
+                            name = node.attr('data-name'),
+                            obj  = {'pid':pid, 'id':id, 'name':name, 'checked':true}
+                        _cache.selected.push(obj);
+                    }
+                }
+            }
+            return _cache.selected;
         };
 		
 		return c.init(o);
@@ -9565,11 +9618,9 @@ define('core/check_debug',['core/saogaUI'], function(saogaUI){
 					*/
 					createHtml: function(){
 						var target  = p.target,
-							type    = target[0].type,
 							len     = p.target.length,
+							type    = len ? target[0].type : null,
 							i       = 0;
-						
-						if( type !== 'radio' || type !== 'checkbox' ){}
 						
 						p.wrap = p.target.parent();
 						
@@ -9604,7 +9655,7 @@ define('core/check_debug',['core/saogaUI'], function(saogaUI){
 							browser = saogaUI.base.browser;
 							
 						saogaUI.ui.onselectstart(wrap.parent());
-
+                        
 						wrap
 							.off('click','.l-check-wrap')
 							.on('click','.l-check-wrap',function(e){

@@ -53,7 +53,8 @@ define(['core/saogaUI'], function(saogaUI){
                 
             /* 缓存池 */
             _cache = {
-                selected: []
+                selected: [],
+                init: false
             },
             
 			c = {
@@ -90,10 +91,13 @@ define(['core/saogaUI'], function(saogaUI){
 												selectCls    = '',
 												isParent     = data[i].isParent === undefined ? false : data[i].isParent,
 												isOpen       = data[i].open === undefined ? false : data[i].open,
+                                                icon         = data[i].icon ? ' style="background:url('+ data[i].icon +') 0 0 no-repeat;"' : '',
 												parentNode   = isParent ? ' l-tree-parentNode' : '',
                                                 j            = 0,
                                                 selected     = p.selected,
                                                 selectedLen  = selected ? selected.length : 0,
+                                                isChecked    = data[i].checked === undefined ? false : data[i].checked,
+                                                checkedStr   = '',
 												checkHtml    = '';
                                              
                                             /* 获取选中数据 */
@@ -103,9 +107,13 @@ define(['core/saogaUI'], function(saogaUI){
 													selectCls = ' l-tree-selectedNode';
                                                 }
                                             }
+                                            
+                                            if( isChecked ){
+                                                checkedStr = ' data-checked="true"';
+                                            }
 											
 											if( isCheckBox ){
-												checkHtml = '<span class="l-tree-check l-tree-checkbox l-tree-check-'+ level +'" data-level="'+ level +'"></span>';
+												checkHtml = '<span class="l-tree-check l-tree-checkbox l-tree-check-'+ level +'" data-level="'+ level +'"'+ checkedStr +'></span>';
 											}
 											
 											if( isRadio ){
@@ -149,8 +157,8 @@ define(['core/saogaUI'], function(saogaUI){
 											html += 	'<div class="l-tree-item l-tree-itemLevel-'+ level + parentNode + '">';
 											html += 		'<span class="l-tree-switch'+ openCls + closeCls + lastSwitch +'"></span>';
 											html +=         checkHtml;
-											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" title="'+ data[i].name +'">';
-											html += 			'<span class="l-tree-ico'+ lastIco +'"></span>';
+											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" data-name="'+ data[i].name +'" title="'+ data[i].name +'">';
+											html += 			'<span class="l-tree-ico'+ lastIco +'"'+ icon +'></span>';
 											html += 			'<i class="l-tree-text">'+ data[i].name +'</i>';
 											html += 		'</a>';
 											html += 	'</div>';
@@ -294,7 +302,7 @@ define(['core/saogaUI'], function(saogaUI){
 									var that = $(e.currentTarget),
 										data = itemData(that);
 										
-									p.onRightClick(that, data);
+									p.onRightClick(that, data, e);
 									
 									return false;
 								}
@@ -340,6 +348,7 @@ define(['core/saogaUI'], function(saogaUI){
 							.on('click', '.l-tree-checkbox', function(e){
 								var that    = $(e.currentTarget),
 									level   = Number(that.attr('data-level')),
+                                    isInit  = _cache.init,
 									checkFn = function(obj, level, isCurrent){
 													var isChecked      = obj.hasClass('l-tree-checkbox-checked'),
 														isPartChecked  = obj.hasClass('l-tree-checkbox-checked-part'),
@@ -369,8 +378,10 @@ define(['core/saogaUI'], function(saogaUI){
 															obj.addClass('l-tree-checkbox-checked');
 															children.addClass('l-tree-checkbox-checked');
 														}else{
-															obj.removeClass('l-tree-checkbox-checked');
-															children.removeClass('l-tree-checkbox-checked');
+															if( !isInit ){
+																obj.removeClass('l-tree-checkbox-checked');
+																children.removeClass('l-tree-checkbox-checked');
+															}
 														}
 														
 														/* 获取已选数量 */
@@ -456,6 +467,21 @@ define(['core/saogaUI'], function(saogaUI){
 								checkFn(that);
 							});
 					},
+                    
+                    /**
+					* 初始化checks
+					*/
+                    initCheckFn: function(){
+
+                        var checked = p.target.find('.l-tree-checkbox[data-checked="true"]'),
+                            len     = checked.length,
+                            i       = 0;
+                        
+                        for(; i<len; i++){
+                           checked.eq(i).trigger('click');
+                        }
+
+                    },
 					
 					/**
 					* 创建树对象
@@ -466,6 +492,9 @@ define(['core/saogaUI'], function(saogaUI){
 						}
 						this.createHtml();
 						this.eventFn();
+                        if( p.check ){
+                            this.initCheckFn();
+                        }
 					},
 					
 					/**
@@ -518,7 +547,26 @@ define(['core/saogaUI'], function(saogaUI){
 		* 获取选中数据，不能获取初始化选中数据
 		*/
         g.getSelected = function(){
-			return _cache.selected;
+            if( p.check ){
+                var checkbox = p.target.find('.l-tree-checkbox'),
+                    len      = checkbox.length,
+                    i        = 0;
+
+                _cache.selected = [];
+                
+                for(; i<len; i++){
+                    var item = checkbox.eq(i)
+                    if( item.hasClass('l-tree-checkbox-checked') || item.hasClass('l-tree-checkbox-checked-part') ){
+                        var node = item.next('.l-tree-node'),
+                            id   = node.attr('data-id'),
+                            pid  = node.attr('data-pid'),
+                            name = node.attr('data-name'),
+                            obj  = {'pid':pid, 'id':id, 'name':name, 'checked':true}
+                        _cache.selected.push(obj);
+                    }
+                }
+            }
+            return _cache.selected;
         };
 		
 		return c.init(o);

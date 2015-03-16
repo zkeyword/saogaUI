@@ -65,6 +65,7 @@
 			</div>
         </div>
 		<div class="fn-clear"><input type="submit" value="提交"/></div>
+        <div class="fn-clear"><span id="openPop">打开弹窗</span></div>
 	</form>			
 
 	<script>
@@ -284,8 +285,47 @@
 			//tree.refresh({
 			//	data: data2
 			//});
+            
+            var html = '<select name="" id="" class="ui-select pop-select"><option value="1">11111</option><option value="2">11111</option><option value="3">11111</option></select>';
+            
+            
+            $('#openPop').click(function(){
+            
 
-			
+            
+                var pop = saogaUI.ui.pop({
+                    title:'弹窗的标题',
+                    height:240,
+                    width:320,
+                    html:html,
+                    onloadFn:function(){
+
+                        var select = saogaUI.ui.select2({
+                            target:'select',
+                            type:'single'
+                        });
+                        
+                        $('.pop-select').html('<option value="1">222222</option>');
+                    },
+                    btns:[
+                        {
+                            text:'保存修改',
+                            closePop:false,
+                            onclick:function(id){
+                                alert('保存修改')
+                                pop.close(id);
+                            }
+                        },
+                        {
+                            text:'取消',
+                            onclick:function(){
+                    
+                            }
+                        }
+                    ]
+                });
+            })
+
 		});
 	</script>
 </body>

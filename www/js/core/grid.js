@@ -1007,7 +1007,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 					data += '&pageIndex=' + pageIndex;
 					data += '&pageSize=' + pageSize;
 										
-					//data = data.replace(/{{|}}/g,'');
+					data = data.replace(/{{|}}/g,'');
 					data = data.split('&');
 					
                     /*解析URL并转换为json形式，防止特殊字符问题*/
@@ -1268,7 +1268,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 					if( isSort ){
 						grid2Header.find('.l-grid-hd-cell-span')
 								   .addClass('l-grid-hd-cell-sortWrap')
-								   .append('<span class="l-grid-hd-cell-sort"><b class="icon-font-10" data-uid="983722">&#983722</b></span>');
+								   .append('<span class="l-grid-hd-cell-sort"><b class="icon icon-angle-up"></b></span>');
 						
 						grid2Header.off('click', '.l-grid-hd-cell-span').on('click', '.l-grid-hd-cell-span', function(){
 							var self     = $(this),
@@ -1279,11 +1279,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 							if( isSortCurrent ){
 								
 								if( sort.hasClass('desc') ){
-									sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+									sort.html('<b class="icon icon-angle-up"></b');
 									sort.removeClass('desc');
 									sortType = 'desc';
 								}else{
-									sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+									sort.html('<b class="icon icon-angle-down"></b');
 									sort.addClass('desc');
 									sortType = 'asc';
 								}
@@ -1296,11 +1296,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 								if( g.onLoaded ){
 									
 									if( sort.hasClass('desc') ){
-										sort.html('<b class="icon-font-10" data-uid="983722" >&#983722</b>');
+										sort.html('<b class="icon icon-angle-up"></b');
 										sort.removeClass('desc');
 										sortType = 'desc';
 									}else{
-										sort.html('<b class="icon-font-10" data-uid="983721" >&#983721</b>');
+										sort.html('<b class="icon icon-angle-down"></b');
 										sort.addClass('desc');
 										sortType = 'asc';
 									}
