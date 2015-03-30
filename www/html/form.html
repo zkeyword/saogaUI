@@ -96,7 +96,7 @@
 				<i class="ui-label ui-checkbox-label">多选选项2</i>
 			</label>
 			<label class="ui-pl10">
-				<input type="radio" class="ui-radio" name="testRaio" value="单选选项3" />
+				<input type="radio" class="ui-radio" name="testRaio" checked="checked" value="单选选项3" />
 				<i class="ui-label ui-radio-label">单选选项3</i>
 			</label>
 			<label class="ui-pl10">
@@ -127,7 +127,23 @@ require(['app/main'], function(saogaUI){
 	
 	var checkbox = saogaUI.ui.check({
 		target:':checkbox'
-	})
+	});
+    
+    var checkbox = saogaUI.ui.check({
+		target:':checkbox'
+	});
+    
+    var checkbox = saogaUI.ui.check({
+		target:':checkbox'
+	});
+    
+    $('.ui-checkbox').on('click',function(){
+        alert(1)
+    })
+    
+    $('.ui-radio').on('click',function(){
+        alert(1)
+    })
 	
 	$('.ui-btn-switch').click(function(){
 		var that = $(this);

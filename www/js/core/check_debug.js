@@ -50,8 +50,14 @@ define(['core/saogaUI'], function(saogaUI){
 						
 						/*遍历多个target*/						
 						for(; i<len; i++){
-							var checkItem      = target.eq(i),
-								checkItemClass = checkItem[0].className,
+							var checkItem      = target.eq(i);
+                            
+                            if( checkItem.parent().hasClass('l-check-wrap') ){
+                                continue;
+                            }
+                            
+							var checkItemClass = checkItem[0].className,
+                                checkItemValue = checkItem.attr('value'),
 								checkItemName  = checkItem.attr('name'),
 								isChecked      = checkItem.attr('checked'),
 								isDisabled     = checkItem.attr('disabled'),
@@ -62,7 +68,7 @@ define(['core/saogaUI'], function(saogaUI){
 									 .addClass('l-check-label l-'+ type +'-label')
 									 .end()
 									 .wrap('<div class="l-check-wrap fn-left"></div>')
-									 .after('<div class="l-check-item l-'+ type +' '+ checkItemClass + checkedClass + disabledClass +'" data-name="'+ checkItemName +'"></div>');
+									 .after('<div class="l-check-item l-'+ type +' '+ checkItemClass + checkedClass + disabledClass +'" data-name="'+ checkItemName +'" data-val="'+ checkItemValue +'"></div>');
 
 						}
 						target.css({'width':0,'height':0})
@@ -89,7 +95,10 @@ define(['core/saogaUI'], function(saogaUI){
 									checkItem.trigger('change');
 								}
 							})
-							.on('change','input',function(e){
+                            .on('click', '.l-check-item', function(e){
+                                checkItem.trigger('change');
+                            })
+							.on('change', 'input', function(e){
 								var self       = $(e.currentTarget),
 									checkItem  = self.next(),
 									selfName   = self.attr('name'),

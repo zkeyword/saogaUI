@@ -9,24 +9,34 @@
 </head>
 <body>
 <form name="test" id="test" class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
+    <div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">多选：</i>
+            <select class="ui-select" id="select" data-validate="process"  data-validate-processText="请选择">
+                <option value="0">请选择</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+		</label>
+	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">必填(required)：</i>
-			<input class="ui-input" type="text" data-validate="required;" />
+			<input class="ui-input" type="text" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">数字(number)：</i>
-			<input class="ui-input" type="text" data-validate="number;" />
+			<input class="ui-input" type="text" data-validate="number;" data-validate-numberText="xxx,必填"  />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">浮点(floatNumber=2)：</i>
-			<input class="ui-input" type="text" data-validate="floatNumber=2" />
+			<input class="ui-input" type="text" data-validate="floatNumber=2" data-validate-floatNumberText="输入字符长度等于{{param}}个字符" />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
@@ -47,7 +57,7 @@
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">固定长度(length=4)：</i>
-			<input class="ui-input" type="text" data-validate="length=4;" />
+			<input class="ui-input" type="text" data-validate="length=4;" data-validate-lengthText="输入字符长度等于{{param}}个字符" />
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
@@ -100,6 +110,20 @@
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
+    <div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">特殊条件(process)：</i>
+			<input id="testProcess" class="ui-input" type="text" data-validate="process" data-validate-processText="请按照条件填写" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+    <div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w155">ajax(ajax)：</i>
+			<input id="testProcess2" class="ui-input" type="text" data-validate="ajax" data-validate-ajaxText="请按照条件填写" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">ajax(ajax)：</i>
@@ -137,16 +161,56 @@
 	</div>
 	<div class="fn-clear">
 		<input type="submit" value="input按钮提交"/>
-		<a href="#" id="submitLink">ajax提交</a>
+		<a href="#" id="submitLink">提交</a>
 		<a href="#" id="reset">重置</a>
 	</div>
 </form>
 <script type="text/javascript">
 
 require(['app/main'], function(saogaUI){
+
+    var select = saogaUI.ui.select2({
+        target:'select',
+        type:'single'
+    });
+
 	
 	var validator = saogaUI.ui.validator({
-		target:'#test'
+		target:'#test',
+        rules:function(obj, fn){
+            if( obj[0].id == "testProcess" ){
+                if( obj.val() != 1 ){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        },
+        ajax:function(obj, fn){
+            if( obj[0].id == "testProcess2" ){
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://127.0.0.1/saogaUI/www/temp/validate.php',
+                    data: {name:obj.val()},
+                    cache: false,
+                    dataType: "json",
+                    beforeSend: function(){
+                        
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if( data ){
+                            fn(true)
+                        }else{
+                            fn(false, true)
+                        }
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+        }
 	});
 	
 	$('#submitLink').click(function(){

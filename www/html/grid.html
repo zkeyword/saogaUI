@@ -141,13 +141,14 @@
 			//saogaUI.ui.grid.prototype.alert();			
 			
 			$('#btn').click(function(){
-				var width = $('#dd').width();
+                /*var width = $('#dd').width();
 				$('#dd').width( width - 400 );
 				grid.refresh({
 					pageAjax:{
 						data:'index11={{index}}'
 					}
-				});
+				});*/
+                grid.uncheckRow(0,1)
 			})
 			
 			$(window).click(function(){

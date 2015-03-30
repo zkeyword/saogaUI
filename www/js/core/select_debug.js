@@ -42,7 +42,8 @@ define(['core/saogaUI'], function(saogaUI){
 					onMouseOver  : null,
 					onMouseOut   : null,
 					onLoad       : null,
-					isAllowEnter : true
+					isAllowEnter : true,
+                    check        : null
 				},
 				
 			/**
@@ -270,7 +271,13 @@ define(['core/saogaUI'], function(saogaUI){
 							})
 							.on('change','select',function(){
 								that.refreshSingleHtml();
-							});
+							})
+                            .on('click','.l-select-single-arrow',function(e){
+                                var self       = $(e.currentTarget),
+                                    singleInit = self.siblings('.l-select-single-init')
+                                singleInit.trigger('click');
+                                e.stopPropagation();
+                            });
 
 						win
 							.on('click',function(){
@@ -825,15 +832,16 @@ define(['core/saogaUI'], function(saogaUI){
 					createTreeHtml: function(){
                         var target = p.target,
 							wrap   = target.parent(),
+                            name   = target.attr('name'),
 							width  = p.width,
 							html   = '';
 							
 						if( !wrap.hasClass('l-select-wrap') ){
 							wrap = target.wrap('<div class="l-select-wrap"></div>').parent();
 						}
-
+                        
 						html += '<div class="l-select-tree-selected fn-clear">';
-						html += '		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="l-select-tree-input" />'
+						html += '		<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="l-select-tree-input" name="'+ name +'-name"  />';
 						html += '</div>';
 						html += '<div class="l-select-down fn-hide"><div class="l-select-tree-down" style="width:'+ width +'px"></div></div>';
 						
@@ -857,10 +865,12 @@ define(['core/saogaUI'], function(saogaUI){
 							isShow   = false,
 							input    = wrap.find('.l-select-tree-input'),
 							selected = null,
+                            isArray  = saogaUI.base.isArray,
 							tree     = saogaUI.ui.tree({
 										target: wrap.find('.l-select-tree-down'),
 										data: p.data,
 										selected: p.selectedData,
+                                        check: p.check,
 										onClick: function(obj, data){
 
 											if( saogaUI.base.isFunction(p.onClick) ){
@@ -869,13 +879,25 @@ define(['core/saogaUI'], function(saogaUI){
 													return false;
 												}
 											}
-											console.log(data)
-											input.val(data.name);
-											target.val(data.id);
+											if( isArray(data) ){
+                                                var dataLen = data.length,
+                                                    i       = 0,
+                                                    idArr   = [],
+                                                    nameArr = [];
+                                                for(; i<dataLen; i++){
+                                                    idArr[i]   = data[i].id;
+                                                    nameArr[i] = data[i].name;
+                                                }
+                                                input.val(nameArr.join());
+                                                target.val(idArr.join());
+                                            }else{
+                                                input.val(data.name);
+                                                target.val(data.id);
+                                            }
 											
 											isShow = false;
 											that.close();
-											
+                                            
 										},
 										onLoad: p.onLoad
 										/*
@@ -894,13 +916,19 @@ define(['core/saogaUI'], function(saogaUI){
 						selected = tree.getSelected();
 						input.val(selected.length ? selected[0].name : '');
 						target.val(selected.length ? selected[0].id : '');
-
+                        
 						wrap
 							.off('click', input)
 							.on('click', input, function(e){
 								e.stopPropagation();
 								isShow = true;
 								that.show(wrap);
+							})
+                            .on('keyup', input, function(e){
+                                target.val('');
+								tree.refresh({
+                                    selected:[]
+                                });
 							});
 									
 						/*给 window对象 绑定相关事件*/

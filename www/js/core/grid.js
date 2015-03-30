@@ -1108,7 +1108,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 							that.handleData(false);
 							that.tBodyCreateHtml(pageIndex);
 							that.pageCreateHtml();
-							if( !data.total ){
+							if( data.total !== undefined ){
 								g.grid2.find('.l-grid-nullText').html(nullText);
 							}
 						});
@@ -1687,7 +1687,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 		* @param {Number} i 取消的选中的行，值为当前页
 		* @return {Object} grid对象
 		*/
-		g.uncheckRow = function(i, pageIndex){
+		/*g.uncheckRow = function(i, pageIndex){
 			if( i !== undefined ){
 				var grid1       = g.grid1,
 					grid2       = g.grid2,
@@ -1708,6 +1708,49 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saog
 				_core.initCheckbox();
 			}
 			return g;
+		};
+        */
+        g.uncheckRowByID = function(id){
+			if( id !== undefined ){
+				var grid1       = g.grid1,
+					grid2       = g.grid2,
+					grid1Header = grid1.find('.l-grid-header'), //表格头
+					grid1Body   = grid1.find('.l-grid-body'),   //表格主体
+					grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+                    i           = getIndex(),
+					grid1Row    = grid1Body.find('.l-grid-row').eq(i),
+					grid2Row    = grid2Body.find('.l-grid-row').eq(i),
+					checkbox    = grid1Body.find('.l-checkbox').eq(i);
+                
+				checkbox.removeClass('l-checkbox-selected');
+				grid1Row.removeClass('l-grid-row-selected');
+				grid2Row.removeClass('l-grid-row-selected');
+				grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
+				
+				_core.initCheckbox();
+			}
+            
+			return g;
+            
+            function getIndex(){
+                var selectedArr = _cache.rowSelected,
+                    len         = selectedArr.length,
+                    index       = 0;
+                    
+                for(; index<len; index++){
+                    if( selectedArr[index] ){
+                        var subSelectedArr = selectedArr[index],
+                            subLen         = subSelectedArr.length,
+                            subIndex       = 0;
+                        for(; subIndex<subLen; subIndex++){
+                            if( subSelectedArr[subIndex] && subSelectedArr[subIndex].id == id ){
+                                subSelectedArr[subIndex] = null;
+                                return subIndex;
+                            }
+                        }
+                    }
+                }
+            }
 		};
 		
 		/*g.uncheckRow2 = function(key, val){

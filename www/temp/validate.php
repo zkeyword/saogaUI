@@ -1,8 +1,8 @@
 <?php
-    $name = $_GET['name'];
-    if( $name ){
-        echo true;
+    $name = $_POST['name'];
+    if( $name == 1 ){
+        echo 1;
     }else{
-        echo false;
+        echo 0;
     }
 ?>

@@ -43,14 +43,14 @@
 	 		];
 			
 			var tree = saogaUI.ui.tree({
-				data:data,
+				//data:data,
 				target:$('#tree'),
-				//ajax:{
-				//	url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php',
-				//	data:{
-				//		index:'1'
-				//	}
-			//	},
+				ajax:{
+					url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php',
+					data:{
+						index:'1'
+					}
+				},
 				selected:[13, 11],
 				check:'checkbox',
 				onClick:function(obj, data){
@@ -70,13 +70,22 @@
 				}
 			});
 			
-			//tree.refresh({
-			//	data: data2
-			//});
+			
 
            tree.getSelected()
 			
             $('#click').click(function(){
+                /*tree.refresh({
+                	ajax:{
+                        url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php?dd',
+                        data:{
+                            index:'2'
+                        }
+                    }
+                });*/
+                tree.refresh({
+                    selected:[]
+                });
                 console.log( tree.getSelected() )
             });
 		});

@@ -98,11 +98,15 @@ define(['core/saogaUI'], function(saogaUI){
                                                 selectedLen  = selected ? selected.length : 0,
                                                 isChecked    = data[i].checked === undefined ? false : data[i].checked,
                                                 checkedStr   = '',
-												checkHtml    = '';
+												checkHtml    = '',
+                                                dataName     = data[i].name,
+                                                dataId       = data[i].id,
+                                                dataPid      = data[i].pid,
+                                                dataTitle    = data[i].title !== undefined ? data[i].title : data[i].name;
                                              
                                             /* 获取选中数据 */
                                             for( ; j<selectedLen; j++ ){
-                                                if( Number(selected[j]) === Number(data[i].id) ){
+                                                if( Number(selected[j]) === Number(dataId) ){
                                                     _cache.selected.push(data[i]);
 													selectCls = ' l-tree-selectedNode';
                                                 }
@@ -145,7 +149,7 @@ define(['core/saogaUI'], function(saogaUI){
 												sonWrap +=	'<ul class="l-tree-ul'+ lineCls + (closeCls?' fn-hide':'') +'">';
 												sonWrap +=		sonHtml;
 												sonWrap +=	'</ul>';
-												if( isFirst && data[i].pid === 0 ){
+												if( isFirst && dataPid === 0 ){
 													parentNode = ' l-tree-parentNode l-tree-parentFirstNode';
 													isFirst = false;
 												}else{
@@ -157,9 +161,9 @@ define(['core/saogaUI'], function(saogaUI){
 											html += 	'<div class="l-tree-item l-tree-itemLevel-'+ level + parentNode + '">';
 											html += 		'<span class="l-tree-switch'+ openCls + closeCls + lastSwitch +'"></span>';
 											html +=         checkHtml;
-											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ data[i].id +'" data-pid="'+ data[i].pid +'" data-name="'+ data[i].name +'" title="'+ data[i].name +'">';
+											html += 		'<a class="l-tree-node '+ selectCls +'" data-id="'+ dataId +'" data-pid="'+ dataPid+'" data-name="'+ dataName +'" title="'+ dataTitle +'">';
 											html += 			'<span class="l-tree-ico'+ lastIco +'"'+ icon +'></span>';
-											html += 			'<i class="l-tree-text">'+ data[i].name +'</i>';
+											html += 			'<i class="l-tree-text">'+ dataName +'</i>';
 											html += 		'</a>';
 											html += 	'</div>';
 											html += 	sonWrap;
@@ -247,7 +251,7 @@ define(['core/saogaUI'], function(saogaUI){
 											return {
 														id: obj.attr('data-id'),
 														pid: obj.attr('data-pid'),
-														name: obj.attr('title'),
+														name: obj.attr('data-name'),
 														isParent: obj.parent('.l-tree-item').hasClass('l-tree-parentNode')
 													};
 										};
@@ -271,7 +275,6 @@ define(['core/saogaUI'], function(saogaUI){
 									}, 100);
 								}
 								
-                                //xxx: 未添加多选
                                 _cache.selected = data;
 								
 								return false;
@@ -424,12 +427,17 @@ define(['core/saogaUI'], function(saogaUI){
 													if( level > 1 ){
 														checkFn(parentCheck, level, false);
 													}
+                                                    
 												}
 								
 								saogaUI.ui.onselectstart(that);
 								
 								checkFn(that, level, true);
+                                p.onClick(that, g.getSelected());
+                                
 							})
+                            
+                            //FIXED ME
                             .off('click', '.l-tree-radio')
 							.on('click', '.l-tree-radio', function(e){
 								var that    = $(e.currentTarget),
@@ -533,13 +541,32 @@ define(['core/saogaUI'], function(saogaUI){
 		* 刷新树
 		*/
 		g.refresh = function(o){
-			for(var key in o){
-				if( o.hasOwnProperty(key) && o[key] !== undefined && !o.target){
-					p[key] = o[key];
+			if( o ){
+				for(var key in o){
+					if( o.hasOwnProperty(key) && o[key] !== undefined ){
+						if( p.ajax && o.ajax ){
+							for(var key2 in o.ajax){
+								p[key][key2] = o.ajax[key2];
+							}
+						}else{
+							p[key] = o[key];
+						}
+					}
 				}
-			}
-
-			c.run();
+			
+                if( p.ajax ){
+                    c.ajaxGetData(function(data){
+                        p.data = data;
+                        c.run();
+                        if( saogaUI.base.isFunction(p.onLoad) ){
+                            p.onLoad(p.data, _cache.selected);
+                        }
+                    });
+                    return g;
+                }
+                
+                c.run();
+            }
 			return g;
 		};
         
