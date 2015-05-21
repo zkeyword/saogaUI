@@ -1,1 +1,1 @@
-start npm run grunt
+start npm run gulp

@@ -1,32 +1,20 @@
 {
-  "name": "ProjectName",
+  "name": "erp",
   "version": "0.1.0",
   "scripts": {
-    "grunt": "grunt",
     "gulp": "gulp",
-	"jsdoc": "jsdoc saogaUI/www/js/core/ -d saogaUI/doc/api/ -c saogaUI/tools/docstrap/template/jsdoc.conf.json -t saogaUI/tools/docstrap/template",
-    "build": "npm run grunt & gulp"
+    "build": "npm run gulp"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-contrib-less": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-jsdoc": "*",
-    "grunt-contrib-requirejs": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-clean": "*",
-	"grunt-livereload": "*",
-	"gulp": "*",
-    "gulp-rename": "*",
-    "gulp-jshint": "*",
-    "gulp-concat": "*",
-    "gulp-uglify": "*",
-    "gulp-sass": "*",
-    "gulp-jsdoc": "*",
+    "gulp": "*",
+    "gulp-base64": "*",
+    "gulp-clean": "*",
     "gulp-less": "*",
+    "gulp-minify-css": "*",
+    "gulp-plumber": "^1.0.1",
     "gulp-requirejs": "*",
-    "requirejs": "*",
-	"jsdoc": "*"
+    "gulp-sourcemaps": "*",
+    "gulp-uglify": "*",
+    "gulp.spritesmith": "*"
   }
 }

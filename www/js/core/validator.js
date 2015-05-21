@@ -1,4 +1,4 @@
-define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
+define(['core/cncnERP'], function(cncnERP){
 	
 	'use strict';
 		
@@ -86,6 +86,10 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
                     required: function(sVal, oItem){
                         if( !sVal.trims() ){
                             return c.handleText(oItem, 'required');
+							// return c.getText({
+								// oItem:oItem,
+								// sMark:'required'
+							// });
                         }
                     },
                     
@@ -310,13 +314,27 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
                     return text.replace(reg, sParam);
                 },
 				
+				/*getText: function(obj){
+					var oItem       = obj.oItem,
+						sMark       = obj.sMark,
+						sParam      = obj.sParam !== undefined ? obj.sParam : '',
+						arrtText    = oItem.attr('data-validate-'+ sMark +'Text'),
+                        text        = arrtText ? arrtText : p.text[sMark];
+						
+					if( sParam ){
+						return text.replace(/{{param}}/, sParam);
+					}
+					
+					return text;
+				},*/
+				
 				route: function(sVal, sRule, oItem, oMessage){
 					var oThat      = this,
 						aRule      = sRule.split(';'),
 						len        = aRule.length,
 						i          = 0,
 						rCode      = /\=/,
-						rFormat    = /format\=|ajax\=/
+						rFormat    = /format\=|ajax\=/,
 						isFunction = saogaUI.base.isFunction;
 						
 					for(; i<len; i++){
@@ -390,10 +408,12 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 
 										if( html = oThat.route(sVal, sRule, oSelf, message) ){
                                             oSelf.addClass('l-form-error');
-                                            message.html(html);
-                                        }
+                                            message.html('<span class="error">'+html+'</span>');
+                                        }else{
+											message.html('<span class="success"></span>');
+										}
                                         
-                                        return false;
+                                        return true;
                                         
                                         function processHandle(type, status, isShow){
                                             if( !status ){
@@ -401,13 +421,13 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
                                                 oSelf.next('.l-select-single')
                                                      .find('.l-select-single-init')
                                                      .addClass('l-form-error');
-                                                message.html( isShow ? oSelf.attr('data-validate-'+ type +'Text') : '');
+                                                message.html( isShow ? '<span class="error">'+oSelf.attr('data-validate-'+ type +'Text')+'</span>' : '');
                                             }else{
                                                 oSelf.removeClass('l-form-error');
                                                 oSelf.next('.l-select-single')
                                                      .find('.l-select-single-init')
                                                      .removeClass('l-form-error');
-                                                message.html('');
+                                                message.html('<span class="success"></span>');
                                             }
                                         }
 									},
@@ -498,7 +518,7 @@ define(['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
 		}
 		
 		g.getStatus = function(){
-			return !p.target.find('.l-form-error').length;
+			return !p.target.find('.l-form-error:visible');
 		}
 		
 		g.validatorAll = function(){

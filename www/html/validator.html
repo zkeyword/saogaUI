@@ -17,6 +17,7 @@
                 <option value="1">1</option>
                 <option value="2">2</option>
             </select>
+			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
@@ -131,17 +132,24 @@
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
+	<div class="ui-form fn-clear ui-mt10 fn-hide" id="requiredWrap">
+		<label>
+			<i class="ui-label ui-w155">隐藏必填(required)：</i>
+			<input class="ui-input" type="text" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w155">单选(check)：</i>
 		</label>
 		<label class="ui-pl10">
-			<input type="radio" class="ui-radio" name="textRaio" value="单选选项1" data-validate="check" />
-			<i class="ui-label ui-radio-label">单选选项1</i>
+			<input type="radio" class="ui-radio" name="textRaio" value="1" data-validate="check" />
+			<i class="ui-label ui-radio-label">显示</i>
 		</label>
 		<label class="ui-pl10">
-			<input type="radio" class="ui-radio " name="textRaio" value="单选选项2" data-validate="check"  />
-			<i class="ui-label ui-radio-label">单选选项2</i>
+			<input type="radio" class="ui-radio " name="textRaio" value="2" data-validate="check"  />
+			<i class="ui-label ui-radio-label">隐藏</i>
 		</label>
 		<span class="ui-form-message"></span>
 	</div>
@@ -184,7 +192,8 @@ require(['app/main'], function(saogaUI){
                 }else{
                     return true;
                 }
-            }
+            }else if( obj[0].id == "testProcess2" ){
+			}
         },
         ajax:function(obj, fn){
             if( obj[0].id == "testProcess2" ){
@@ -198,7 +207,6 @@ require(['app/main'], function(saogaUI){
                         
                     },
                     success: function(data){
-                        console.log(data)
                         if( data ){
                             fn(true)
                         }else{
@@ -213,13 +221,23 @@ require(['app/main'], function(saogaUI){
         }
 	});
 	
+	$('input[name="textRaio"]').click(function(){
+		if( $(this).val() == '1' ){
+			$('#requiredWrap').removeClass('fn-hide');
+		}else{
+			$('#requiredWrap').addClass('fn-hide');
+		}
+	})
+	
 	$('#submitLink').click(function(){
 		
-        //validator.validatorAll();
-		$('#test').submit();
+        if( validator.validatorAll() ){
+			
+		}
+		//$('#test').submit();
         
 	});
-    
+	    
     $('#reset').click(function(){
         validator.reset();
     });
