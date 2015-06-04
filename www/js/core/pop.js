@@ -210,8 +210,7 @@ define(['core/saogaUI'], function(saogaUI){
 									item.onclick(id, i, item, that);							
 								}
 								
-								//if( item.closePop === undefined || item.closePop ){
-								if( item.closePop === undefined ){
+								if( item.closePop === undefined || item.closePop === false ){
 									g.close(id);
 								}
 							});

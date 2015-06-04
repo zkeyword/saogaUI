@@ -111,8 +111,29 @@
 		</div>
 		
 		<div class="fn-clear icon icon-dot-circle-o"><input type="submit" value="提交"/></div>
+		<div class="fn-clear icon icon-dot-circle-o"><a href="#" id="add">新增select</a></div>
+		<div class="fn-clear icon icon-dot-circle-o"><a href="#" id="edit">修改select</a></div>
 	</div>
 </form>
+<script type="text/html" id="selectPop">
+	<div class="ui-form fn-clear ui-mt10">
+		<label class="ui-pl5">
+			<i class="ui-label">下拉框一：</i>
+			<select class="ui-select" name="select">
+				<option value="0">xxxxxxxxxxxxxx</option>
+				<option value="1">xxxxx</option>
+			</select>
+		</label>
+	</div>
+</script>
+<script type="text/html" id="selectPop-option">
+<option value="0">xxxxxxxxxxxxxx</option>
+<option value="1">xxxxx</option>
+<option value="2">xxxxx</option>
+<option value="3">xxxxx</option>
+<option value="4">xxxxx</option>
+<option value="5">xxxxx</option>
+</script>
 <script type="text/javascript">
 
 require(['app/main'], function(saogaUI){
@@ -158,7 +179,22 @@ require(['app/main'], function(saogaUI){
 				.find('em')
 				.html('已开启');
 		}
-	})
+	});
+	
+	$('#add').click(function(){
+		$(this).after( saogaUI.template('selectPop',{}) );
+		select.reload();
+		console.log($('.l-select-single-init').length)
+	});
+	
+	$('#edit').click(function(){
+		$('select.ui-select').html( saogaUI.template('selectPop-option',{}) )
+		select.reload();
+	});
+	
+	$('body').on('change', '.ui-select', function(){
+		console.log( $(this).val() )
+	});
 });
 
 </script>

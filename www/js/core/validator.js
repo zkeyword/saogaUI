@@ -1,4 +1,4 @@
-define(['core/cncnERP'], function(cncnERP){
+define(['core/saogaUI'], function(saogaUI){
 	
 	'use strict';
 		
@@ -39,7 +39,7 @@ define(['core/cncnERP'], function(cncnERP){
                     number: '请输入一个正确的数字',
                     email: '邮箱格式不正确，请检查！',
                     mobile: '手机号码不正确，请检查！如：13412345678',
-                    phone: '电话号码不正确，请检查！如：0592-1234567',
+                    phone: '电话号码不正确，请检查！如：0592-1234567或13412345678',
                     url: '请输入正确的网址，比如:http://www.example.com',
                     date: '',
                     format: '',
@@ -215,7 +215,7 @@ define(['core/cncnERP'], function(cncnERP){
                             return false;
                         }
                         
-                        if( !/^(?:13\d|15\d|18\d)\d{5}(\d{3}|\*{3})$/.test(sVal) ){
+                        if( !/1[34578]{1}\d{9}$/.test(sVal) ){
                             return c.handleText(oItem, 'mobile');
                         }
                     },
@@ -229,7 +229,7 @@ define(['core/cncnERP'], function(cncnERP){
                             return false;
                         }
                         
-                        if( !/^((0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/.test(sVal) ){
+                        if( !/(1[34578]{1}\d{9}$)|(0\d{2,3}-\d{7,8}(-\d{2,3})?$)/.test(sVal) ){
                             return c.handleText(oItem, 'phone');
                         }
                     },
@@ -292,7 +292,7 @@ define(['core/cncnERP'], function(cncnERP){
                             success: function(data){
                                 if( !data ){
                                     oItem.addClass('l-form-error');
-                                    oMessage.html( c.handleText(oItem, 'ajax') );
+									c.handleMessage(oItem, c.handleText(oItem, 'ajax'));
                                 }else{
                                     oItem.removeClass('l-form-error');
                                 }
@@ -309,26 +309,12 @@ define(['core/cncnERP'], function(cncnERP){
                     var arrtText    = oItem.attr('data-validate-'+ sMark +'Text'),
                         defaultText = p.text[sMark],
                         text        = arrtText ? arrtText : defaultText,
-                        reg         = /{{param}}/
-
+                        reg         = /{{param}}/;
+					oItem.attr('data-validate-'+ sMark +'Text', text);
                     return text.replace(reg, sParam);
                 },
 				
-				/*getText: function(obj){
-					var oItem       = obj.oItem,
-						sMark       = obj.sMark,
-						sParam      = obj.sParam !== undefined ? obj.sParam : '',
-						arrtText    = oItem.attr('data-validate-'+ sMark +'Text'),
-                        text        = arrtText ? arrtText : p.text[sMark];
-						
-					if( sParam ){
-						return text.replace(/{{param}}/, sParam);
-					}
-					
-					return text;
-				},*/
-				
-				route: function(sVal, sRule, oItem, oMessage){
+				route: function(sVal, sRule, oItem){
 					var oThat      = this,
 						aRule      = sRule.split(';'),
 						len        = aRule.length,
@@ -358,7 +344,7 @@ define(['core/cncnERP'], function(cncnERP){
 							fRule = oThat.rule[aChild[0]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, aChild[1], oItem, oMessage);
+								sText = fRule(sVal, aChild[1], oItem);
 							}
 							
 						}else{
@@ -366,13 +352,38 @@ define(['core/cncnERP'], function(cncnERP){
 							fRule = oThat.rule[aRule[i]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, oItem, oMessage);
+								sText = fRule(sVal, oItem);
 							}
 						}
 
 						if( sText ){
 							return sText;
 						}
+					}
+				},
+				
+				handleMessage: function(oSelf, sContents, sType){
+					var parents  = oSelf.parents('.ui-form'),
+						message  = parents.find('.ui-form-message'),
+						error    = parents.find('.l-form-error'),
+						oItems   = parents.find('[data-validate]');
+						
+					if( !message.length ){
+						if( oSelf.next('.ui-form-message').length ){
+							message = oSelf.next('.ui-form-message');
+						}else if( message.length === 1 ){
+							message = oTarget.find('.ui-form-message');
+						}
+					}
+					
+					if( oItems.length === 1 ){
+						message.html( sContents );
+					}else{
+						message.html( error.length ? '<span class="error">'+ error.eq(0).attr('data-validate-'+ sType +'Text') +'</span>' :'' );
+					}
+
+					if( !sContents ){
+						message.empty();
 					}
 				},
 				
@@ -383,14 +394,14 @@ define(['core/cncnERP'], function(cncnERP){
                         fAjax      = p.ajax,
 						bPass      = false,
 						fAction    = function(oSelf){
-										var sVal    = oSelf.val(),
-											sRule   = oSelf.attr('data-validate'),
-											parents = oSelf.parents('.ui-form'),
-											message = parents.find('.ui-form-message'),
-                                            html    = null;
-											
-										if( oSelf.next('.ui-form-message').length ){
-											message = oSelf.next('.ui-form-message');
+										var sVal         = oSelf.val(),
+											sRule        = oSelf.attr('data-validate'),
+											sHideError   = oSelf.attr('data-ishideValidte'),
+											hideErrorCls = '',
+                                            html         = null;
+										
+										if( sHideError === "true" && sHideError ){
+											hideErrorCls = " l-form-hideError";
 										}
 
                                         if( saogaUI.base.isFunction(fRules) && sRule === 'process' ){
@@ -406,50 +417,54 @@ define(['core/cncnERP'], function(cncnERP){
                                             return true;
                                         }
 
-										if( html = oThat.route(sVal, sRule, oSelf, message) ){
-                                            oSelf.addClass('l-form-error');
-                                            message.html('<span class="error">'+html+'</span>');
+										if( html = oThat.route(sVal, sRule, oSelf) ){
+                                            oSelf.addClass('l-form-error'+hideErrorCls);
+											oThat.handleMessage(oSelf, '<span class="error">'+html+'</span>', sRule);
                                         }else{
-											message.html('<span class="success"></span>');
+											oSelf.removeClass('l-form-error' + hideErrorCls);
+											oSelf.parents('.l-select-wrap')
+												 .find('.l-select-single-init')
+												 .removeClass('l-form-error' + hideErrorCls);
+											oThat.handleMessage(oSelf, '<span class="success"></span>', sRule);
 										}
                                         
                                         return true;
                                         
                                         function processHandle(type, status, isShow){
                                             if( !status ){
-                                                oSelf.addClass('l-form-error');
-                                                oSelf.next('.l-select-single')
+                                                oSelf.addClass('l-form-error' + hideErrorCls);
+                                                oSelf.parents('.l-select-wrap')
                                                      .find('.l-select-single-init')
-                                                     .addClass('l-form-error');
-                                                message.html( isShow ? '<span class="error">'+oSelf.attr('data-validate-'+ type +'Text')+'</span>' : '');
+                                                     .addClass('l-form-error' + hideErrorCls);
+												oThat.handleMessage(oSelf, isShow ? '<span class="error">'+oSelf.attr('data-validate-'+ type +'Text')+'</span>' : '', type);
                                             }else{
-                                                oSelf.removeClass('l-form-error');
-                                                oSelf.next('.l-select-single')
+                                                oSelf.removeClass('l-form-error' + hideErrorCls);
+                                                oSelf.parents('.l-select-wrap')
                                                      .find('.l-select-single-init')
-                                                     .removeClass('l-form-error');
-                                                message.html('<span class="success"></span>');
+                                                     .removeClass('l-form-error' + hideErrorCls);
+                                                oThat.handleMessage(oSelf, '<span class="success"></span>', type);
                                             }
                                         }
 									},
 						fUnAction  = function(oSelf){
-										var sVal    = oSelf.val(),
-											parents = oSelf.parents('.ui-form'),
-											message = parents.find('.ui-form-message');
+										var sVal         = oSelf.val(),
+											sHideError   = oSelf.attr('data-ishideValidte'),
+											hideErrorCls = '';
 
-										if( oSelf.next('.ui-form-message').length ){
-											message = oSelf.next('.ui-form-message');
+										if( sHideError === "true" && sHideError ){
+											hideErrorCls = " l-form-hideError";
 										}
 
                                         if( oSelf[0].type === 'checkbox' || oSelf[0].type === 'radio' ){
-                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error');
+                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error' + hideErrorCls);
                                         }else{
-                                            oSelf.removeClass('l-form-error');
+                                            oSelf.removeClass('l-form-error' + hideErrorCls);
                                             oSelf.next('.l-select-single')
                                                  .find('.l-select-single-init')
-                                                 .removeClass('l-form-error');
+                                                 .removeClass('l-form-error' + hideErrorCls);
                                         }
-                                        
-										message.empty();
+										
+										oThat.handleMessage(oSelf);
 									},
 						fActionAll = function(){
 										var oItem   = oTarget.find('[data-validate]'),
@@ -457,12 +472,14 @@ define(['core/cncnERP'], function(cncnERP){
 											i       = 0,
 											bSumbit = false;
 											
+											
 										for(; i<len; i++){
 											bSumbit = !fAction( oItem.eq(i) );
 											if( bSumbit ){
 												fUnAction( oItem.eq(i) );
 											}
 										}
+										
 									}
 					
 					oTarget.on('blur', '[data-validate]', function(e){
@@ -471,6 +488,20 @@ define(['core/cncnERP'], function(cncnERP){
 					
 					oTarget.on('focus', '[data-validate]', function(e){
 						fUnAction( $(e.currentTarget) );
+					});
+					
+					oTarget.on('blur', '.l-select-single-init', function(e){
+						var obj = $(this).parents('.l-select-wrap').find('[data-validate]');
+						if( obj.length ){
+							fAction( obj );
+						}
+					});
+					
+					oTarget.on('focus', '.l-select-single-init', function(e){
+						var obj = $(this).parents('.l-select-wrap').find('[data-validate]');
+						if( obj.length ){
+							fUnAction( $(e.currentTarget) );
+						}
 					});
 					
 					oTarget.on('submit', function(){
@@ -493,7 +524,9 @@ define(['core/cncnERP'], function(cncnERP){
 					}
 					
 					p.target = $(p.target);
-					
+					if( !p.target.length ){
+						console.log('target not find');
+					}
 					c.run();
 				}
 			};
@@ -518,12 +551,36 @@ define(['core/cncnERP'], function(cncnERP){
 		}
 		
 		g.getStatus = function(){
-			return !p.target.find('.l-form-error:visible');
+			var oTarget       = p.target,
+				oError        = oTarget.find('.l-form-error'),
+				oVisibleError = oError.filter(function(){
+									var that = $(this);
+									return that.filter(':visible').length && that.filter(':enabled').length;
+								}),
+				oHideError    = oError.filter('.l-form-hideError'),
+				len           = oVisibleError.length + oHideError.length;
+			
+			if( oVisibleError.length ){
+				$('body').animate({scrollTop:oVisibleError[0].scrollTop},500);
+			}
+			//else if( oHideError.length ){
+				//$('body').animate({scrollTop:oHideError[0].scrollTop},500);
+			//}
+			return !len;
 		}
 		
 		g.validatorAll = function(){
-			p.target.trigger('all');
+			p.target.triggerHandler('all');
             return g.getStatus();
+		}
+		
+		g.reload = function(){
+			//if( p.target.length ){
+			//	c.run();
+			//}else{
+				console.log('target overloaded');
+				c.init(o);
+			//} 
 		}
 
 		return c.init(o);

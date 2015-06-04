@@ -239,12 +239,23 @@ define(function(){
 	saogaUI.ui = {
 		
 		/**
-		 * z-index
+		 * 设置z-index
 		 * @method saogaUI.ui.zIndex
 		 * @return {Number} z-index值
 		 */
 		zIndex: function(){
 			return 99999 + $('.l-ui').length;
+		},
+		
+		/**
+		 * 设置tabindex
+		 * @method saogaUI.ui.tabindex
+		 * @param {object} 表单元素jquery对象
+		 * @return {Number} tabindex值
+		 */
+		tabindex: function(obj){
+			var form = obj.parents('form'),
+				all  = form.find('select, input, textarea')
 		},
 		
 		/**

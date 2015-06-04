@@ -1,0 +1,30 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'gulp' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.36
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose run-script [ 'pregulp', 'gulp', 'postgulp' ]
+6 info pregulp erp@0.1.0
+7 info gulp erp@0.1.0
+8 verbose unsafe-perm in lifecycle true
+9 info erp@0.1.0 Failed to exec gulp script
+10 error erp@0.1.0 gulp: `gulp`
+10 error Exit status 1
+11 error Failed at the erp@0.1.0 gulp script.
+11 error This is most likely a problem with the erp package,
+11 error not with npm itself.
+11 error Tell the author that this fails on your system:
+11 error     gulp
+11 error You can get their info via:
+11 error     npm owner ls erp
+11 error There is likely additional logging output above.
+12 error System Windows_NT 6.1.7601
+13 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "gulp"
+14 error cwd G:\PHPnow-1.5.6\htdocs\saogaUI
+15 error node -v v0.10.36
+16 error npm -v 1.4.28
+17 error code ELIFECYCLE
+18 verbose exit [ 1, true ]

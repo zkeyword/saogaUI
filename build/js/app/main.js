@@ -3354,12 +3354,23 @@ define('core/saogaUI',[],function(){
 	saogaUI.ui = {
 		
 		/**
-		 * z-index
+		 * 设置z-index
 		 * @method saogaUI.ui.zIndex
 		 * @return {Number} z-index值
 		 */
 		zIndex: function(){
 			return 99999 + $('.l-ui').length;
+		},
+		
+		/**
+		 * 设置tabindex
+		 * @method saogaUI.ui.tabindex
+		 * @param {object} 表单元素jquery对象
+		 * @return {Number} tabindex值
+		 */
+		tabindex: function(obj){
+			var form = obj.parents('form'),
+				all  = form.find('select, input, textarea')
 		},
 		
 		/**
@@ -4330,8 +4341,7 @@ define('core/pop',['core/saogaUI'], function(saogaUI){
 									item.onclick(id, i, item, that);							
 								}
 								
-								//if( item.closePop === undefined || item.closePop ){
-								if( item.closePop === undefined ){
+								if( item.closePop === undefined || item.closePop === false ){
 									g.close(id);
 								}
 							});
@@ -4993,7 +5003,416 @@ define('core/tab',['core/saogaUI'], function(saogaUI){
 	
 	return tab;
 });
-define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI, lang){
+define('core/calendar',['core/saogaUI'], function(saogaUI){
+	
+	var calendar = function(options){
+		var o = options || {};
+		if(!o.trigger){return;}
+		var trigger    = $(o.trigger).wrap('<div class="l-ui-calendarWrap"></div>'),
+			wrap       = trigger.parent(),
+			top        = o.top || trigger.outerHeight(),
+			left       = o.left || 0,
+			main       = wrap.append('<div class="l-ui-calendarMain" style="top:'+ top +'px;left:'+ left +'px"></div>')
+							 .find('.l-ui-calendarMain'),
+			callback   = o.callback,
+			beginYear  = Number(o.beginYear) || 1980,
+			endYear    = Number(o.endYear) ||  2050,
+			language   = o.language || {
+											next: '上个月',
+											prev: '下个月',
+											submit: '提交',
+											year: '年',
+											month: '月',
+											time: '时间',
+											weeks: ['日', '一', '二', '三', '四', '五', '六']
+										},
+			days       = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+			weeks      = language.weeks,
+			months     = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+			dateFormat = o.dateFormat || 'yyyy-MM-dd hh:mm:ss',
+			date       = o.date || new Date(),
+			globalDate = date,
+			isShowTime = /(h+)/.test(dateFormat),
+			_core      = {
+							/*格式化日期*/
+							format: function(year, month, day, hour, minute, second, week, quarter, millisecond){
+								var o = {
+										// "M+" : month + 1 || date.getMonth() + 1,                                       //month
+										// "d+" : day || date.getDate(),                                                  //day
+										// "h+" : hour || date.getHours(),                                                //hour
+										// "m+" : minute || date.getMinutes(),                                            //minute
+										// "s+" : second || date.getSeconds(),                                            //second
+										// "w+" : weeks[week] || weeks[date.getDay()],                                    //week
+										// "q+" : Math.floor((quarter + 3) / 3) || Math.floor((date.getMonth() + 3) / 3), //quarter
+										// "S"  : millisecond || date.getMilliseconds()                                   //millisecond
+										'M+': month + 1,
+										'd+': day,
+										'h+': hour,
+										'm+': minute,
+										's+': second,
+										'w+': weeks[week],
+										'q+': Math.floor((quarter + 3) / 3),
+										'S' : millisecond
+									},
+									str  = dateFormat;
+								
+								year = year.toString();
+								
+								if( /(y+)/.test(str) ){
+									str = str.replace(/(y+)/, year.substr(4 - Math.min(4, RegExp.$1.length)));
+								}
+								for( var k in o ){
+									if(	new RegExp("("+ k +")").test(str) ){
+										if(	o[k] !== undefined && !isNaN(o[k]) ){
+											str = str.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+										}else{
+											str = str.replace(/\s[^\d](.)*/, '');
+										}
+									}
+								}
+								return str;
+							},
+						
+							/*判断闰年*/
+							isLeapYear: function(y){
+								if((y % 400 === 0) || (y % 100 !== 0) && (y % 4 === 0)){
+									return true;
+								}
+								return false;
+							},
+							
+							/*获取月份天数*/
+							getDayCount: function(y, m){
+								if( _core.isLeapYear(y, m) ){
+									days[1] = 29;
+								}else{
+									days[1] = 28;
+								}
+								return days[m];
+							},
+							
+							/*获取新date*/
+							getNewDate: function(y, m, d) {
+								var newDate = new Date();
+								newDate.setFullYear(y, m, d);
+								// !isNaN(y) && newDate.setFullYear(y);
+								// !isNaN(m) && newDate.setMonth(m);
+								// !isNaN(d) && newDate.setDate(d);
+								return newDate;
+							},
+							
+							/*获取上下月*/
+							getPrevNextMonth: function(poor){
+								var y = globalDate.getFullYear(),
+									m = globalDate.getMonth() + poor;
+								if(m < 0){
+									y -= 1;
+									m = 11;
+								}else if(m > 11){
+									y += 1;
+									m = 0;
+								}
+								return _core.getNewDate(y, m, 1);
+							},
+							getPrevDate: function(){
+								return _core.getPrevNextMonth(-1);
+							},
+							getNextDate: function(){
+								return _core.getPrevNextMonth(1);
+							},
+							
+							/*创建头部*/
+							createHeader: function(){
+								var html     = '',
+									yearLen  = endYear - beginYear,
+									i        = 0,
+									monthLen = 12,
+									n        = 0;
+									
+								html += '<a class="l-ui-calendarHeader-btn l-ui-calendarHeader-prev" href="javascript:;" title="'+ language.prev +'"></a>';
+								html += '<div class="l-ui-calendarHeader-text">';
+								html += '<select class="l-ui-calendarHeader-year">';
+								for(; i < yearLen; i++){
+									var year = beginYear + i;
+									if( year === globalDate.getFullYear() ){
+										html += '<option value="'+ year +'" selected>'+ year +'</option>';
+									}else{
+										html += '<option value="'+ year +'">'+ year +'</option>';
+									}
+								}
+								html += '</select>' + language.year;
+								html += '<select class="l-ui-calendarHeader-month">';
+								for(; n < monthLen; n++){
+									var month = months[n];
+									if( n === globalDate.getMonth() ){
+										html += '<option value="'+ n +'" selected>'+ month +'</option>';
+									}else{
+										html += '<option value="'+ n +'">'+ month +'</option>';
+									}
+								}
+								html += '</select>' + language.month;
+								html += '</div>';
+								html += '<a class="l-ui-calendarHeader-btn l-ui-calendarHeader-next" href="javascript:;" title="'+ language.next +'"></a>';
+								
+								return '<div class="l-ui-calendarHeader fn-clear">'+ html +'</div>';
+							},
+							
+							/*创建周*/
+							createWeeks: function(){
+								var html = '',
+									i    = 0;
+								html += '<div class="l-ui-calendarWeeks fn-clear">';
+								for(; i < 7; i++){
+									if( i === 0 ){
+										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-sunday">'+ weeks[i] +'</span>';
+									}else if( i === 6 ){
+										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-saturday">'+ weeks[i] +'</span>';
+									}else{
+										html += '<span class="l-ui-calendarWeek">'+ weeks[i] +'</span>';
+									}
+								}
+								html += '</div>';
+								return html;
+							},
+							
+							/*创建天*/
+							createDays: function(){
+								var //year       = date.getFullYear(),
+									//month      = date.getMonth(),
+									day        = date.getDate(),
+									curYear    = globalDate.getFullYear(),              //当前全局date对象
+									curMonth   = globalDate.getMonth(),
+									curDay     = globalDate.getDate(),
+									curDayNum  = _core.getDayCount(curYear, curMonth),
+									prevDate   = _core.getPrevDate(),                    //获取上月的date
+									prevYear   = prevDate.getFullYear(),
+									prevMonth  = prevDate.getMonth(),
+									prevDayNum = _core.getDayCount(prevYear, prevMonth),
+									nextDate   = _core.getNextDate(),                    //获取下月的date
+									nextYear   = nextDate.getFullYear(),
+									nextMonth  = nextDate.getMonth(),
+									lastWeek   = new Date(curYear, curMonth, 1).getDay(), //获取本月1号的星期数
+									html       = '',
+									p          = prevDayNum - lastWeek +1,               //上月剩余天数(礼拜从礼拜日算起)
+									nextDayNuM = 42 - lastWeek - curDayNum,              //下月剩余天数
+									i          = 1,
+									n          = 1;
+
+								for(; p <= prevDayNum; p++) {
+									var prevDayStr =  _core.format(prevYear, prevMonth, p);
+									html += '<a href="javascript:;" class="l-ui-calendarDay l-ui-calendarDay-prev l-ui-calendarDay-disable" title="'+ prevDayStr +'" year="'+ prevYear +'" month="'+ prevMonth +'">'+ p +'</a>';
+								}
+								
+								for(; i <= curDayNum; i++){
+									var cls       = '',
+										curDayStr = _core.format(curYear, curMonth, i);
+									if( day === i ){
+										cls = ' l-ui-calendarDay-current';
+									}
+									html += '<a href="javascript:;" class="l-ui-calendarDay'+ cls +'" title="'+ curDayStr +'" year="'+ curYear +'" month="'+ curMonth +'">'+ i+'</a>';
+								}
+								
+								for(; n <= nextDayNuM; n++) {
+									var nextDayStr =  _core.format(nextYear, nextMonth, n);
+									html += '<a href="javascript:;" class="l-ui-calendarDay l-ui-calendarDay-next l-ui-calendarDay-disable" title="'+ nextDayStr +'" year="'+ nextYear +'" month="'+ nextMonth +'">'+ n +'</a>';
+								}
+												
+								return '<div class="l-ui-calendarDays fn-clear">'+ html +'</div>';
+							},
+							
+							/*创建时分秒*/
+							createTime: function(){
+								var hour       = date.getHours(),
+									minute     = date.getMinutes(),
+									second     = date.getSeconds(),
+									hourHtml   = '',
+									minuteHtml = '',
+									secondHtml = '',
+									h          = 0,
+									m          = 0,
+									s          = 0;
+									
+								hour   = hour < 10 ? '0' + hour  : hour;
+								minute = minute < 10 ? '0' + minute  : minute;
+								second = second < 10 ? '0' + second  : second;
+								
+								for(; h < 24; h++){
+									hourHtml += '<a href="javascript:;">'+ (h < 10 ? '0' + h  : h) +'</a>';
+								}
+								
+								for(; m < 60; m++){
+									minuteHtml += '<a href="javascript:;">'+ (m < 10 ? '0' + m  : m) +'</a>';
+								}
+								
+								for(; s < 60; s++){
+									secondHtml += '<a href="javascript:;">'+ (s < 10 ? '0' + s  : s) +'</a>';
+								}
+									
+								return  '<div class="l-ui-calendarTime fn-clear">' +
+											'<div class="l-ui-calendarTimeTitle">'+ language.time +':</div>' + 
+											'<div class="l-ui-calendarTimeWrap fn-clear">' +
+												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-hourWrap">' +
+													'<input type="text" class="l-ui-calendarTime-hourInput" value="'+ hour +'" /><span>:</span>' +
+													'<div class="l-ui-calendarTime-hour">'+ hourHtml +'</div>' +
+												'</div>' + 
+												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-minuteWrap">' + 
+													'<input type="text" class="l-ui-calendarTime-minuteInput" value="'+ minute +'" /><span>:</span>' + 
+													'<div class="l-ui-calendarTime-minute">'+ minuteHtml +'</div>' + 
+												'</div>' + 
+												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-secondWrap">'  +
+													'<input type="text" class="l-ui-calendarTime-secondInput" value="'+ second +'" />' + 
+													'<div class="l-ui-calendarTime-second">'+ secondHtml +'</div>' + 
+												'</div>'  +
+											'</div>' + 
+											'<a href="javascript:;" class="l-ui-calendarTimeBtn">'+ language.submit +'</a>' +
+										'</div>';
+							},
+							
+							/*点击下个月*/
+							clickNext: function(){
+								globalDate = _core.getPrevNextMonth(1);
+								_core.init();
+							},
+							
+							/*点击上个月*/
+							clickPrev: function(){
+								globalDate = _core.getPrevNextMonth(-1);
+								_core.init();
+							},
+							
+							/*年月选择*/
+							clickYearMonth: function(year, month){
+								globalDate = new Date(year, month, 1);
+								_core.init();
+							},
+							
+							/*关闭日历*/
+							close: function(val){
+								trigger.val(val);
+								main.hide();
+								if( saogaUI.base.isFunction(callback) ){
+									callback(val);
+								}
+							},
+				 
+							/*初始化函数*/
+							init: function(){
+								main.html(_core.createHeader() + _core.createWeeks() + _core.createDays());
+								
+								main.find('.l-ui-calendarHeader-prev').click(function(){
+									_core.clickPrev();
+								});
+								main.find('.l-ui-calendarHeader-next').click(function(){
+									_core.clickNext();
+								});
+
+								main.find('.l-ui-calendarHeader-month').change(function(){
+									var year  = main.find('.l-ui-calendarHeader-year').val(),
+										month = $(this).val();
+									_core.clickYearMonth(year, month);
+								});
+								main.find('.l-ui-calendarHeader-year').change(function(){
+									var year  = $(this).val(),
+										month = main.find('.l-ui-calendarHeader-month').val();
+									_core.clickYearMonth(year, month);
+								});
+								
+								main.find('.l-ui-calendarDay').each(function(i){
+									var saturday = i%7 === 6 ? ' l-ui-calendarDay-saturday' : '',
+										sunday   = i%7 === 0 ? ' l-ui-calendarDay-sunday' : '';
+									$(this).addClass(saturday+sunday);
+								}).click(function(){
+									var self = $(this),
+										val  = self.attr('title');
+										
+									self.addClass('l-ui-calendarDay-current')
+										.siblings()
+										.removeClass('l-ui-calendarDay-current');
+										
+									if( !isShowTime ){
+										_core.close(val);
+									}else{
+										var curYear  = self.attr('year'),
+											curMonth = self.attr('month'),
+											curDay   = self.text();
+										
+										globalDate = _core.getNewDate(curYear, curMonth, curDay);
+									}
+								}).dblclick(function(){
+									if( isShowTime ){
+										var hour     = hourInput.val(),
+											minute   = minuteInput.val(),
+											second   = secondInput.val(),
+											curYear  = globalDate.getFullYear(),  //当前全局date对象
+											curMonth = globalDate.getMonth(),
+											curDay   = globalDate.getDate(),
+											val      = _core.format(curYear, curMonth, curDay, hour, minute, second);
+										
+										_core.close(val);
+									}
+								}).mouseover(function(){
+									var self = $(this);
+									if( !self.hasClass('l-ui-calendarDay-current') ){
+										self.addClass('l-ui-calendarDay-on')
+									}
+								}).mouseout(function(){
+									var self = $(this);
+									self.remove('l-ui-calendarDay-on')
+								});
+								
+								if( isShowTime ){
+									if( !main.find('.l-ui-calendarTime').length ){
+										main.append(_core.createTime());
+									}
+				 
+									var hourInput   = main.find('.l-ui-calendarTime-hourInput'),
+										minuteInput = main.find('.l-ui-calendarTime-minuteInput'),
+										secondInput = main.find('.l-ui-calendarTime-secondInput'),
+										inputTime   = function( o ){
+														o.siblings('div')
+														 .show()
+														 .find('a')
+														 .click(function(){
+															o.val( $(this).text() )
+															 .siblings('div')
+															 .hide();
+														 });
+														o.parent().siblings().find('div').hide();
+													};
+									
+									hourInput.click(function(){
+										inputTime( $(this) );
+									});
+									minuteInput.click(function(){
+										inputTime( $(this) );
+									});
+									secondInput.click(function(){
+										inputTime( $(this) );
+									});
+									main.find('.l-ui-calendarTimeBtn').click(function(){
+										var hour     = hourInput.val(),
+											minute   = minuteInput.val(),
+											second   = secondInput.val(),
+											curYear  = globalDate.getFullYear(),  //当前全局date对象
+											curMonth = globalDate.getMonth(),
+											curDay   = globalDate.getDate(),
+											val      = _core.format(curYear, curMonth, curDay, hour, minute, second);
+										
+										_core.close(val);
+									});
+								}
+							}
+						};//end code
+		
+		_core.init();
+		trigger.click(function(){
+			main.show();
+		});
+	};
+	
+	return calendar;
+});
+define('core/validator',['core/saogaUI'], function(saogaUI){
 	
 	
 		
@@ -5034,7 +5453,7 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                     number: '请输入一个正确的数字',
                     email: '邮箱格式不正确，请检查！',
                     mobile: '手机号码不正确，请检查！如：13412345678',
-                    phone: '电话号码不正确，请检查！如：0592-1234567',
+                    phone: '电话号码不正确，请检查！如：0592-1234567或13412345678',
                     url: '请输入正确的网址，比如:http://www.example.com',
                     date: '',
                     format: '',
@@ -5210,7 +5629,7 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                             return false;
                         }
                         
-                        if( !/^(?:13\d|15\d|18\d)\d{5}(\d{3}|\*{3})$/.test(sVal) ){
+                        if( !/1[34578]{1}\d{9}$/.test(sVal) ){
                             return c.handleText(oItem, 'mobile');
                         }
                     },
@@ -5224,7 +5643,7 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                             return false;
                         }
                         
-                        if( !/^((0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/.test(sVal) ){
+                        if( !/(1[34578]{1}\d{9}$)|(0\d{2,3}-\d{7,8}(-\d{2,3})?$)/.test(sVal) ){
                             return c.handleText(oItem, 'phone');
                         }
                     },
@@ -5287,7 +5706,7 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                             success: function(data){
                                 if( !data ){
                                     oItem.addClass('l-form-error');
-                                    oMessage.html( c.handleText(oItem, 'ajax') );
+									c.handleMessage(oItem, c.handleText(oItem, 'ajax'));
                                 }else{
                                     oItem.removeClass('l-form-error');
                                 }
@@ -5304,26 +5723,12 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                     var arrtText    = oItem.attr('data-validate-'+ sMark +'Text'),
                         defaultText = p.text[sMark],
                         text        = arrtText ? arrtText : defaultText,
-                        reg         = /{{param}}/
-
+                        reg         = /{{param}}/;
+					oItem.attr('data-validate-'+ sMark +'Text', text);
                     return text.replace(reg, sParam);
                 },
 				
-				/*getText: function(obj){
-					var oItem       = obj.oItem,
-						sMark       = obj.sMark,
-						sParam      = obj.sParam !== undefined ? obj.sParam : '',
-						arrtText    = oItem.attr('data-validate-'+ sMark +'Text'),
-                        text        = arrtText ? arrtText : p.text[sMark];
-						
-					if( sParam ){
-						return text.replace(/{{param}}/, sParam);
-					}
-					
-					return text;
-				},*/
-				
-				route: function(sVal, sRule, oItem, oMessage){
+				route: function(sVal, sRule, oItem){
 					var oThat      = this,
 						aRule      = sRule.split(';'),
 						len        = aRule.length,
@@ -5353,7 +5758,7 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 							fRule = oThat.rule[aChild[0]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, aChild[1], oItem, oMessage);
+								sText = fRule(sVal, aChild[1], oItem);
 							}
 							
 						}else{
@@ -5361,13 +5766,38 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 							fRule = oThat.rule[aRule[i]];
 							
 							if( fRule && isFunction(fRule) ){
-								sText = fRule(sVal, oItem, oMessage);
+								sText = fRule(sVal, oItem);
 							}
 						}
 
 						if( sText ){
 							return sText;
 						}
+					}
+				},
+				
+				handleMessage: function(oSelf, sContents, sType){
+					var parents  = oSelf.parents('.ui-form'),
+						message  = parents.find('.ui-form-message'),
+						error    = parents.find('.l-form-error'),
+						oItems   = parents.find('[data-validate]');
+						
+					if( !message.length ){
+						if( oSelf.next('.ui-form-message').length ){
+							message = oSelf.next('.ui-form-message');
+						}else if( message.length === 1 ){
+							message = oTarget.find('.ui-form-message');
+						}
+					}
+					
+					if( oItems.length === 1 ){
+						message.html( sContents );
+					}else{
+						message.html( error.length ? '<span class="error">'+ error.eq(0).attr('data-validate-'+ sType +'Text') +'</span>' :'' );
+					}
+
+					if( !sContents ){
+						message.empty();
 					}
 				},
 				
@@ -5378,14 +5808,14 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                         fAjax      = p.ajax,
 						bPass      = false,
 						fAction    = function(oSelf){
-										var sVal    = oSelf.val(),
-											sRule   = oSelf.attr('data-validate'),
-											parents = oSelf.parents('.ui-form'),
-											message = parents.find('.ui-form-message'),
-                                            html    = null;
-											
-										if( oSelf.next('.ui-form-message').length ){
-											message = oSelf.next('.ui-form-message');
+										var sVal         = oSelf.val(),
+											sRule        = oSelf.attr('data-validate'),
+											sHideError   = oSelf.attr('data-ishideValidte'),
+											hideErrorCls = '',
+                                            html         = null;
+										
+										if( sHideError === "true" && sHideError ){
+											hideErrorCls = " l-form-hideError";
 										}
 
                                         if( saogaUI.base.isFunction(fRules) && sRule === 'process' ){
@@ -5401,50 +5831,54 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
                                             return true;
                                         }
 
-										if( html = oThat.route(sVal, sRule, oSelf, message) ){
-                                            oSelf.addClass('l-form-error');
-                                            message.html('<span class="error">'+html+'</span>');
+										if( html = oThat.route(sVal, sRule, oSelf) ){
+                                            oSelf.addClass('l-form-error'+hideErrorCls);
+											oThat.handleMessage(oSelf, '<span class="error">'+html+'</span>', sRule);
                                         }else{
-											message.html('<span class="success"></span>');
+											oSelf.removeClass('l-form-error' + hideErrorCls);
+											oSelf.parents('.l-select-wrap')
+												 .find('.l-select-single-init')
+												 .removeClass('l-form-error' + hideErrorCls);
+											oThat.handleMessage(oSelf, '<span class="success"></span>', sRule);
 										}
                                         
                                         return true;
                                         
                                         function processHandle(type, status, isShow){
                                             if( !status ){
-                                                oSelf.addClass('l-form-error');
-                                                oSelf.next('.l-select-single')
+                                                oSelf.addClass('l-form-error' + hideErrorCls);
+                                                oSelf.parents('.l-select-wrap')
                                                      .find('.l-select-single-init')
-                                                     .addClass('l-form-error');
-                                                message.html( isShow ? '<span class="error">'+oSelf.attr('data-validate-'+ type +'Text')+'</span>' : '');
+                                                     .addClass('l-form-error' + hideErrorCls);
+												oThat.handleMessage(oSelf, isShow ? '<span class="error">'+oSelf.attr('data-validate-'+ type +'Text')+'</span>' : '', type);
                                             }else{
-                                                oSelf.removeClass('l-form-error');
-                                                oSelf.next('.l-select-single')
+                                                oSelf.removeClass('l-form-error' + hideErrorCls);
+                                                oSelf.parents('.l-select-wrap')
                                                      .find('.l-select-single-init')
-                                                     .removeClass('l-form-error');
-                                                message.html('<span class="success"></span>');
+                                                     .removeClass('l-form-error' + hideErrorCls);
+                                                oThat.handleMessage(oSelf, '<span class="success"></span>', type);
                                             }
                                         }
 									},
 						fUnAction  = function(oSelf){
-										var sVal    = oSelf.val(),
-											parents = oSelf.parents('.ui-form'),
-											message = parents.find('.ui-form-message');
+										var sVal         = oSelf.val(),
+											sHideError   = oSelf.attr('data-ishideValidte'),
+											hideErrorCls = '';
 
-										if( oSelf.next('.ui-form-message').length ){
-											message = oSelf.next('.ui-form-message');
+										if( sHideError === "true" && sHideError ){
+											hideErrorCls = " l-form-hideError";
 										}
 
                                         if( oSelf[0].type === 'checkbox' || oSelf[0].type === 'radio' ){
-                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error');
+                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error' + hideErrorCls);
                                         }else{
-                                            oSelf.removeClass('l-form-error');
+                                            oSelf.removeClass('l-form-error' + hideErrorCls);
                                             oSelf.next('.l-select-single')
                                                  .find('.l-select-single-init')
-                                                 .removeClass('l-form-error');
+                                                 .removeClass('l-form-error' + hideErrorCls);
                                         }
-                                        
-										message.empty();
+										
+										oThat.handleMessage(oSelf);
 									},
 						fActionAll = function(){
 										var oItem   = oTarget.find('[data-validate]'),
@@ -5452,12 +5886,14 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 											i       = 0,
 											bSumbit = false;
 											
+											
 										for(; i<len; i++){
 											bSumbit = !fAction( oItem.eq(i) );
 											if( bSumbit ){
 												fUnAction( oItem.eq(i) );
 											}
 										}
+										
 									}
 					
 					oTarget.on('blur', '[data-validate]', function(e){
@@ -5466,6 +5902,20 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 					
 					oTarget.on('focus', '[data-validate]', function(e){
 						fUnAction( $(e.currentTarget) );
+					});
+					
+					oTarget.on('blur', '.l-select-single-init', function(e){
+						var obj = $(this).parents('.l-select-wrap').find('[data-validate]');
+						if( obj.length ){
+							fAction( obj );
+						}
+					});
+					
+					oTarget.on('focus', '.l-select-single-init', function(e){
+						var obj = $(this).parents('.l-select-wrap').find('[data-validate]');
+						if( obj.length ){
+							fUnAction( $(e.currentTarget) );
+						}
 					});
 					
 					oTarget.on('submit', function(){
@@ -5488,7 +5938,9 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 					}
 					
 					p.target = $(p.target);
-					
+					if( !p.target.length ){
+						console.log('target not find');
+					}
 					c.run();
 				}
 			};
@@ -5513,12 +5965,36 @@ define('core/validator',['core/saogaUI', 'i18n!core/nls/str'], function(saogaUI,
 		}
 		
 		g.getStatus = function(){
-			return !p.target.find('.l-form-error:visible');
+			var oTarget       = p.target,
+				oError        = oTarget.find('.l-form-error'),
+				oVisibleError = oError.filter(function(){
+									var that = $(this);
+									return that.filter(':visible').length && that.filter(':enabled').length;
+								}),
+				oHideError    = oError.filter('.l-form-hideError'),
+				len           = oVisibleError.length + oHideError.length;
+			
+			if( oVisibleError.length ){
+				$('body').animate({scrollTop:oVisibleError[0].scrollTop},500);
+			}
+			//else if( oHideError.length ){
+				//$('body').animate({scrollTop:oHideError[0].scrollTop},500);
+			//}
+			return !len;
 		}
 		
 		g.validatorAll = function(){
-			p.target.trigger('all');
+			p.target.triggerHandler('all');
             return g.getStatus();
+		}
+		
+		g.reload = function(){
+			//if( p.target.length ){
+			//	c.run();
+			//}else{
+				console.log('target overloaded');
+				c.init(o);
+			//} 
 		}
 
 		return c.init(o);
@@ -5680,7 +6156,7 @@ define('core/selectArea',['core/saogaUI'], function(saogaUI){
 	};
 
 });
-define('core/select_debug',['core/saogaUI'], function(saogaUI){
+define('core/select',['core/saogaUI'], function(saogaUI){
 	
 	
 		
@@ -6675,9 +7151,11 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 								that.multipleFn();
 								break;
 							case 'tree':
-								that.createTreeHtml();
-								if( !p.wrap ){ break; }
-								that.treeFn();
+								if( saogaUI.base.isFunction(saogaUI.ui.tree) ){
+									that.createTreeHtml();
+									if( !p.wrap ){ break; }
+									that.treeFn();
+								}
 								break;
 						}
 					},
@@ -6732,6 +7210,13 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
 			return g;
 		};
 		
+		/**
+		* 代码重载
+		*/
+		g.reload = function(){
+			c.init(o);
+		}
+		
 		return c.init(o);
 	};
 	
@@ -6761,7 +7246,7 @@ define('core/select_debug',['core/saogaUI'], function(saogaUI){
  ******┃┫┫　┃┫┫ 
  ******┗┻┛　┗┻┛  
 */
-define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saogaUI, lang, select){
+define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, lang, select){
 	
 	
 	
@@ -8534,748 +9019,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], f
 		return new Grid(options);
 	};
 });
-define('core/dorpDownTree',['core/saogaUI'], function(saogaUI){
-	
-	
-	
-	var DorpDownTree = function(options){
-		var o = options || {};
-		if(!o.target){return false;}
-		var g           = this,
-			data        = o.data,
-			target      = $(o.target),
-			height      = o.height ? o.height : 'auto',
-			selectedID  = Number(o.selectedID),
-			isOpen      = o.isOpen === undefined ? true : o.isOpen,
-			isMultiple  = o.isMultiple || false,
-			onclickItem = o.onclickItem,
-			onloadFn    = o.onloadFn;
-		
-		
-		var _core = {
-				
-			/**
-			* 创建树对象
-			*/
-			createHtml: function(data){
-				var line        = '',
-					node        = '<div class="l-treeNode"></div>',
-					isLastGroup,
-					ischildren,
-					selected,
-					tree        = function(data, line, isOrigin){
-						var i    = 0,
-							len  = data.length,
-							html = '';
-						for(; i<len; i++){
-
-							var childrenObj      = data[i].children,
-								isLastNode       = ( i === len-1 ),
-								isYoungerBrother = (data[i+1] !== undefined ? false : true);
-							
-							if( selectedID === Number(data[i].id) ){
-								selected = data[i];
-							}else if(selectedID === undefined){
-								selected = data[0];
-							}
-							
-							console.log(selectedID,Number(data[i].id))
-							
-							html += '<div class="l-treeItemWrap fn-clear'+ ( childrenObj ? ' l-treeParent' : ' l-treeLast' ) + (selectedID === Number(data[i].id) ? ' l-treeSelected' : '') +'">';
-								if( isOrigin ){
-									if( isLastNode ){
-										html += '<div class="l-treeBox l-treeExpandableLast-open"></div><div class="l-treeBox l-treeIco"></div>';
-										isLastGroup = true;
-									}else{
-										html += '<div class="l-treeBox l-treeExpandable-open"></div><div class="l-treeBox l-treeIco"></div>';
-									}
-								}else{
-									html += '<div class="l-treeBox'+ (isLastGroup ? '' : ' l-treeLine') +'"></div>';
-								}
-								
-								//html += (isMultiple ? '<div class="l-treeCheckbox"></div>' : '');
-								
-								//替换字符串，考虑修改
-								html +=	(line ? line + node + '<div class="l-treeBox l-treeIco"></div>' : '');
-								html = html.replace('l-treeLine"></div><div class="l-treeNode"></div>',(isLastNode ? 'l-treeLastNode' : 'l-treeNode') +'"></div>');
-								if( isYoungerBrother && childrenObj ){
-									//line = line.replace(/ l-treeLine/g, '');
-								}
-
-								if( childrenObj === undefined && !isOrigin ){
-									//html = html.replace(/l-treeNode/g, 'l-treeExpandable-open');
-									//html = html.replace('l-treeLastNode', 'l-treeExpandableLast-open');
-									html = html.replace(/<div class="l-treeBox l-treeExpandable-open"><\/div><div class="l-treeBox l-treeIcoLast"><\/div>/g,'<div class="l-treeBox l-treeNode"></div><div class="l-treeBox l-treeIcoLast"></div>');
-								}else if( !childrenObj && !isOrigin ){
-									html += '<div class="l-treeBox l-treeIcoLast"></div>';
-									html = html.replace('<div class="l-treeBox l-treeIco"></div><div class="l-treeBox l-treeIcoLast"></div>', '<div class="l-treeBox l-treeIcoLast"></div>');
-								}
-								html += '<div class="l-treeItem" data-id='+ data[i].id +' data-isCategory='+ data[i].isCategory +'>'+ data[i].name +'</div>';
-							
-							html += '</div>';
-									
-							if( childrenObj ){
-								html += '<div class="l-treeChildrenWrap fn-clear" data-pid='+ data[i].id +'>'+ tree(childrenObj, line+'<div class="l-treeBox l-treeLine"></div>', false) +'</div>';
-							}
-						}
-											
-						return html;
-					};
-				
-				target.html( '<div class="l-tree">'+ tree(data, line, true) +'</div>' );
-				
-				return selected;
-			},
-			
-			onItem: function(){
-				target.find('.l-treeItem').on('click',function(e){
-					e.stopPropagation();
-					var that = $(this),
-						name = that.text(),
-						id   = that.attr('data-id'),
-						pid  = that.parents('.l-treeChildrenWrap').attr('data-pid'),
-						isCategory  = that.attr('data-isCategory');
-					
-					if( pid === undefined ){
-						pid = '';
-					}
-
-					if( onclickItem && saogaUI.base.isFunction(onclickItem) ){
-						onclickItem(name, id, pid, that, isCategory);
-					}
-				});
-			},
-			
-			/**
-			* 创建树对象
-			*/
-			run: function(){
-				var selected = _core.createHtml(data);
-				
-				/*初始化选中*/
-				if( onloadFn && saogaUI.base.isFunction(onloadFn)  ){
-					onloadFn(selected);
-				}
-				
-				
-				target.find('.l-treeParent .l-treeNode').addClass('l-treeExpandable-open');
-				target.find('.l-treeParent .l-treeLastNode').addClass('l-treeExpandableLast-open');
-				
-				if( !isOpen ){
-					target.find('.l-treeChildrenWrap').hide();
-					target.find('.l-treeExpandable-open').addClass('l-treeExpandable-close');
-					target.find('.l-treeExpandableLast-open').addClass('l-treeExpandableLast-close');
-				}
-				target.find('.l-treeExpandable-open').on('click',function(e){
-					e.stopPropagation();
-					var that = $(this);
-					if( that.hasClass('l-treeExpandable-close') ){
-						that.removeClass('l-treeExpandable-close');
-						that.parent().next('.l-treeChildrenWrap').show();
-					}else{
-						that.addClass('l-treeExpandable-close');
-						that.parent().next('.l-treeChildrenWrap').hide();
-					}
-				});
-				target.find('.l-treeExpandableLast-open').on('click',function(e){
-					e.stopPropagation();
-					var that = $(this);
-					if( that.hasClass('l-treeExpandableLast-close') ){
-						that.removeClass('l-treeExpandableLast-close');
-						that.parent().next('.l-treeChildrenWrap').show();
-					}else{
-						that.addClass('l-treeExpandableLast-close');
-						that.parent().next('.l-treeChildrenWrap').hide();
-					}
-				});
-				//target.find('.l-treeChildrenWrap .l-treeLast:last').addClass('l-treeLastNode')
-				_core.onItem();
-			}
-		};
-		
-		g.init = function(){
-			_core.run(data);
-			return g;
-		};
-
-	};
-	
-	return function(options){
-		var tree = new DorpDownTree(options);
-		return tree.init();
-	};
-});
-define('core/select',['core/saogaUI','core/dorpDownTree'], function(saogaUI, dorpDownTree){
-	var select = function(options){
-		var o           = options,
-			id          = o.id || 'l-select-'+(new Date()).valueOf(),
-			cls         = o.cls === undefined ? '' : o.cls,
-			target      = $(o.target).wrap('<div class="ui-select '+ cls +'" id="'+ id +'"></div>'),
-			wrap        = $('#'+id),
-			initWrap    = wrap.append('<div class="arrow"></div><div class="ui-select-init"></div>').find('.ui-select-init'),
-			itemWrap    = null,
-			arrow       = wrap.find('.arrow'),
-			top         = wrap.offset().top,
-			left        = wrap.offset().left,
-			height      = wrap.outerHeight(),
-			downHeight  = o.downHeight === undefined ? 300 : o.downHeight,
-			downWidth   = o.downWidth === undefined ? 300 : o.downWidth,
-			disable     = o.disable === undefined ? false : o.disable,
-			isTree      = o.isTree === undefined ? false : o.isTree,
-			initVal     = o.initVal,
-			data        = o.data,
-			selectedID  = o.selectedID,
-			onclickItem = o.onclickItem,
-			onloadFn    = o.onloadFn,
-			onParent    = o.onParent === undefined ? false : o.onParent,
-			onChildren  = o.onChildren === undefined ? false : o.onChildren,
-			isShow      = false,
-			zIndex      = saogaUI.ui.zIndex();
-		
-		/*载入容器*/
-		saogaUI.ui.wrap();
-		
-		itemWrap = $('#l-ui-wrap').prepend('<div class="l-select-wrap ui-select-itemWrap fn-hide" id="'+ id +'-wrap"></div>').find('#'+ id +'-wrap');
-
-		itemWrap.css({
-			'z-index':200000,
-			position:'absolute',
-			width: wrap.width(),
-			top: top + height,
-			left:left
-		});
-				
-		wrap.click(function(e){
-			e.stopPropagation();
-			$('.ui-select-itemWrap').addClass('fn-hide');
-			if( !isShow ){
-				itemWrap.removeClass('fn-hide');
-				isShow = true;
-			}else{
-				itemWrap.addClass('fn-hide');
-				isShow = false;
-			}
-		});
-		/*wrap.on('mouseover', function(){
-			isShow = false;
-		}).on('mouseout',function(){
-			isShow = true;
-		});*/
-		
-		
-		$(window).on('click', function(){
-			if( isShow && !disable ){
-				itemWrap.addClass('fn-hide');
-				isShow = false;
-			}
-		});
-		
-		if( !isTree ){
-			$.each(data, function(i, item){
-			
-				if( initVal === item.value ){
-					initWrap.attr('data-value', item.value)
-							.html( item.name );
-				}
-				
-				itemWrap.height(downHeight)
-						.append('<div class="ui-select-item" data-value="'+ item.value +'">'+ item.name +'</div>')
-						.find('.ui-select-item')
-						.eq(i)
-						.click(function(){
-							var val  = $(this).attr('data-value'),
-								name = $(this).html();
-								
-							target.val( val );
-							initWrap.attr('data-value', val)
-									.html( name );
-							
-							itemWrap.addClass('fn-hide');
-						})
-						.hover(function(){
-							$(this).addClass('selected');
-						},
-						function(){
-							$(this).removeClass('selected');
-						});
-			});
-
-		}else{
-			dorpDownTree({
-				data: data,
-				target: itemWrap,
-				selectedID: selectedID,
-				onclickItem: function(name, id, pid, that, isCategory){
-					if( onParent && isCategory !== '0' ){
-						target.val( id );
-						initWrap.attr('data-value', id)
-								.html( name );
-						itemWrap.addClass('fn-hide');
-					}
-					
-					if( !onChildren && isCategory === '0' ){
-						target.val( id );
-						initWrap.attr('data-value', id)
-								.html( name );
-						itemWrap.addClass('fn-hide');
-						isShow = false;
-					}
-					
-					if(onParent&&onChildren){
-						target.val( id )
-							  .attr('data-name', obj.name);
-						initWrap.attr('data-value', id)
-								.html( name );
-						itemWrap.addClass('fn-hide');
-						isShow = false;
-					}
-										
-					if( onclickItem && saogaUI.base.isFunction(onclickItem)  ){
-						onclickItem(name, id, pid, that, isCategory);
-					}
-					
-				},
-				onloadFn: function(obj){
-					itemWrap.height(downHeight)
-							.width(downWidth);
-					
-					if( obj ){
-						target.val( obj.id )
-							  .attr('data-name', obj.name);
-						initWrap.attr('data-value', obj.val)
-								.html( obj.name );
-						if( onloadFn && saogaUI.base.isFunction(onloadFn)  ){
-							onloadFn(obj);
-						}
-					}
-					
-
-					if( disable ){ 
-						
-						wrap.addClass('ui-select-disable');
-						itemWrap.remove();
-						
-					}
-				}
-			});
-		}
-		
-	};
-	
-	return function(options){
-		select(options);
-	};
-});
-define('core/calendar',['core/saogaUI'], function(saogaUI){
-	
-	var calendar = function(options){
-		var o = options || {};
-		if(!o.trigger){return;}
-		var trigger    = $(o.trigger).wrap('<div class="l-ui-calendarWrap"></div>'),
-			wrap       = trigger.parent(),
-			top        = o.top || trigger.outerHeight(),
-			left       = o.left || 0,
-			main       = wrap.append('<div class="l-ui-calendarMain" style="top:'+ top +'px;left:'+ left +'px"></div>')
-							 .find('.l-ui-calendarMain'),
-			callback   = o.callback,
-			beginYear  = Number(o.beginYear) || 1980,
-			endYear    = Number(o.endYear) ||  2050,
-			language   = o.language || {
-											next: '上个月',
-											prev: '下个月',
-											submit: '提交',
-											year: '年',
-											month: '月',
-											time: '时间',
-											weeks: ['日', '一', '二', '三', '四', '五', '六']
-										},
-			days       = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-			weeks      = language.weeks,
-			months     = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-			dateFormat = o.dateFormat || 'yyyy-MM-dd hh:mm:ss',
-			date       = o.date || new Date(),
-			globalDate = date,
-			isShowTime = /(h+)/.test(dateFormat),
-			_core      = {
-							/*格式化日期*/
-							format: function(year, month, day, hour, minute, second, week, quarter, millisecond){
-								var o = {
-										// "M+" : month + 1 || date.getMonth() + 1,                                       //month
-										// "d+" : day || date.getDate(),                                                  //day
-										// "h+" : hour || date.getHours(),                                                //hour
-										// "m+" : minute || date.getMinutes(),                                            //minute
-										// "s+" : second || date.getSeconds(),                                            //second
-										// "w+" : weeks[week] || weeks[date.getDay()],                                    //week
-										// "q+" : Math.floor((quarter + 3) / 3) || Math.floor((date.getMonth() + 3) / 3), //quarter
-										// "S"  : millisecond || date.getMilliseconds()                                   //millisecond
-										'M+': month + 1,
-										'd+': day,
-										'h+': hour,
-										'm+': minute,
-										's+': second,
-										'w+': weeks[week],
-										'q+': Math.floor((quarter + 3) / 3),
-										'S' : millisecond
-									},
-									str  = dateFormat;
-								
-								year = year.toString();
-								
-								if( /(y+)/.test(str) ){
-									str = str.replace(/(y+)/, year.substr(4 - Math.min(4, RegExp.$1.length)));
-								}
-								for( var k in o ){
-									if(	new RegExp("("+ k +")").test(str) ){
-										if(	o[k] !== undefined && !isNaN(o[k]) ){
-											str = str.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-										}else{
-											str = str.replace(/\s[^\d](.)*/, '');
-										}
-									}
-								}
-								return str;
-							},
-						
-							/*判断闰年*/
-							isLeapYear: function(y){
-								if((y % 400 === 0) || (y % 100 !== 0) && (y % 4 === 0)){
-									return true;
-								}
-								return false;
-							},
-							
-							/*获取月份天数*/
-							getDayCount: function(y, m){
-								if( _core.isLeapYear(y, m) ){
-									days[1] = 29;
-								}else{
-									days[1] = 28;
-								}
-								return days[m];
-							},
-							
-							/*获取新date*/
-							getNewDate: function(y, m, d) {
-								var newDate = new Date();
-								newDate.setFullYear(y, m, d);
-								// !isNaN(y) && newDate.setFullYear(y);
-								// !isNaN(m) && newDate.setMonth(m);
-								// !isNaN(d) && newDate.setDate(d);
-								return newDate;
-							},
-							
-							/*获取上下月*/
-							getPrevNextMonth: function(poor){
-								var y = globalDate.getFullYear(),
-									m = globalDate.getMonth() + poor;
-								if(m < 0){
-									y -= 1;
-									m = 11;
-								}else if(m > 11){
-									y += 1;
-									m = 0;
-								}
-								return _core.getNewDate(y, m, 1);
-							},
-							getPrevDate: function(){
-								return _core.getPrevNextMonth(-1);
-							},
-							getNextDate: function(){
-								return _core.getPrevNextMonth(1);
-							},
-							
-							/*创建头部*/
-							createHeader: function(){
-								var html     = '',
-									yearLen  = endYear - beginYear,
-									i        = 0,
-									monthLen = 12,
-									n        = 0;
-									
-								html += '<a class="l-ui-calendarHeader-btn l-ui-calendarHeader-prev" href="javascript:;" title="'+ language.prev +'"></a>';
-								html += '<div class="l-ui-calendarHeader-text">';
-								html += '<select class="l-ui-calendarHeader-year">';
-								for(; i < yearLen; i++){
-									var year = beginYear + i;
-									if( year === globalDate.getFullYear() ){
-										html += '<option value="'+ year +'" selected>'+ year +'</option>';
-									}else{
-										html += '<option value="'+ year +'">'+ year +'</option>';
-									}
-								}
-								html += '</select>' + language.year;
-								html += '<select class="l-ui-calendarHeader-month">';
-								for(; n < monthLen; n++){
-									var month = months[n];
-									if( n === globalDate.getMonth() ){
-										html += '<option value="'+ n +'" selected>'+ month +'</option>';
-									}else{
-										html += '<option value="'+ n +'">'+ month +'</option>';
-									}
-								}
-								html += '</select>' + language.month;
-								html += '</div>';
-								html += '<a class="l-ui-calendarHeader-btn l-ui-calendarHeader-next" href="javascript:;" title="'+ language.next +'"></a>';
-								
-								return '<div class="l-ui-calendarHeader fn-clear">'+ html +'</div>';
-							},
-							
-							/*创建周*/
-							createWeeks: function(){
-								var html = '',
-									i    = 0;
-								html += '<div class="l-ui-calendarWeeks fn-clear">';
-								for(; i < 7; i++){
-									if( i === 0 ){
-										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-sunday">'+ weeks[i] +'</span>';
-									}else if( i === 6 ){
-										html += '<span class="l-ui-calendarWeek l-ui-calendarWeek-saturday">'+ weeks[i] +'</span>';
-									}else{
-										html += '<span class="l-ui-calendarWeek">'+ weeks[i] +'</span>';
-									}
-								}
-								html += '</div>';
-								return html;
-							},
-							
-							/*创建天*/
-							createDays: function(){
-								var //year       = date.getFullYear(),
-									//month      = date.getMonth(),
-									day        = date.getDate(),
-									curYear    = globalDate.getFullYear(),              //当前全局date对象
-									curMonth   = globalDate.getMonth(),
-									curDay     = globalDate.getDate(),
-									curDayNum  = _core.getDayCount(curYear, curMonth),
-									prevDate   = _core.getPrevDate(),                    //获取上月的date
-									prevYear   = prevDate.getFullYear(),
-									prevMonth  = prevDate.getMonth(),
-									prevDayNum = _core.getDayCount(prevYear, prevMonth),
-									nextDate   = _core.getNextDate(),                    //获取下月的date
-									nextYear   = nextDate.getFullYear(),
-									nextMonth  = nextDate.getMonth(),
-									lastWeek   = new Date(curYear, curMonth, 1).getDay(), //获取本月1号的星期数
-									html       = '',
-									p          = prevDayNum - lastWeek +1,               //上月剩余天数(礼拜从礼拜日算起)
-									nextDayNuM = 42 - lastWeek - curDayNum,              //下月剩余天数
-									i          = 1,
-									n          = 1;
-
-								for(; p <= prevDayNum; p++) {
-									var prevDayStr =  _core.format(prevYear, prevMonth, p);
-									html += '<a href="javascript:;" class="l-ui-calendarDay l-ui-calendarDay-prev l-ui-calendarDay-disable" title="'+ prevDayStr +'" year="'+ prevYear +'" month="'+ prevMonth +'">'+ p +'</a>';
-								}
-								
-								for(; i <= curDayNum; i++){
-									var cls       = '',
-										curDayStr = _core.format(curYear, curMonth, i);
-									if( day === i ){
-										cls = ' l-ui-calendarDay-current';
-									}
-									html += '<a href="javascript:;" class="l-ui-calendarDay'+ cls +'" title="'+ curDayStr +'" year="'+ curYear +'" month="'+ curMonth +'">'+ i+'</a>';
-								}
-								
-								for(; n <= nextDayNuM; n++) {
-									var nextDayStr =  _core.format(nextYear, nextMonth, n);
-									html += '<a href="javascript:;" class="l-ui-calendarDay l-ui-calendarDay-next l-ui-calendarDay-disable" title="'+ nextDayStr +'" year="'+ nextYear +'" month="'+ nextMonth +'">'+ n +'</a>';
-								}
-												
-								return '<div class="l-ui-calendarDays fn-clear">'+ html +'</div>';
-							},
-							
-							/*创建时分秒*/
-							createTime: function(){
-								var hour       = date.getHours(),
-									minute     = date.getMinutes(),
-									second     = date.getSeconds(),
-									hourHtml   = '',
-									minuteHtml = '',
-									secondHtml = '',
-									h          = 0,
-									m          = 0,
-									s          = 0;
-									
-								hour   = hour < 10 ? '0' + hour  : hour;
-								minute = minute < 10 ? '0' + minute  : minute;
-								second = second < 10 ? '0' + second  : second;
-								
-								for(; h < 24; h++){
-									hourHtml += '<a href="javascript:;">'+ (h < 10 ? '0' + h  : h) +'</a>';
-								}
-								
-								for(; m < 60; m++){
-									minuteHtml += '<a href="javascript:;">'+ (m < 10 ? '0' + m  : m) +'</a>';
-								}
-								
-								for(; s < 60; s++){
-									secondHtml += '<a href="javascript:;">'+ (s < 10 ? '0' + s  : s) +'</a>';
-								}
-									
-								return  '<div class="l-ui-calendarTime fn-clear">' +
-											'<div class="l-ui-calendarTimeTitle">'+ language.time +':</div>' + 
-											'<div class="l-ui-calendarTimeWrap fn-clear">' +
-												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-hourWrap">' +
-													'<input type="text" class="l-ui-calendarTime-hourInput" value="'+ hour +'" /><span>:</span>' +
-													'<div class="l-ui-calendarTime-hour">'+ hourHtml +'</div>' +
-												'</div>' + 
-												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-minuteWrap">' + 
-													'<input type="text" class="l-ui-calendarTime-minuteInput" value="'+ minute +'" /><span>:</span>' + 
-													'<div class="l-ui-calendarTime-minute">'+ minuteHtml +'</div>' + 
-												'</div>' + 
-												'<div class="l-ui-calendarTime-timeWrap l-ui-calendarTime-secondWrap">'  +
-													'<input type="text" class="l-ui-calendarTime-secondInput" value="'+ second +'" />' + 
-													'<div class="l-ui-calendarTime-second">'+ secondHtml +'</div>' + 
-												'</div>'  +
-											'</div>' + 
-											'<a href="javascript:;" class="l-ui-calendarTimeBtn">'+ language.submit +'</a>' +
-										'</div>';
-							},
-							
-							/*点击下个月*/
-							clickNext: function(){
-								globalDate = _core.getPrevNextMonth(1);
-								_core.init();
-							},
-							
-							/*点击上个月*/
-							clickPrev: function(){
-								globalDate = _core.getPrevNextMonth(-1);
-								_core.init();
-							},
-							
-							/*年月选择*/
-							clickYearMonth: function(year, month){
-								globalDate = new Date(year, month, 1);
-								_core.init();
-							},
-							
-							/*关闭日历*/
-							close: function(val){
-								trigger.val(val);
-								main.hide();
-								if( saogaUI.base.isFunction(callback) ){
-									callback(val);
-								}
-							},
-				 
-							/*初始化函数*/
-							init: function(){
-								main.html(_core.createHeader() + _core.createWeeks() + _core.createDays());
-								
-								main.find('.l-ui-calendarHeader-prev').click(function(){
-									_core.clickPrev();
-								});
-								main.find('.l-ui-calendarHeader-next').click(function(){
-									_core.clickNext();
-								});
-
-								main.find('.l-ui-calendarHeader-month').change(function(){
-									var year  = main.find('.l-ui-calendarHeader-year').val(),
-										month = $(this).val();
-									_core.clickYearMonth(year, month);
-								});
-								main.find('.l-ui-calendarHeader-year').change(function(){
-									var year  = $(this).val(),
-										month = main.find('.l-ui-calendarHeader-month').val();
-									_core.clickYearMonth(year, month);
-								});
-								
-								main.find('.l-ui-calendarDay').each(function(i){
-									var saturday = i%7 === 6 ? ' l-ui-calendarDay-saturday' : '',
-										sunday   = i%7 === 0 ? ' l-ui-calendarDay-sunday' : '';
-									$(this).addClass(saturday+sunday);
-								}).click(function(){
-									var self = $(this),
-										val  = self.attr('title');
-										
-									self.addClass('l-ui-calendarDay-current')
-										.siblings()
-										.removeClass('l-ui-calendarDay-current');
-										
-									if( !isShowTime ){
-										_core.close(val);
-									}else{
-										var curYear  = self.attr('year'),
-											curMonth = self.attr('month'),
-											curDay   = self.text();
-										
-										globalDate = _core.getNewDate(curYear, curMonth, curDay);
-									}
-								}).dblclick(function(){
-									if( isShowTime ){
-										var hour     = hourInput.val(),
-											minute   = minuteInput.val(),
-											second   = secondInput.val(),
-											curYear  = globalDate.getFullYear(),  //当前全局date对象
-											curMonth = globalDate.getMonth(),
-											curDay   = globalDate.getDate(),
-											val      = _core.format(curYear, curMonth, curDay, hour, minute, second);
-										
-										_core.close(val);
-									}
-								}).mouseover(function(){
-									var self = $(this);
-									if( !self.hasClass('l-ui-calendarDay-current') ){
-										self.addClass('l-ui-calendarDay-on')
-									}
-								}).mouseout(function(){
-									var self = $(this);
-									self.remove('l-ui-calendarDay-on')
-								});
-								
-								if( isShowTime ){
-									if( !main.find('.l-ui-calendarTime').length ){
-										main.append(_core.createTime());
-									}
-				 
-									var hourInput   = main.find('.l-ui-calendarTime-hourInput'),
-										minuteInput = main.find('.l-ui-calendarTime-minuteInput'),
-										secondInput = main.find('.l-ui-calendarTime-secondInput'),
-										inputTime   = function( o ){
-														o.siblings('div')
-														 .show()
-														 .find('a')
-														 .click(function(){
-															o.val( $(this).text() )
-															 .siblings('div')
-															 .hide();
-														 });
-														o.parent().siblings().find('div').hide();
-													};
-									
-									hourInput.click(function(){
-										inputTime( $(this) );
-									});
-									minuteInput.click(function(){
-										inputTime( $(this) );
-									});
-									secondInput.click(function(){
-										inputTime( $(this) );
-									});
-									main.find('.l-ui-calendarTimeBtn').click(function(){
-										var hour     = hourInput.val(),
-											minute   = minuteInput.val(),
-											second   = secondInput.val(),
-											curYear  = globalDate.getFullYear(),  //当前全局date对象
-											curMonth = globalDate.getMonth(),
-											curDay   = globalDate.getDate(),
-											val      = _core.format(curYear, curMonth, curDay, hour, minute, second);
-										
-										_core.close(val);
-									});
-								}
-							}
-						};//end code
-		
-		_core.init();
-		trigger.click(function(){
-			main.show();
-		});
-	};
-	
-	return calendar;
-});
-define('core/tree_debug',['core/saogaUI'], function(saogaUI){
+define('core/tree',['core/saogaUI'], function(saogaUI){
 	
 	
 		
@@ -9883,7 +9627,7 @@ define('core/tree_debug',['core/saogaUI'], function(saogaUI){
 		return new Tree(o);
 	};
 });
-define('core/check_debug',['core/saogaUI'], function(saogaUI){
+define('core/check',['core/saogaUI'], function(saogaUI){
 	
 	
 		
@@ -10213,7 +9957,7 @@ define('core/btnSwitch',['core/saogaUI'], function(saogaUI){
 		return new BtnSwitch(o);
 	};
 });
-define('app/saogaUI',['require','core/saogaUI','app/template','core/drag','core/dialog','core/pop','core/tip','core/tab','core/validator','core/selectArea','core/grid','core/select','core/calendar','core/tree_debug','core/select_debug','core/check_debug','core/btnDropdown','core/btnSwitch'],function(require){
+define('app/saogaUI',['require','core/saogaUI','app/template','core/drag','core/dialog','core/pop','core/tip','core/tab','core/calendar','core/validator','core/selectArea','core/grid','core/calendar','core/tree','core/select','core/check','core/btnDropdown','core/btnSwitch'],function(require){
 	
 	/**
 	* 载入saogaUI
@@ -10225,23 +9969,18 @@ define('app/saogaUI',['require','core/saogaUI','app/template','core/drag','core/
 	saogaUI.ui.pop          = require('core/pop');
 	saogaUI.ui.tip          = require('core/tip');
 	saogaUI.ui.tab          = require('core/tab');
-	//saogaUI.ui.calendar     = require('core/calendar');
+	saogaUI.ui.calendar     = require('core/calendar');
 	saogaUI.ui.validator    = require('core/validator');
 	saogaUI.ui.selectArea   = require('core/selectArea');
 	saogaUI.ui.grid         = require('core/grid');
-	//saogaUI.ui.dorpDownTree = require('core/dorpDownTree');
-	saogaUI.ui.select       = require('core/select');
 	saogaUI.ui.calendar     = require('core/calendar');
-	
-	saogaUI.ui.tree         = require('core/tree_debug');
-	saogaUI.ui.select2      = require('core/select_debug');
-	saogaUI.ui.check        = require('core/check_debug');
-	
+	saogaUI.ui.tree         = require('core/tree');
+	saogaUI.ui.select2      = require('core/select');
+	saogaUI.ui.check        = require('core/check');
 	saogaUI.ui.btnDropdown  = require('core/btnDropdown');
 	saogaUI.ui.btnSwitch    = require('core/btnSwitch');
 	
 	return saogaUI;
-	
 });
 define('app/common',['app/saogaUI'], function(saogaUI){
 	

@@ -17,7 +17,7 @@
  ******┃┫┫　┃┫┫ 
  ******┗┻┛　┗┻┛  
 */
-define(['core/saogaUI', 'i18n!core/nls/str', 'core/select_debug'], function(saogaUI, lang, select){
+define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, lang, select){
 	
 	'use strict';
 	
