@@ -29,6 +29,19 @@
 	</div>
 	
 	<a id="btn" href="#">dddddd</a>
+	<script type="text/html" id="btnHtml">
+		<div class="fn-clear ui-pt10 ui-pl10">
+			<div class="ui-btn-dropdown">
+				<span class="ui-btn ui-btn-default">下拉</span>
+				<i class="ui-btn-dropdown-icon icon icon-angle-down"></i>
+				<ul class="ui-btn-dropdown-menu fn-hide">
+					<li>选项一</li>
+					<li>选项二</li>
+					<li>选项三</li>
+				</ul>
+			</div>
+		</div>
+	</script>
 	<script>
 		require(['app/main'], function(saogaUI){
 		
@@ -98,13 +111,7 @@
 					{ display: '表头9', name: '', width: 150},
 					{ display: '表头10', name: '', width: 150},
 					{ display: '表头11', name: '', width: 150, render: function(rdata, rindex, value){
-							var html='<div class="ui-btn-dropdown">';
-								html+=  '<span class="ui-btn ui-btn-primary dropdown-toggle" data-toggle="dropdown" href="javascript:;">';
-								html+=	    '<span class="customerProerptyClass"  customerId="'+rdata.sysCustomerId+'">修改</span>';
-								html+=	    '<i class="dropdown-ico icon-font icon-font-10 col-fff" data-uid="983721" >&#983721</i>';
-								html+=	'</span>';
-								html+='</div>';
-								return html;
+							return saogaUI.template('btnHtml',rdata);
 						}
 
 					}

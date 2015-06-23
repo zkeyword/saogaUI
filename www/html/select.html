@@ -197,6 +197,9 @@
 					data:{
 						index:'1'
 					}
+				},
+				onDel:function(obj){
+					console.log(obj)
 				}
 			});
 			
@@ -236,7 +239,13 @@
 						val:'3',
 						id:'3333'
 					}
-				]
+				],
+				onDel:function(obj){
+					console.log(this,obj)
+				},
+				onClick:function(obj){
+					console.log(this,obj)
+				}
 			});
 			/*
 			select23.refresh({
@@ -261,7 +270,7 @@
 					url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php'
 				},
 				selectedData: [13],
-				width:130,
+				width:330,
                 check:'checkbox',
 				onClick:function(obj, data){
 					

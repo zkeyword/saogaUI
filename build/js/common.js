@@ -16,6 +16,7 @@ requirejs.config({
     		exports: 'KindEditor'
     	}
     }
+	,urlArgs: "bust=" + (new Date()).getTime()
 });
 
 

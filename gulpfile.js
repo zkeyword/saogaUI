@@ -1,15 +1,17 @@
-var gulp       = require('gulp'),
-	less       = require('gulp-less'),
-	rjs        = require('gulp-requirejs'),
-	uglify     = require('gulp-uglify'),
-	maps       = require('gulp-sourcemaps'),
-	minifycss  = require('gulp-minify-css'),
-	sprite     = require('gulp.spritesmith'),
-	clean      = require('gulp-clean'),
-	plumber    = require('gulp-plumber'),
-	path       = {
-					dev: './www/',
-					dest: './build/'
+var gulp        = require('gulp'),
+	less        = require('gulp-less'),
+	rjs         = require('gulp-requirejs'),
+	uglify      = require('gulp-uglify'),
+	maps        = require('gulp-sourcemaps'),
+	minifycss   = require('gulp-minify-css'),
+	sprite      = require('gulp.spritesmith'),
+	clean       = require('gulp-clean'),
+	plumber     = require('gulp-plumber'),
+	amdOptimize = require('amd-optimize'),
+	concat      = require('gulp-concat'),
+	path        = {
+					dev: 'www/',
+					dest: 'build/'
 				};
 
 //less
@@ -25,6 +27,38 @@ gulp.task('less', function () {
 		.pipe(minifycss({compatibility: 'ie7'}))
 		.pipe(maps.write('./'))
         .pipe(gulp.dest(path.dest+'css'));
+});
+
+gulp.task('b', function (){
+	gulp
+		.src(path.dev+'js/config.js')
+		.pipe(gulp.dest(path.dest+'js'));
+		
+	gulp
+		.src(path.dev+'js/app/ZeroClipboard.swf')
+		.pipe(gulp.dest(path.dest+'js/app/'));
+		
+    gulp
+		.src(path.dev+'js/**.js')
+		.pipe(plumber(function(error){
+			console.log(error);
+			console.log('--------------------------  js Syntax Error! --------------------------');
+		}))
+		.pipe(
+			rjs({
+				name: 'app/main',
+				baseUrl: path.dev+'js/lib/',
+				paths: {
+					core: '../core',
+					app:  '../app'
+				},
+				mainConfigFile:path.dev+'js/common.js',
+				out: 'main.js',
+				optimize:true
+			})
+			.pipe(maps.write('./'))
+			.pipe(gulp.dest(path.dest+'js/app/'))
+		)
 });
 
 //requirejs
