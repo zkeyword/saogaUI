@@ -268,14 +268,14 @@ define(['core/saogaUI'], function(saogaUI){
 								that.addClass('l-tree-selectedNode');
 								saogaUI.ui.onselectstart(that);
 									
-								if( saogaUI.base.isFunction(p.onClick) ){
+								if( saogaUI.base.isFunction(p.onClick) && !p.check ){
 									clearTimeout(time);
 									time = setTimeout(function(){
 										p.onClick(that, data);
 									}, 100);
-								}
 								
-                                _cache.selected = data;
+									_cache.selected = data;
+								}
 								
 								return false;
 							})

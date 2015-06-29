@@ -7450,7 +7450,8 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 				columns: [],
 				rowSelected: [],
 				detailSelected: [],
-				width:0
+				width:0,
+				browser: saogaUI.base.browser
 			},
 			
 			/**
@@ -7506,13 +7507,16 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						
 						popup.html(s3)
 					}else if( columns.length ){
-						columns = _cache.columns;
+						//columns = _cache.columns;
 					}
+					
+					//console.log( isHideColumns, columns, columns.length )
 
 					s2 += '<table>';
 					s2 += '<tr class="l-grid-hd-row">';
 					for(; i < columns.length; i++){
-						s2 += '<th class="l-grid-hd-cell"><div class="l-grid-hd-cell-inner"><span class="l-grid-hd-cell-span" data-columnName='+ columns[i].name +'><span class="l-grid-hd-cell-text">'+ columns[i].display +'</span></span></div></th>';
+						var columnName = p.isSort ? (( columns[i].isSort !== false && columns[i].name ) ? ' data-columnName="'+ columns[i].name +'"' : '') : '';
+						s2 += '<th class="l-grid-hd-cell"><div class="l-grid-hd-cell-inner"><span class="l-grid-hd-cell-span"'+ columnName +'><span class="l-grid-hd-cell-text">'+ columns[i].display +'</span></span></div></th>';
 					}
 					s2 += '</tr>';
 					s2 += '</table>';
@@ -7600,39 +7604,43 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						}
 						
 						for(var i = 0; i<pageSize; i++){
+							
+							var tmpDataObj = tmpData[index][i],
+								selectCls  = that.initSelected(tmpDataObj, i) ? ' l-grid-row-selected' : '',
+								evenCls    = i%2 === 0 ? '' : ' l-grid-row-even';
 
-							if( tmpData[index][i] ){
+							if( tmpDataObj ){
 								
-								s2 += '<tr class="l-grid-row' +
-										  (i%2 === 0 ? '' : ' l-grid-row-even') +
-										  (that.initSelected(tmpData[index][i], i) ? ' l-grid-row-selected' : '') +
-										  '" data-row="'+ i +'">';
+								s2 += '<tr class="l-grid-row'+ evenCls + selectCls +'" data-row="'+ i +'">';
 								
 								var rowStatis = 0; //行统计和
+								
 								for(var h = 0; h < len; h++){
 									
+									var columnsObj = columns[h];
+									
 									/*统计数据*/
-									if( columns[h].statisType ){
-										var statisRow = Number( tmpData[index][i][columns[h].name] );
+									if( columnsObj.statisType ){
+										var statisRow = Number( tmpDataObj[columnsObj.name] );
 										statisData[h][i] = !isNaN(statisRow) ? statisRow : 0;
 										rowStatis += statisData[h][i];
-										if( columns[h].statis !== undefined ){
+										if( columnsObj.statis !== undefined ){
 											statisData[h][i] = rowStatis;
 										}
 									}
 									
-									s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columns[h].align ? columns[h].align : 'left') +'">';
+									s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columnsObj.align ? columnsObj.align : 'left') +'">';
 
-									if( columns[h].statis !== undefined ){
-										if( columns[h].statisRender !== undefined ){
-											s2 += columns[h].statisRender(rowStatis);
+									if( columnsObj.statis !== undefined ){
+										if( columnsObj.statisRender !== undefined ){
+											s2 += columnsObj.statisRender(rowStatis);
 										}else{
 											s2 += rowStatis;
 										}
-									}else if( columns[h].render !== undefined ){
-										s2 += columns[h].render(tmpData[index][i], i, tmpData[index][i][columns[h].name], h);
+									}else if( columnsObj.render !== undefined ){
+										s2 += columnsObj.render(tmpDataObj, i, tmpDataObj[columnsObj.name], h);
 									}else{
-										s2 += tmpData[index][i][columns[h].name];
+										s2 += tmpDataObj[columnsObj.name];
 									}
 									
 									s2 += '</div></td>';
@@ -7640,10 +7648,32 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								
 								s2 += '</tr>';
 								
-								if( detail && detail.render !== undefined ){
-									var str    = detail.render(tmpData[index][i]),
-										colLen = columns.length + (checkbox ? 1 : 0) + 1;
-									s2 += '<tr class="l-grid-row-detail'+ (i%2 === 0 ? '' : ' l-grid-row-even') +'"><td colspan="'+ colLen +'">'+ str +'</td></tr>';
+								if( detail ){
+									var chlidren = tmpDataObj.chlidren ? tmpDataObj.chlidren : [],
+										colLen   = columns.length + (checkbox ? 1 : 0) + 1;
+									
+									if( saogaUI.base.isFunction(detail.render) ){
+										s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + evenCls + selectCls +'" data-row="'+ i +'">';
+										s2 += '<td colspan="'+ colLen +'">'+ 
+												detail.render(chlidren) +
+											  '</td>';
+										s2 += '</tr>';
+									}else{
+										for(var m = 0; m<chlidren.length; m++){
+											s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + evenCls + selectCls +'" data-row="'+ i +'">';
+											for(var h = 0; h < len; h++){
+												var columnsObj = columns[h];
+												s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columnsObj.align ? columnsObj.align : 'left') +'">';
+												if( saogaUI.base.isFunction(columnsObj.detailRender) ){
+													s2 += columnsObj.detailRender(chlidren[m], h, chlidren[m][columnsObj.name], m);
+												}else{
+													s2 += (chlidren[m][columnsObj.name] ? chlidren[m][columnsObj.name] : '');
+												}
+												s2 += '</div></td>';
+											}
+											s2 += '</tr>';
+										}
+									}
 								}
 								
 							}
@@ -7731,8 +7761,8 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					
 					/*hover*/
 					grid
-						.off('mouseover', '.l-grid-row')
-						.on('mouseover', '.l-grid-row', function(){
+						.off('mouseover', '.l-grid-row, .l-grid-row-detail')
+						.on('mouseover', '.l-grid-row, .l-grid-row-detail', function(){
 							var row   = $(this),
 								index = row.attr('data-row');
 								
@@ -7744,12 +7774,13 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 							grid2
 								.find('.l-grid-row')
 								.eq(index)
-								.addClass('l-grid-row-hover')
-								.next('.l-grid-row-detail')
+								.addClass('l-grid-row-hover');
+								
+							grid2.find('.l-grid-row-detail'+index)
 								.addClass('l-grid-row-hover');
 						})
-						.off('mouseout', '.l-grid-row')
-						.on('mouseout', '.l-grid-row', function(){
+						.off('mouseout', '.l-grid-row, .l-grid-row-detail')
+						.on('mouseout', '.l-grid-row, .l-grid-row-detail', function(){
 							var row   = $(this),
 								index = row.attr('data-row');
 							
@@ -7761,17 +7792,18 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 							grid2
 								.find('.l-grid-row')
 								.eq(index)
-								.removeClass('l-grid-row-hover')
-								.next('.l-grid-row-detail')
 								.removeClass('l-grid-row-hover');
-						});
+								
+							grid2.find('.l-grid-row-detail'+index)
+								.removeClass('l-grid-row-hover');
+						})
 					
 					/*set size*/
 					that.setCellWidth();
 					if( checkbox ){
 						that.setRowsHeight();
 					}
-					
+
 					$(window).resize(function(){
 						that.setCellWidth();
 						if( checkbox ){
@@ -7812,8 +7844,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 										grid.width(width);
 										slGrid.css({
 											width: width - grid1Width,
-											//width: checkbox ? width - grid1Width - 1 : width,  //FIXME chrome外框多1px会乱掉  chrome放大所致
-											overflow:'auto',
+											overflowX:'auto',
 											marginRight:0
 										});
 										grid2.css({
@@ -7822,32 +7853,26 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 										});
 									},
 						_autoWidth   = function(){
-										if( checkbox ){
-											grid2.css({'margin-left':grid1Width});
-											grid2.parent().css({'margin-right': - grid1Width});
-										}
 										for(; j<len; j++){
 											colWidth = columns[j].width/total*100 + '%';
 											grid2.find('.l-grid-hd-cell').eq(j).width(colWidth);
 											grid2.find('.l-grid-row-cell').eq(j).width(colWidth);
 										}
-										grid.width('auto');
+										grid.width('100%');
 										slGrid.css({
-											width:'100%',
-											overflow:'inherit',
-											marginRight:-grid1Width
+											position:'relative',
+											width: grid.width() - grid1Width-1, //XXX:宽度有问题先 -1 console.log( grid1Width, grid.width(),slGrid.width(), grid )
+											overflowX:'inherit',
+											float:'left'
 										});
 										grid2.css({
-											width: 'auto',
-											marginLeft:grid1Width
+											width: 'auto'
 										});
 									};
 					
 					for(; i<len; i++){
 						total += columns[i].width;
 					}
-					
-					//console.log(total,p.wrap.width(),p.wrap.width() > total)
 					
 					if( p.width === 'auto' ){
 						_autoWidth();
@@ -7879,12 +7904,21 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						for(; i<pageSize; i++){
 							var grid1_row       = grid1.find('.l-grid-row').eq(i),
 								grid2_row       = grid2.find('.l-grid-row').eq(i),
-								grid2_rowDetail = grid2_row.next('.l-grid-row-detail'),
+								grid2_rowDetail = grid2.find('.l-grid-row-detail'+i),
 								height          = grid2_row.outerHeight(),
-								detailHeight    = grid2_rowDetail.length ? grid2_rowDetail[0].offsetHeight : 0;
+								detailHeight    = 0;
 
 							if(!height){return;}
-							grid1_row.height(height+detailHeight);
+							
+							for(var j = 0; j<grid2_rowDetail.length; j++){
+								detailHeight += grid2_rowDetail[j].offsetHeight;
+							}
+
+							if( _cache.browser.ie <= 7 ){
+								grid1_row.height(height + detailHeight - 1); //变态ie7多算1px
+							}else{
+								grid1_row.height(height + detailHeight);
+							}
 						}
 					}else{
 						var grid1_row = grid1.find('.l-grid-row').eq(0),
@@ -8213,46 +8247,48 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					});
 					
 					/*全选*/
-					grid1Header.off('click', '.l-checkbox').on('click', '.l-checkbox', function(e){
-						e.stopPropagation();
-						var self        = $(this),
-							pageIndex   = p.pageIndex,
-							arr         = _cache.rowSelected[pageIndex-1],
-							checkbox    = grid1Body.find('.l-checkbox'),
-							grid1Rows   = grid1Body.find('.l-grid-row'),
-							grid2Rows   = grid2Body.find('.l-grid-row'),
-							grid2Detail = grid2Rows.next('.l-grid-row-detail'),
-							len         = checkbox.length,
-							i           = 0,
-							j           = len - 1,
-							tmpData     = _cache.tmpData[p.pageIndex - 1];
-						
-						if( !self.hasClass('l-checkbox-selected') ){
-							self.addClass('l-checkbox-selected');
-							grid1Rows.addClass('l-grid-row-selected');
-							grid2Rows.addClass('l-grid-row-selected');
-							grid2Detail.addClass('l-grid-row-selected');
-							checkbox.addClass('l-checkbox-selected');
-							for(; i < len; i++){
-								arr[i] = that.getRowData(i);
+					grid1Header
+						.off('click', '.l-checkbox')
+						.on('click', '.l-checkbox', function(e){
+							e.stopPropagation();
+							var self        = $(this),
+								pageIndex   = p.pageIndex,
+								arr         = _cache.rowSelected[pageIndex-1],
+								checkbox    = grid1Body.find('.l-checkbox'),
+								grid1Rows   = grid1Body.find('.l-grid-row'),
+								grid2Rows   = grid2Body.find('.l-grid-row'),
+								grid2Detail = grid2Rows.next('.l-grid-row-detail'),
+								len         = checkbox.length,
+								i           = 0,
+								j           = len - 1,
+								tmpData     = _cache.tmpData[p.pageIndex - 1];
+							
+							if( !self.hasClass('l-checkbox-selected') ){
+								self.addClass('l-checkbox-selected');
+								grid1Rows.addClass('l-grid-row-selected');
+								grid2Rows.addClass('l-grid-row-selected');
+								grid2Detail.addClass('l-grid-row-selected');
+								checkbox.addClass('l-checkbox-selected');
+								for(; i < len; i++){
+									arr[i] = that.getRowData(i);
+								}
+							}else{
+								self.removeClass('l-checkbox-selected');
+								checkbox.removeClass('l-checkbox-selected');
+								grid1Rows.removeClass('l-grid-row-selected');
+								grid2Rows.removeClass('l-grid-row-selected');
+								grid2Detail.removeClass('l-grid-row-selected');
+								for(; j > -1; j--){
+									arr[j] = null;
+								}
 							}
-						}else{
-							self.removeClass('l-checkbox-selected');
-							checkbox.removeClass('l-checkbox-selected');
-							grid1Rows.removeClass('l-grid-row-selected');
-							grid2Rows.removeClass('l-grid-row-selected');
-							grid2Detail.removeClass('l-grid-row-selected');
-							for(; j > -1; j--){
-								arr[j] = null;
+							
+							/*返回选择数据*/
+							if( saogaUI.base.isFunction(onCheckFn) ){
+								onCheckFn(tmpData, grid1Rows, grid2Rows);
 							}
-						}
-						
-						/*返回选择数据*/
-						if( saogaUI.base.isFunction(onCheckFn) ){
-							onCheckFn(tmpData, grid1Rows, grid2Rows);
-						}
-						
-					});
+							
+						});
 				},
 				
 				/**
@@ -8282,26 +8318,33 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
 						pageSize    = p.pageSize;
 						
-					grid1Body.on('click','.l-grid-row-detailbtn',function(){
-						var self         = $(this),
-							parents      = self.parents('.l-grid-row'),
-							index        = parents.attr('data-row'),
-							grid2_row    = grid2Body.find('.l-grid-row').eq(index),
-							detail       = grid2Body.find('.l-grid-row-detail').eq(index);
+					grid1Body
+						.off('click','.l-grid-row-detailbtn')
+						.on('click','.l-grid-row-detailbtn',function(){
+							var self         = $(this),
+								parents      = self.parents('.l-grid-row'),
+								index        = parents.attr('data-row'),
+								grid2_row    = grid2Body.find('.l-grid-row').eq(index),
+								detail       = grid2Body.find('.l-grid-row-detail'+index),
+								detailHeight = 0;
 
-						if( self.hasClass('l-grid-row-detailbtn-close') ){
-							detail.show();
-							self.removeClass('l-grid-row-detailbtn-close')
-								.addClass('l-grid-row-detailbtn-open');
-							parents.height(grid2_row[0].offsetHeight + detail[0].offsetHeight);
-						}else{
-							detail.hide();
-							self.removeClass('l-grid-row-detailbtn-open')
-								.addClass('l-grid-row-detailbtn-close');
+							if( self.hasClass('l-grid-row-detailbtn-close') ){
+								detail.show();
+								self.removeClass('l-grid-row-detailbtn-close')
+									.addClass('l-grid-row-detailbtn-open');
 								
-							parents.height(grid2_row[0].offsetHeight);
-						}
-					});
+								for(var i = 0; i<detail.length; i++){
+									detailHeight += detail[i].offsetHeight;
+								}
+								parents.height(grid2_row[0].offsetHeight + detailHeight);
+							}else{
+								detail.hide();
+								self.removeClass('l-grid-row-detailbtn-open')
+									.addClass('l-grid-row-detailbtn-close');
+									
+								parents.height(grid2_row[0].offsetHeight);
+							}
+						});
 				},
 				
 				/**
@@ -8381,7 +8424,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								pageAjax.beforeSend();
 							}
 							if( isShowLoading ){
-								g.loding.fadeIn();
+								g.loding.fadeIn().removeClass('fn-hide');
 							}
 							g.onLoaded = false;
 						},
@@ -8585,34 +8628,25 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					
 					//排序
 					if( isSort ){
-						grid2Header.find('.l-grid-hd-cell-span')
-								   .addClass('l-grid-hd-cell-sortWrap')
-								   .append('<span class="l-grid-hd-cell-sort"><b class="icon icon-angle-up"></b></span>');
-						
-						grid2Header.off('click', '.l-grid-hd-cell-span').on('click', '.l-grid-hd-cell-span', function(){
-							var self     = $(this),
-								name     = self.attr('data-columnName'),
-								sortType = '',
-								sort     = self.find('.l-grid-hd-cell-sort');
-							
-							if( isSortCurrent ){
-								
-								if( sort.hasClass('desc') ){
-									sort.html('<b class="icon icon-angle-up"></b');
-									sort.removeClass('desc');
-									sortType = 'desc';
-								}else{
-									sort.html('<b class="icon icon-angle-down"></b');
-									sort.addClass('desc');
-									sortType = 'asc';
+						grid2Header
+							.find('.l-grid-hd-cell-span')
+							.addClass(function(){
+								var that = $(this);
+								if( that.attr('data-columnName') ){
+									that.addClass('l-grid-hd-cell-sortWrap')
+										.append('<span class="l-grid-hd-cell-sort"><b class="icon icon-angle-up"></b></span>');
 								}
+							});
+							
+						grid2Header
+							.off('click', '.l-grid-hd-cell-sortWrap')
+							.on('click', '.l-grid-hd-cell-sortWrap', function(){
+								var self     = $(this),
+									name     = self.attr('data-columnName'),
+									sortType = '',
+									sort     = self.find('.l-grid-hd-cell-sort');
 								
-								that.compareData(name, sortType);
-								that.tBodyCreateHtml();
-								
-							}else{
-								
-								if( g.onLoaded ){
+								if( isSortCurrent ){
 									
 									if( sort.hasClass('desc') ){
 										sort.html('<b class="icon icon-angle-up"></b');
@@ -8623,21 +8657,38 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 										sort.addClass('desc');
 										sortType = 'asc';
 									}
-	
-									if( /&sort=/.test(p.pageAjax.data) ){
-										p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
-										p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
-									}else{
-										p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
-									}
-							
-									that.handleData();
+									
+									that.compareData(name, sortType);
 									that.tBodyCreateHtml();
 									
-								}// end if g.onLoaded
+								}else{
+									
+									if( g.onLoaded ){
+										
+										if( sort.hasClass('desc') ){
+											sort.html('<b class="icon icon-angle-up"></b');
+											sort.removeClass('desc');
+											sortType = 'desc';
+										}else{
+											sort.html('<b class="icon icon-angle-down"></b');
+											sort.addClass('desc');
+											sortType = 'asc';
+										}
+		
+										if( /&sort=/.test(p.pageAjax.data) ){
+											p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
+											p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
+										}else{
+											p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+										}
 								
-							}
-						});
+										that.handleData();
+										that.tBodyCreateHtml();
+										
+									}// end if g.onLoaded
+									
+								}
+							});
 						
 					}//end if isSort
 					
@@ -9379,14 +9430,14 @@ define('core/tree',['core/saogaUI'], function(saogaUI){
 								that.addClass('l-tree-selectedNode');
 								saogaUI.ui.onselectstart(that);
 									
-								if( saogaUI.base.isFunction(p.onClick) ){
+								if( saogaUI.base.isFunction(p.onClick) && !p.check ){
 									clearTimeout(time);
 									time = setTimeout(function(){
 										p.onClick(that, data);
 									}, 100);
-								}
 								
-                                _cache.selected = data;
+									_cache.selected = data;
+								}
 								
 								return false;
 							})

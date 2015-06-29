@@ -9,6 +9,7 @@ var gulp        = require('gulp'),
 	plumber     = require('gulp-plumber'),
 	amdOptimize = require('amd-optimize'),
 	concat      = require('gulp-concat'),
+	tmodjs      = require('gulp-tmod'),
 	path        = {
 					dev: 'www/',
 					dest: 'build/'
@@ -86,6 +87,15 @@ gulp.task('r', function() {
 	.pipe(maps.write('./'))
     .pipe(gulp.dest(path.dest+'js/app/'));
 
+});
+
+gulp.task('tmod', function() {
+	gulp.src(path.dev + '/tpl/**/*.html')
+		.pipe(tmodjs({
+			base:  path.dev + '/tpl',
+			combo: true,
+			output: path.dest + '/'
+		}));
 });
 
 //«Â¿ÌÕº∆¨

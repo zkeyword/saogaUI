@@ -1,7 +1,47 @@
-.l-grid{position:relative;z-index:2;border:1px solid @col-border;background:#fff}
+.l-grid{
+	position:relative;z-index:2;border:1px solid @col-border;background:#fff;
+	
+	.icon{
+		position:absolute;top:-7px;left:0px;
+	}
+	.icon-angle-up{
+		.arrow(#999, down, 5px)
+	}
+	.icon-angle-down{
+		.arrow(#999, up, 5px);
+		top:-12px;
+	}
+}
 
 
 	/*公共部分*/
+		.l-checkbox {
+			display: block;
+			width: 13px;
+			height: 13px;
+			cursor: pointer;
+			background: url(../images/l-checkbox.gif) no-repeat;
+		}
+		.l-checkbox:hover {
+			background-position: -13px 0
+		}
+
+		.l-checkbox.l-checkbox-disabled {
+			background-position: -39px 0
+		}
+
+		.l-checkbox-selected {
+			background-position: 0 -13px
+		}
+
+		.l-checkbox-selected:hover {
+			background-position: -13px -13px
+		}
+
+		.l-checkbox-selected.l-checkbox-disabled {
+			background-position: -39px -13px
+		}
+
 		/*loading*/
 		.l-grid-loading{position:absolute;width:100%;height:100%;z-index:2;}
 		.l-grid-loadingBg{position:absolute;top:0;left:0;width:100%;height:100%;.opacity(0.1);background:#555}
@@ -29,12 +69,11 @@
 	
 	/*表格头部*/
 	.l-grid-header table{border-collapse:collapse;border-spacing:0;border:1px solid @col-border;font-size:12px;color:#343434}
-		.l-grid-header th{border:1px solid @col-border;border-bottom:none;background:#ededed;padding:0}
-			.l-grid-hd-cell-inner{color:#343434;text-align:center;padding:8px;font-size:14px;}
+		.l-grid-header th{border:1px solid @col-border;border-bottom:none;background:@col-grid-thead;padding:0;font-weight:normal}
+			.l-grid-hd-cell-inner{color:#666;text-align:center;padding:10px;font-size:12px;line-height:16px;}
 				.l-grid-hd-cell-sortWrap{cursor:pointer}
-				.l-grid-hd-cell-inner span{position:relative}
+				.l-grid-hd-cell-inner span{position:relative;display:inline-block}
 				.l-grid-hd-cell-inner b{}
-		
 		
 	/*表格内容*/
 	.l-grid1{
@@ -42,7 +81,6 @@
 		position:relative;
 		z-index:1;
 		height:100%;
-		width:30px;
 		
 		th{
 			width:30px;
@@ -52,12 +90,12 @@
 	.l-grid-body table{width:100%;border-collapse:collapse;border-spacing:0;border:1px solid @col-border;font-size:12px;color:#333;background-color:#fff}
 		.l-grid-body td{border:solid 1px @col-border;padding:0;word-break:break-all;word-wrap:break-word;}
 			/*单元格*/
-			.l-grid-row-cell-inner{padding:5px 8px}
+			.l-grid-row-cell-inner{padding:5px 10px;line-height:16px;}
 				.l-grid-align-left{text-align:left}
 				.l-grid-align-right{text-align:right}
 				.l-grid-align-center{text-align:center}
 			/*明细*/
-			.l-grid-row-detail{display:none;}
+			//.l-grid-row-detail{display:none;}
 		
 		/*边框*/
 		.l-grid1{
@@ -98,6 +136,9 @@
 				background: #fff;
 				border: 1px solid @col-border;
 			} */
+			.ui-select{
+				padding:0
+			}
 		}
 		/*按钮*/
 		.l-grid-footer-btns{float:left;}

@@ -8,7 +8,24 @@
 						'type' => "经理",
 						'sex' => "男",
 						'tel' => "13400000000",
-						'email' => "zhangsan@a.com"
+						'email' => "zhangsan@a.com",
+						'chlidren' => array(
+							array(
+								'id'  => 1,
+								'name' => "张三1",
+								'type' => "经理",
+								'sex' => "男",
+								'tel' => "13400000000",
+								'email' => "zhangsan@a.com"
+							),
+							array(
+								'name' => "李四",
+								'type' => "经理",
+								'sex' => "女",
+								'tel' => "13400000000",
+								'email' => "zhangsan@a.com"
+							)
+						)
 					),
 					array(
 						'id'  => 1,
@@ -16,7 +33,24 @@
 						'type' => "经理",
 						'sex' => "男",
 						'tel' => "13400000000",
-						'email' => "zhangsan@a.com"
+						'email' => "zhangsan@a.com",
+						'chlidren' => array(
+							array(
+								'id'  => 1,
+								'name' => "张三1",
+								'type' => "经理",
+								'sex' => "男",
+								'tel' => "13400000000",
+								'email' => "zhangsan@a.com"
+							),
+							array(
+								'name' => "李四",
+								'type' => "经理",
+								'sex' => "女",
+								'tel' => "13400000000",
+								'email' => "zhangsan@a.com"
+							)
+						)
 					),
 					array(
 						'id'  => 1,

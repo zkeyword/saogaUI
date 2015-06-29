@@ -1,0 +1,32 @@
+<div class="m_t20">
+	{{if flight}}
+		<table class="form_table">
+			<tr>
+				<th><span class="label">时间：</span></th>
+				<td>
+					{{each msg as obj i}}
+						{{if i == flight[0].flight_id}}
+							<span class="label J_stock_time">{{obj.departure_date}}</label>
+						{{/if}}
+					{{/each}}
+				</td>
+			</tr>
+			<tr>
+				<th><span class="label">库存：</span></th>
+				<td><label class="input_text w200"><input type="text" name="" id="J_stock_total_num" value="{{stock}}" /></label></td>
+			</tr>
+			<tr>
+				<th><span class="label">航班号：</span></th>
+				<td>
+					{{each flight as obj i}}
+						<label class="input_radio"><input type="radio" class="flight_id" name="flight_id" value="{{obj.flight_id}}" {{if i === 0}} checked="checked"{{/if}} />{{obj.flight_no}}</label>
+					{{/each}}
+				</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td>总库存：<span class="J_stock_total_num">{{msg[flight[0].flight_id].stock_total_num}}</span>&nbsp;&nbsp;已占位：<span class="J_stock_lock_num">{{msg[flight[0].flight_id].stock_lock_num}}</span>&nbsp;&nbsp;已售：<span class="J_stock_use_num">{{msg[flight[0].flight_id].stock_use_num}}</span></td>
+			</tr>
+		</table>
+	{{/if}}
+</div>

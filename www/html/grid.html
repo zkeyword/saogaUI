@@ -25,7 +25,9 @@
 	<p>xxxxxx</p>
 	<div class="fn-clear">
 		<span class="fn-left">sssssssssssssssssssss</span>
-		<div id="dd" class="fn-left" style="width:80%"><div id="grid1"></div></div>
+		<div class="fn-left" style="width:80%">
+			<div id="dd"><div id="grid1" class="fn-clear"></div></div>
+		</div>
 	</div>
 	
 	<a id="btn" href="#">dddddd</a>
@@ -61,106 +63,54 @@
 				isMemory:true,
                 isSort:true,
 				width:500,
-				pageSize:4,
+				pageSize:10,
 				initSelected:function(data){
 					if( data.name == '张三1' ){
-						return true;
+						//return true;
 					}
-				},
-				/**/
-				data:{
-					rows:[
-						{id:1,name:'xxx',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx2'},
-						{id:1,name:'xxx3',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx4'},
-						{id:1,name:'xxx5',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx6'},
-						{id:1,name:'xxx7',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx8',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx9'},
-						{id:1,name:'xxx10'},
-						{id:1,name:'xxx11'},
-						{id:1,name:'xxx12',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx13'},
-						{id:1,name:'xxx14',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx15'},
-						{id:1,name:'xxx16',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx17',children:[{id:1},{id:1},{id:1},{id:1}]},
-						{id:1,name:'xxx18'},
-						{id:1,name:'xxx19'}
-					],
-					total:20
 				},
 				//checkbox:false,
 				//pageSizeOptions:null,
 				columns: [
-					{ display: '表头0', name: 'title', width: 121, render: function(rdata, rindex, value){
-							var h = '<a href="javascript:;" class="ui-btn ui-btn-primary" data-id="1" onclick="openUserPage(1)">修改</a>';
-							return h;
-						}
-					},
+					{ display: 'id', name: 'id', width: 150},
 					{ display: '姓名', name: 'name', width: 150},
-					{ display: 'id2', name: 'id', width: 150},
-					{ display: '表头3', name: '', width: 150},
-					{ display: '表头4', name: '', width: 150},
-					{ display: '表头5', name: '', width: 150},
-					{ display: '表头6', name: '', width: 150},
-					{ display: '表头7', name: '', width: 150},
-					{ display: '表头8', name: '', width: 150},
-					{ display: '表头9', name: '', width: 150},
-					{ display: '表头10', name: '', width: 150},
-					{ display: '表头11', name: '', width: 150, render: function(rdata, rindex, value){
+					{ display: '性别', name: 'sex', width: 150},
+					{ display: '电话', name: 'tel', width: 150},
+					{ display: '邮箱', name: 'email', width: 150},
+					{ display: '操作', name: '', width: 150, render: function(rdata, rindex, value){
 							return saogaUI.template('btnHtml',rdata);
+						},
+						detailRender: function(rdata, rindex, value){
+							return '自定义内容'+rdata.sex;
 						}
-
 					}
 				],
-				/*detail:{
-					height:'auto',
-					render:function(rdata){
-						if( rdata.children ){
-							return rdata.children[0].id +'<br>sssssssssssss<br><br>';
+				detail:{
+					/*render:function(rdata){
+						if( rdata && rdata[0] ){
+							var str = '';
+							for(var i = 0; i<rdata.length; i++){
+								str += rdata[i].name;
+							}
+							return str;
 						}
 						return '暂无数据';
-					}
-				},*/
+					}*/
+				},
 				onPageFn: function(){
 					//var s = grid.getSelectData();
 					//console.log(s)
 				}
 			});
-			
+			/*
 			grid.refresh({
 				pageAjax:{
 					data:'index11={{index}}',
 					success:function(){
-						console.log(grid)
+						//console.log(grid)
 					}
 				}
-			});
-			
-			grid.methos.alert = function(){
-			//	console.log(this)
-			}
-
-			grid.methos.alert();
-			//saogaUI.ui.grid.prototype.alert();			
-			
-			$('#btn').click(function(){
-                /*var width = $('#dd').width();
-				$('#dd').width( width - 400 );
-				grid.refresh({
-					pageAjax:{
-						data:'index11={{index}}'
-					}
-				});*/
-                grid.uncheckRow(0,1)
-			})
-			
-			$(window).click(function(){
-				//console.log(1)
-			})
+			});*/
 			
 		});
 	</script>

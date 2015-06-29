@@ -287,12 +287,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						for(var i = 0; i<pageSize; i++){
 							
 							var tmpDataObj = tmpData[index][i],
-								selectCls  = that.initSelected(tmpDataObj, i) ? ' l-grid-row-selected' : '',
-								evenCls    = i%2 === 0 ? '' : ' l-grid-row-even';
+								selectCls  = that.initSelected(tmpDataObj, i) ? ' l-grid-row-selected' : '';
 
 							if( tmpDataObj ){
 								
-								s2 += '<tr class="l-grid-row'+ evenCls + selectCls +'" data-row="'+ i +'">';
+								s2 += '<tr class="l-grid-row' +
+										  (i%2 === 0 ? '' : ' l-grid-row-even') +
+										  selectCls +
+										  '" data-row="'+ i +'">';
 								
 								var rowStatis = 0; //行统计和
 								
@@ -334,22 +336,18 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										colLen   = columns.length + (checkbox ? 1 : 0) + 1;
 									
 									if( saogaUI.base.isFunction(detail.render) ){
-										s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + evenCls + selectCls +'" data-row="'+ i +'">';
+										s2 += '<tr class="l-grid-row-detail'+ i + selectCls +'">';
 										s2 += '<td colspan="'+ colLen +'">'+ 
 												detail.render(chlidren) +
 											  '</td>';
 										s2 += '</tr>';
 									}else{
 										for(var m = 0; m<chlidren.length; m++){
-											s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + evenCls + selectCls +'" data-row="'+ i +'">';
+											s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + selectCls +'">';
 											for(var h = 0; h < len; h++){
 												var columnsObj = columns[h];
 												s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columnsObj.align ? columnsObj.align : 'left') +'">';
-												if( saogaUI.base.isFunction(columnsObj.detailRender) ){
-													s2 += columnsObj.detailRender(chlidren[m], h, chlidren[m][columnsObj.name], m);
-												}else{
-													s2 += (chlidren[m][columnsObj.name] ? chlidren[m][columnsObj.name] : '');
-												}
+												s2 += (chlidren[m][columnsObj.name] ? chlidren[m][columnsObj.name] : '');
 												s2 += '</div></td>';
 											}
 											s2 += '</tr>';
@@ -442,8 +440,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					
 					/*hover*/
 					grid
-						.off('mouseover', '.l-grid-row, .l-grid-row-detail')
-						.on('mouseover', '.l-grid-row, .l-grid-row-detail', function(){
+						.off('mouseover', '.l-grid-row')
+						.on('mouseover', '.l-grid-row', function(){
 							var row   = $(this),
 								index = row.attr('data-row');
 								
@@ -460,8 +458,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							grid2.find('.l-grid-row-detail'+index)
 								.addClass('l-grid-row-hover');
 						})
-						.off('mouseout', '.l-grid-row, .l-grid-row-detail')
-						.on('mouseout', '.l-grid-row, .l-grid-row-detail', function(){
+						.off('mouseout', '.l-grid-row')
+						.on('mouseout', '.l-grid-row', function(){
 							var row   = $(this),
 								index = row.attr('data-row');
 							
@@ -477,7 +475,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								
 							grid2.find('.l-grid-row-detail'+index)
 								.removeClass('l-grid-row-hover');
-						})
+						});
 					
 					/*set size*/
 					that.setCellWidth();
@@ -534,15 +532,19 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										});
 									},
 						_autoWidth   = function(){
+										//if( checkbox ){
+											//grid2.css({'margin-left':grid1Width});
+											//grid2.parent().css({'margin-right': - grid1Width});
+										//}
 										for(; j<len; j++){
 											colWidth = columns[j].width/total*100 + '%';
 											grid2.find('.l-grid-hd-cell').eq(j).width(colWidth);
 											grid2.find('.l-grid-row-cell').eq(j).width(colWidth);
 										}
-										grid.width('100%');
+										grid.width('auto');
 										slGrid.css({
 											position:'relative',
-											width: grid.width() - grid1Width-1, //XXX:宽度有问题先 -1 console.log( grid1Width, grid.width(),slGrid.width(), grid )
+											width: grid.width() - grid1Width,
 											overflowX:'inherit',
 											float:'left'
 										});
@@ -550,7 +552,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 											width: 'auto'
 										});
 									};
-					
+					console.log( grid1Width, grid.width() )
 					for(; i<len; i++){
 						total += columns[i].width;
 					}
@@ -592,7 +594,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							if(!height){return;}
 							
 							for(var j = 0; j<grid2_rowDetail.length; j++){
-								detailHeight += grid2_rowDetail[j].offsetHeight;
+								detailHeight += grid2_rowDetail[i].offsetHeight;
 							}
 
 							if( _cache.browser.ie <= 7 ){

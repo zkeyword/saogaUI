@@ -6,17 +6,18 @@
     "build": "npm run gulp"
   },
   "devDependencies": {
+    "amd-optimize": "*",
     "gulp": "*",
     "gulp-base64": "*",
     "gulp-clean": "*",
+    "gulp-concat": "*",
     "gulp-less": "*",
     "gulp-minify-css": "*",
     "gulp-plumber": "^1.0.1",
     "gulp-requirejs": "*",
     "gulp-sourcemaps": "*",
+    "gulp-tmod": "^0.1.2",
     "gulp-uglify": "*",
-    "gulp.spritesmith": "*",
-	"amd-optimize": "*",
-	"gulp-concat": "*"
+    "gulp.spritesmith": "*"
   }
 }
