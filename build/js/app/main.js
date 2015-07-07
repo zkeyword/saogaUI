@@ -6833,8 +6833,8 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										selectedIndex = '',
 										str           = '',
 										checkbox      = p.checkbox,
-										itemMaxWidth  = p.width - 42; //XXX 暂时写死
-
+										itemMaxWidth  = p.width - 34, //XXX 暂时写死
+										itemStyleStr  = 'style="max-width:'+ itemMaxWidth +'px"';   
 
 									isRefresh = isRefresh === undefined ? true : isRefresh;
 
@@ -6874,7 +6874,9 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 														selectedData[i].id +'" data-val="'+ 
 														selectedData[i].val +'" data-name="'+ 
 														selectedData[i].name +'"'+ 
-														selectedIndex +'>'+ 
+														itemStyleStr +
+														selectedIndex +
+												'>'+ 
 													selectedData[i].name +
 													'<span class="l-select-multiple-selected-del">x</span>'+
 												'</li>';
@@ -8001,12 +8003,30 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 
 						btnWrap
 							.html(function(){
-								for(var html = '',i = 0; i<btns.length; i++){
-									html += '<a href="javascript:;" class="ui-btn '+ (btns[i].cls ? +' '+ btns[i].cls :'') +'" data-index="'+ i +'"><span>'+btns[i].text+'</span></a>';
+								var len      = btns.length,
+									html     = '',
+									i        = 0,
+									checkbox = p.checkbox,
+									detail   = p.detail;
+									
+								if( len ){
+									
+									if( checkbox ){
+										if( detail ){
+											html += '<span class="l-checkbox l-grid-footer-checkbox l-grid-footer-checkbox-detail"></span>';
+										}else{
+											html += '<span class="l-checkbox l-grid-footer-checkbox"></span>';
+										}
+									}
+									
+									for(; i<len; i++){
+										html += '<a href="javascript:;" class="ui-btn '+ (btns[i].cls ? +' '+ btns[i].cls :'') +'" data-index="'+ i +'"><span>'+btns[i].text+'</span></a>';
+									}
 								}
+								
 								return html;
 							})
-							.off('click','.ui-btn')	
+							.off('click','.ui-btn')
 							.on('click','.ui-btn',function(){
 								var index = $(this).attr('data-index'),
 									obj   = btns[index];
@@ -8015,6 +8035,27 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								}
 							});
 					}
+				},
+				
+				bottomBtnsFn: function(){
+					var btnWrap  = g.btnWrap,
+						checkbox = g.grid1.find('.l-checkbox');
+
+					btnWrap
+						.off('click','.l-checkbox')
+						.on('click','.l-checkbox',function(){
+							var self = $(this);
+							
+							saogaUI.ui.onselectstart(self);
+							checkbox.trigger('click');
+							
+							if( checkbox.hasClass('l-checkbox-selected') ){
+								self.addClass('l-checkbox-selected')
+							}else{
+								self.removeClass('l-checkbox-selected')
+							}
+							
+						});
 				},
 				
 				/**
@@ -8160,8 +8201,8 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 				pageFn: function(){
 					var page       = g.page,
 						grid1      = g.grid1,
-						gridHeader = grid1.find('l-gird-header'),
-						gridBody   = grid1.find('l-gird-body'),
+						gridHeader = grid1.find('.l-gird-header'),
+						gridBody   = grid1.find('.l-gird-body'),
 						pageSize   = p.pageSize,
 						onPageFn   = p.onPageFn,
 						that       = this;
@@ -8212,22 +8253,31 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 				* 初始化checkbox
 				*/
 				initCheckbox: function(){
-					var that       = this,
-						pageSize   = p.pageSize,                        //每页显示多少个
-						pageIndex  = p.pageIndex,                       //起始位置
-						grid1      = g.grid1,
-						gridHeader = grid1.find('.l-grid-header'),        //表格头
-						gridBody   = grid1.find('.l-grid-body'),          //表格主体
-						checkbox   = gridBody.find('.l-checkbox'),        //复选框
-						isMemory   = p.isMemory;
+					var that           = this,
+						pageSize       = p.pageSize,                        //每页显示多少个
+						pageIndex      = p.pageIndex,                       //起始位置
+						grid1          = g.grid1,
+						gridHeader     = grid1.find('.l-grid-header'),        //表格头
+						gridBody       = grid1.find('.l-grid-body'),          //表格主体
+						checkbox       = gridBody.find('.l-checkbox'),        //复选框
+						headerCheckbox = gridHeader.find('.l-checkbox'),
+						footerCheckbox = g.btnWrap.find('.l-checkbox'),
+						isMemory       = p.isMemory;
 					
 					if( !isMemory ){
+						/*
 						var len = _cache.rowSelected.length,
 							i   = 0;
+							
 						for(; i<len; i++){
 							_cache.rowSelected[i] = []; //修改选中的数组值
 						}
-						gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+						*/
+						
+						_cache.rowSelected = [];
+						
+						headerCheckbox.removeClass('l-checkbox-selected');
+						footerCheckbox.removeClass('l-checkbox-selected');
 					}else{
 						var selected = Math.min(pageSize, checkbox.length), //已选数量
 							arr      = _cache.rowSelected[pageIndex-1],
@@ -8243,9 +8293,11 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						
 						/*全部选上时给表头全选*/
 						if( gridBody.find('.l-checkbox-selected').length === selected ){
-							gridHeader.find('.l-checkbox').addClass('l-checkbox-selected');
+							headerCheckbox.addClass('l-checkbox-selected');
+							footerCheckbox.addClass('l-checkbox-selected');
 						}else{
-							gridHeader.find('.l-checkbox').removeClass('l-checkbox-selected');
+							headerCheckbox.removeClass('l-checkbox-selected');
+							footerCheckbox.removeClass('l-checkbox-selected');
 						}
 					}
 				},
@@ -8261,46 +8313,51 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
 						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
 						onCheckFn   = p.onCheckFn,
-						pageSize    = p.pageSize;
+						pageSize    = p.pageSize,
+						btnWrap     = g.btnWrap;
 					
 					/*多选*/
-					grid1Body.off('click', '.l-checkbox').on('click', '.l-checkbox', function(){
-						var self        = $(this),
-							pageIndex   = p.pageIndex,
-							checkbox    = grid1Body.find('.l-checkbox'),
-							i           = checkbox.index(self),
-							selected    = Math.min(pageSize, checkbox.length), //已选数量
-							currentArr  = _cache.rowSelected[pageIndex-1],
-							grid1Row    = grid1Body.find('.l-grid-row').eq(i),
-							grid2Row    = grid2Body.find('.l-grid-row').eq(i),
-							grid2Detail = grid2Row.next('.l-grid-row-detail'),
-							tmpData     = _cache.tmpData[p.pageIndex - 1];
-											
-						if( !self.hasClass('l-checkbox-selected') ){
-							self.addClass('l-checkbox-selected');
-							grid1Row.addClass('l-grid-row-selected');
-							grid2Row.addClass('l-grid-row-selected');
-							grid2Detail.addClass('l-grid-row-selected');
-							currentArr[i] = that.getRowData(i); //选中数据
-							
-							/*全部选上时给表头全选*/
-							if( grid1Body.find('.l-checkbox-selected').length === selected ){
-								grid1Header.find('.l-checkbox').addClass('l-checkbox-selected');
+					grid1Body
+						.off('click', '.l-checkbox')
+						.on('click', '.l-checkbox', function(){
+							var self        = $(this),
+								pageIndex   = p.pageIndex,
+								checkbox    = grid1Body.find('.l-checkbox'),
+								i           = checkbox.index(self),
+								selected    = Math.min(pageSize, checkbox.length), //已选数量
+								currentArr  = _cache.rowSelected[pageIndex-1],
+								grid1Row    = grid1Body.find('.l-grid-row').eq(i),
+								grid2Row    = grid2Body.find('.l-grid-row').eq(i),
+								grid2Detail = grid2Row.next('.l-grid-row-detail'),
+								tmpData     = _cache.tmpData[p.pageIndex - 1];
+												
+							if( !self.hasClass('l-checkbox-selected') ){
+								self.addClass('l-checkbox-selected');
+								grid1Row.addClass('l-grid-row-selected');
+								grid2Row.addClass('l-grid-row-selected');
+								grid2Detail.addClass('l-grid-row-selected');
+								currentArr[i] = that.getRowData(i); //选中数据
+								
+								/*全部选上时给表头全选*/
+								if( grid1Body.find('.l-checkbox-selected').length === selected ){
+									grid1Header.find('.l-checkbox').addClass('l-checkbox-selected');
+									btnWrap.find('.l-checkbox').addClass('l-checkbox-selected');
+								}
+							}else{
+								currentArr[i] = null;
+								self.removeClass('l-checkbox-selected');
+								grid1Row.removeClass('l-grid-row-selected');
+								grid2Row.removeClass('l-grid-row-selected');
+								grid2Detail.removeClass('l-grid-row-selected');
+								grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
+								btnWrap.find('.l-checkbox').removeClass('l-checkbox-selected');
 							}
-						}else{
-							currentArr[i] = null;
-							self.removeClass('l-checkbox-selected');
-							grid1Row.removeClass('l-grid-row-selected');
-							grid2Row.removeClass('l-grid-row-selected');
-							grid2Detail.removeClass('l-grid-row-selected');
-							grid1Header.find('.l-checkbox').removeClass('l-checkbox-selected');
-						}
-						
-						/*返回选择数据*/
-						if( saogaUI.base.isFunction(onCheckFn) ){
-							onCheckFn(tmpData[i], grid1Row, grid2Row);
-						}
-					});
+							
+							/*返回选择数据*/
+							if( saogaUI.base.isFunction(onCheckFn) ){
+								onCheckFn(tmpData[i], grid1Row, grid2Row);
+							}
+						});
 					
 					/*全选*/
 					grid1Header
@@ -8325,6 +8382,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								grid2Rows.addClass('l-grid-row-selected');
 								grid2Detail.addClass('l-grid-row-selected');
 								checkbox.addClass('l-checkbox-selected');
+								btnWrap.find('.l-checkbox').addClass('l-checkbox-selected');
 								for(; i < len; i++){
 									arr[i] = that.getRowData(i);
 								}
@@ -8334,6 +8392,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								grid1Rows.removeClass('l-grid-row-selected');
 								grid2Rows.removeClass('l-grid-row-selected');
 								grid2Detail.removeClass('l-grid-row-selected');
+								btnWrap.find('.l-checkbox').removeClass('l-checkbox-selected');
 								for(; j > -1; j--){
 									arr[j] = null;
 								}
@@ -8939,6 +8998,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						}
 						if( p.bottomBtns ){
 							that.bottomBtnsCreateHtml();
+							that.bottomBtnsFn();
 						}
 					}else{
 						g.footer.remove();
