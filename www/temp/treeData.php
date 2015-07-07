@@ -40,7 +40,8 @@
 			'pid' => 1,
 			'name' =>"选项 13",
             'title' => "选项 11选项 11选项 11选项 11选项 11选项 11选项 11",
-			'open' => true
+			'open' => true,
+			'checked' => true
 		),
 		array(
 			'id'  => 131,

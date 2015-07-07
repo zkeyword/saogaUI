@@ -369,14 +369,15 @@ define(['core/saogaUI'], function(saogaUI){
 							data        = ( checkbox || radio ) ? ( isHasVal ? p.data : t.data ) : t.data,
 							dataLen     = data ? data.length : 0,
 							i           = 0,
-							str         = '';
+							str         = '',
+							textWidth   = p.width - 48;
 
 						if( checkbox ){
 							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>'
 							for(; i<dataLen; i++){
 								str += '<li class="l-select-multiple-down-li'+ (i === 0 ? ' on' : '') +' fn-clear" data-id="'+ data[i].id +'" data-val="'+ data[i].val +'" data-index="'+ i +'">'+ 
 											'<span class="l-checkbox fn-left l-checkbox-'+ i +'"></span>' +
-											'<span class="fn-left">' +
+											'<span class="fn-left" style="width:'+ textWidth +'px">' +
 												data[i].name +
 											'</span>' +
 										'</li>';
@@ -385,7 +386,7 @@ define(['core/saogaUI'], function(saogaUI){
 							for(; i<dataLen; i++){
 								str += '<li class="l-select-multiple-down-li'+ (i === 0 ? ' on' : '') +' fn-clear" data-id="'+ data[i].id +'" data-val="'+ data[i].val +'" data-index="'+ i +'">'+ 
 											'<span class="l-radio fn-left l-radio-'+ i +'"></span>' +
-											'<span class="fn-left">' +
+											'<span class="fn-left" style="width:'+ textWidth +'px">' +
 												data[i].name +
 											'</span>' +
 										'</li>';
@@ -470,7 +471,8 @@ define(['core/saogaUI'], function(saogaUI){
 										lastLeft       = lastOffset ? lastOffset.left : 0,
 										selectedOffset = selected.offset(),
 										selectedLeft   = selectedOffset ? selectedOffset.left : 0,
-										width          = p.width;
+										width          = p.width,
+										isHidden       = selected.is(':hidden');
 									
 									if( input.width() <= width || width < 10 ){
 										width = width - (lastLeft + lastWidth - selectedLeft + 5);
@@ -483,8 +485,23 @@ define(['core/saogaUI'], function(saogaUI){
 									input
 										.focus()
 										.width(width);
-
-									down.css({top:selected.outerHeight()});
+									
+									down.css({
+										top: function(){
+											if( isHidden ){
+												var parents = selected
+																.parents(':hidden')
+																.filter(function(){
+																	return this.style.display === 'none';
+																})
+																.show(),
+													height  = selected.outerHeight();
+												parents.hide();
+												return height;
+											}
+											return selected.outerHeight();
+										}
+									});
 									
 								},
 								
@@ -580,7 +597,9 @@ define(['core/saogaUI'], function(saogaUI){
 										selectedClass = '',
 										selectedIndex = '',
 										str           = '',
-										checkbox      = p.checkbox;
+										checkbox      = p.checkbox,
+										itemMaxWidth  = p.width - 34, //XXX 暂时写死
+										itemStyleStr  = 'style="max-width:'+ itemMaxWidth +'px"';   
 
 									isRefresh = isRefresh === undefined ? true : isRefresh;
 
@@ -620,7 +639,9 @@ define(['core/saogaUI'], function(saogaUI){
 														selectedData[i].id +'" data-val="'+ 
 														selectedData[i].val +'" data-name="'+ 
 														selectedData[i].name +'"'+ 
-														selectedIndex +'>'+ 
+														itemStyleStr +
+														selectedIndex +
+												'>'+ 
 													selectedData[i].name +
 													'<span class="l-select-multiple-selected-del">x</span>'+
 												'</li>';
@@ -727,6 +748,9 @@ define(['core/saogaUI'], function(saogaUI){
 									}
 								}
 								
+							})
+							.on('click', '.l-select-multiple-selected-li', function(e){
+								$(e.currentTarget).find('.l-select-multiple-selected-del').trigger('click');
 							})
 							.on('click','.l-select-multiple-selected-del', function(e){
 								var selectedItem  = $(e.currentTarget).parent(),
@@ -927,8 +951,16 @@ define(['core/saogaUI'], function(saogaUI){
 									});
 								
 						selected = tree.getSelected();
-						input.val(selected.length ? selected[0].name : '');
-						target.val(selected.length ? selected[0].id : '');
+						
+						var tmpNameArr = [],
+							tmpIdArr   = [];
+						for(var i = 0; i<selected.length; i++){
+							tmpNameArr[i] = selected[i].name;
+							tmpIdArr[i]   = selected[i].id;
+						}
+						
+						input.val(tmpNameArr.join(','));
+						target.val(tmpIdArr.join(','));
                         
 						wrap
 							.off('click', input)

@@ -106,7 +106,7 @@ define(['core/saogaUI'], function(saogaUI){
                                              
                                             /* 获取选中数据 */
                                             for( ; j<selectedLen; j++ ){
-                                                if( Number(selected[j]) === Number(dataId) ){
+                                                if( isChecked ){
                                                     _cache.selected.push(data[i]);
 													selectCls = ' l-tree-selectedNode';
                                                 }

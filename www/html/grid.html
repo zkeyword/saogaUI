@@ -86,7 +86,7 @@
 					}
 				],
 				detail:{
-					/*render:function(rdata){
+					render:function(rdata){
 						if( rdata && rdata[0] ){
 							var str = '';
 							for(var i = 0; i<rdata.length; i++){
@@ -95,12 +95,20 @@
 							return str;
 						}
 						return '暂无数据';
-					}*/
+					}
 				},
 				onPageFn: function(){
 					//var s = grid.getSelectData();
 					//console.log(s)
-				}
+				},
+				bottomBtns:[
+					{
+						text:'全选',
+						click:function(){
+							console.log(this)
+						}
+					}
+				]
 			});
 			/*
 			grid.refresh({
@@ -111,6 +119,10 @@
 					}
 				}
 			});*/
+			
+			$('#btn').click(function(){
+				grid.refresh();
+			});
 			
 		});
 	</script>

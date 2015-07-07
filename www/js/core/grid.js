@@ -161,10 +161,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					s1 += '<table>';
 					s1 += '<tr class="l-grid-hd-row">';
 					if( detail ){
-						s1 += '<th class="l-grid-hd-cell l-grid-hd-detail" style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn"></span></div></th>';
+						s1 += '<th class="l-grid-hd-cell l-grid-hd-detail"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn"></span></div></th>';
 					}
 					if( checkbox ){
-						s1 += '<th class="l-grid-hd-cell l-grid-hd-checkbox" style="width:13px"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
+						s1 += '<th class="l-grid-hd-cell l-grid-hd-checkbox"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
 					}
 					s1 += '</tr>';
 					s1 += '</table>';
@@ -252,10 +252,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 											  '" data-row="'+ i +'">';
 
 									if( detail ){
-										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn l-grid-row-detailbtn-close"></span></div></td>';
+										s1 += '<td><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn l-grid-row-detailbtn-close"></span></div></td>';
 									}
 									if( checkbox ){
-										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
+										s1 += '<td><div class="l-grid-row-cell-inner"><span class="l-checkbox l-grid-row-checkbox"></span></div></td>';
 									}
 									s1 += '</tr>';
 								}
@@ -480,6 +480,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						})
 					
 					/*set size*/
+					if( checkbox || detail ){
+						if( checkbox && detail ){
+							grid1.width(68)
+						}else{
+							grid1.width(34);
+						}
+					}
 					that.setCellWidth();
 					if( checkbox ){
 						that.setRowsHeight();
@@ -495,6 +502,169 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					/* 设置ajax模式缓存 */
 					if( !p.isPageCache && !p.isSortCurrent ){
 						_cache.tmpData[p.pageIndex - 1] = [];
+					}
+				},
+				
+				/**
+				* 分页内容
+				*/
+				pageCreateHtml: function(){
+					var that      = this,
+						s         = '',
+						total     = p.data.total,
+						pageIndex = p.pageIndex,
+						pageSize  = p.pageSize,
+						pageCore  = {
+							/**
+							* 获取数字连接
+							* @private
+							* @param {Number} index 链接索引
+							* @param {String} txt 上下翻页的文本
+							*/
+							getLink: function(index, txt){
+								return '<a href="javascript:;" data-page="'+ index +'"'+ (p.pageIndex === index ? ' class="current"' : '') + '>'+ (txt || index) +'</a>';
+							},
+							
+							/**
+							* 获取显示的数据
+							* @private
+							* @param {Number} pageSize 每页显示条数
+							* @param {Number} count 数据长度
+							* @param {Number} index 当前位置
+							*/
+							getCount: function(pageSize, count, index){
+								var start   = (index-1)*pageSize + 1,
+									end     = index*pageSize,
+									str     = p.countFont+'',
+									pageNum = Math.ceil(count / pageSize),
+									diff    = pageNum*pageSize - count;
+								
+								str = str.replace('{{start}}', start);     //当前开始位置
+								str = str.replace('{{end}}', (pageNum*pageSize === end ? end - diff : end)); //当前结束位置
+								str = str.replace('{{count}}', count);     //总条数
+								str = str.replace('{{size}}', pageSize);   //每页显示条数
+								str = str.replace('{{pageNum}}', pageNum); //总页数
+								str = str.replace('{{current}}', index);   //当前位置
+								
+								return str;
+							},
+							
+							/**
+							* 获取分页按钮
+							* @private
+							* @param {Number} pageSize 每页显示条数
+							* @param {Number} count 数据长度
+							* @param {Number} index 当前位置
+							*/
+							getBtn: function(pageSize, count, index){
+								var s       = '',
+									begin   = 1,
+									end     = 1,
+									i       = 0,
+									itemNum = 2,
+									pageNum = Math.ceil(count / pageSize);
+									
+								if(index > 1){
+									s += this.getLink(index - 1, lang.prevPage);
+								}else{
+									s += '<span class="prev">'+ lang.prevPage +'</span>';
+								}
+								if(index - itemNum > 1){
+									s += this.getLink(1) + '<span>...</span>';
+									begin = index - itemNum;
+								}
+								end = Math.min(pageNum, begin + itemNum * 2);
+								if(end === pageNum - 1){
+									end = pageNum;
+								}
+								for(i = begin; i <= end; i++) {
+									s += this.getLink(i);
+								}
+								if(end < pageNum){
+									s += '<span>...</span>' + this.getLink(pageNum);
+								}
+								if(index < pageNum){
+									s += this.getLink(index + 1, lang.nextPage);
+								}else{
+									s += '<span class="next">'+ lang.nextPage +'</span> ';
+								}
+								
+								return s;
+							},
+							
+							/**
+							* 获取分页选项
+							* @private
+							*/
+							getPageSelect: function(){
+								var pageSize        = p.pageSize,
+									pageSizeOptions = p.pageSizeOptions;
+								
+								if( pageSizeOptions ){
+									var len = pageSizeOptions.length,
+										i   = 0,
+										s   = '';
+									
+									s += '<select class="ui-select">';
+									for(; i<len; i++){
+										if( pageSize === pageSizeOptions[i] ){
+											s += '<option selected="selected" value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
+										}else{
+											s += '<option value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
+										}
+									}
+									s += '</select>';
+									return s;
+								}
+								return '';
+							}
+						}
+					
+					/*分页统计*/
+					s += '<div class="l-grid-footer-page-msg">'+ pageCore.getCount(pageSize, total, pageIndex) +'</div>';
+					
+					if( total ){
+						/*分页选项*/
+						s += '<div class="l-grid-footer-page-select">'+ pageCore.getPageSelect() +'</div>';
+
+						/*分页按钮*/
+						s += '<div class="l-grid-footer-page-btn ui-pagination">'+ pageCore.getBtn(pageSize, total, pageIndex) +'</div>';	
+					}
+										
+					/*生成分页*/
+					g.page.html(s);
+					
+					that.initCheckbox();
+					
+					/*if( p.pageSizeOptions ){
+						select({
+							target:'.l-grid-footer-page-select select',
+							type:'single'
+						})
+					}*/
+				},
+				
+				bottomBtnsCreateHtml: function(){
+					var btns    = p.bottomBtns,
+						btnWrap = g.btnWrap;
+						
+					if( btns ){
+
+						btnWrap
+							.html(function(){
+								for(var html = '',i = 0; i<btns.length; i++){
+									html += '<a href="javascript:;" class="ui-btn '+ (btns[i].cls ? +' '+ btns[i].cls :'') +'" data-index="'+ i +'"><span>'+btns[i].text+'</span></a>';
+								}
+								return html;
+							})
+							.off('click','.ui-btn')	
+							.on('click','.ui-btn',function(){
+								var index = $(this).attr('data-index'),
+									obj   = btns[index];
+								if( saogaUI.base.isFunction(obj.click) ){
+									obj.click.apply(this,[]);
+								}
+							});
 					}
 				},
 				
@@ -633,150 +803,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					}
 					
 					return false;
-				},
-				
-				/**
-				* 内部分页对象
-				* @private
-				*/
-				__pageCore: {
-					/**
-					* 获取数字连接
-					* @private
-					* @param {Number} index 链接索引
-					* @param {String} txt 上下翻页的文本
-					*/
-					getLink: function(index, txt){
-						return '<a href="javascript:;" data-page="'+ index +'"'+ (p.pageIndex === index ? ' class="current"' : '') + '>'+ (txt || index) +'</a>';
-					},
-					
-					/**
-					* 获取显示的数据
-					* @private
-					* @param {Number} pageSize 每页显示条数
-					* @param {Number} count 数据长度
-					* @param {Number} index 当前位置
-					*/
-					getCount: function(pageSize, count, index){
-						var start   = (index-1)*pageSize + 1,
-							end     = index*pageSize,
-							str     = p.countFont+'',
-							pageNum = Math.ceil(count / pageSize),
-							diff    = pageNum*pageSize - count;
-						
-						str = str.replace('{{start}}', start);     //当前开始位置
-						str = str.replace('{{end}}', (pageNum*pageSize === end ? end - diff : end)); //当前结束位置
-						str = str.replace('{{count}}', count);     //总条数
-						str = str.replace('{{size}}', pageSize);   //每页显示条数
-						str = str.replace('{{pageNum}}', pageNum); //总页数
-						str = str.replace('{{current}}', index);   //当前位置
-						
-						return str;
-					},
-					
-					/**
-					* 获取分页按钮
-					* @private
-					* @param {Number} pageSize 每页显示条数
-					* @param {Number} count 数据长度
-					* @param {Number} index 当前位置
-					*/
-					getBtn: function(pageSize, count, index){
-						var s       = '',
-							begin   = 1,
-							end     = 1,
-							i       = 0,
-							itemNum = 2,
-							pageNum = Math.ceil(count / pageSize);
-							
-						if(index > 1){
-							s += this.getLink(index - 1, lang.prevPage);
-						}else{
-							s += '<span class="prev">'+ lang.prevPage +'</span>';
-						}
-						if(index - itemNum > 1){
-							s += this.getLink(1) + '<span>...</span>';
-							begin = index - itemNum;
-						}
-						end = Math.min(pageNum, begin + itemNum * 2);
-						if(end === pageNum - 1){
-							end = pageNum;
-						}
-						for(i = begin; i <= end; i++) {
-							s += this.getLink(i);
-						}
-						if(end < pageNum){
-							s += '<span>...</span>' + this.getLink(pageNum);
-						}
-						if(index < pageNum){
-							s += this.getLink(index + 1, lang.nextPage);
-						}else{
-							s += '<span class="next">'+ lang.nextPage +'</span> ';
-						}
-						
-						return s;
-					},
-					
-					/**
-					* 获取分页选项
-					* @private
-					*/
-					getPageSelect: function(){
-						var pageSize        = p.pageSize,
-							pageSizeOptions = p.pageSizeOptions;
-						
-						if( pageSizeOptions ){
-							var len = pageSizeOptions.length,
-								i   = 0,
-								s   = '';
-							
-							s += '<select class="ui-select">';
-							for(; i<len; i++){
-								if( pageSize === pageSizeOptions[i] ){
-									s += '<option selected="selected" value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
-								}else{
-									s += '<option value="'+ pageSizeOptions[i] +'">'+ pageSizeOptions[i] +'</option>';
-								}
-							}
-							s += '</select>';
-							return s;
-						}
-						return '';
-					}
-				},
-				
-				/**
-				* 分页内容
-				*/
-				pageCreateHtml: function(){
-					var that      = this,
-						s         = '',
-						total     = p.data.total,
-						pageIndex = p.pageIndex,
-						pageSize  = p.pageSize;
-					
-					/*分页统计*/
-					s += '<div class="l-grid-footer-page-msg">'+ that.__pageCore.getCount(pageSize, total, pageIndex) +'</div>';
-					
-					if( total ){
-						/*分页选项*/
-						s += '<div class="l-grid-footer-page-select">'+ that.__pageCore.getPageSelect() +'</div>';
-
-						/*分页按钮*/
-						s += '<div class="l-grid-footer-page-btn ui-pagination">'+ that.__pageCore.getBtn(pageSize, total, pageIndex) +'</div>';	
-					}
-										
-					/*生成分页*/
-					g.page.html(s);
-					
-					that.initCheckbox();
-					
-					/*if( p.pageSizeOptions ){
-						select({
-							target:'.l-grid-footer-page-select select',
-							type:'single'
-						})
-					}*/
 				},
 				
 				/**
@@ -1557,9 +1583,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						saogaUI.ui.onselectstart(g.grid1);
 					}
 					
-					if( p.isPage ){
-						that.pageCreateHtml();
-						that.pageFn();
+					if( p.isPage || p.bottomBtns ){
+						if( p.isPage ){
+							that.pageCreateHtml();
+							that.pageFn();
+						}
+						if( p.bottomBtns ){
+							that.bottomBtnsCreateHtml();
+						}
 					}else{
 						g.footer.remove();
 					}
@@ -1571,14 +1602,15 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* @return {Object} grid对象
 				*/
 				init: function(){
-					var grid   = p.wrap.append('<div class="l-grid" id='+ p.id +'></div>').find('#'+p.id),
-						loding = grid.append('<div class="l-grid-loading fn-hide"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>').find('.l-grid-loading'),
-						popup  = grid.append('<div class="l-grid-popup"></div>').find('.l-grid-popup'),
-						gBody  = grid.append('<div class="l-grid-body fn-clear"></div>').find('.l-grid-body'),
-						grid1  = gBody.append('<div class="l-grid1"></div>').find('.l-grid1'),
-						grid2  = gBody.append('<div class="l-sl-grid2"><div class="l-grid2"></div></div>').find('.l-grid2'),
-						footer = grid.append('<div class="l-grid-footer"></div>').find('.l-grid-footer'),
-						page   = footer.append('<div class="l-grid-footer-page"></div>').find('.l-grid-footer-page');
+					var grid    = p.wrap.append('<div class="l-grid" id='+ p.id +'></div>').find('#'+p.id),
+						loding  = grid.append('<div class="l-grid-loading fn-hide"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>').find('.l-grid-loading'),
+						popup   = grid.append('<div class="l-grid-popup"></div>').find('.l-grid-popup'),
+						gBody   = grid.append('<div class="l-grid-body fn-clear"></div>').find('.l-grid-body'),
+						grid1   = gBody.append('<div class="l-grid1"></div>').find('.l-grid1'),
+						grid2   = gBody.append('<div class="l-sl-grid2"><div class="l-grid2"></div></div>').find('.l-grid2'),
+						footer  = grid.append('<div class="l-grid-footer"></div>').find('.l-grid-footer'),
+						btnWrap = footer.append('<div class="l-grid-footer-btns"></div>').find('.l-grid-footer-btns'),
+						page    = footer.append('<div class="l-grid-footer-page"></div>').find('.l-grid-footer-page');
 					
 					p.pageIndex = 1;
 					g.loding      = loding;
@@ -1588,6 +1620,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					g.grid2       = grid2;
 					g.footer      = footer;
 					g.page        = page;
+					g.btnWrap     = btnWrap;
 					g.isInit      = true;
 					g.onLoaded    = false;
 
