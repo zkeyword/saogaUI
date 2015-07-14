@@ -59,6 +59,11 @@
 	/*表格头部*/
 	.l-grid-header table{border-collapse:collapse;border-spacing:0;border:1px solid @col-border;font-size:12px;color:#343434}
 		.l-grid-header th{border:1px solid @col-border;border-bottom:none;background:@col-grid-thead;padding:0;font-weight:normal}
+			.l-grid-hd-cell-sort{
+				&:hover{
+					.l-grid-row-hover();
+				}
+			}
 			.l-grid-hd-cell-inner{color:#666;text-align:center;padding:10px;font-size:12px;line-height:16px;}
 				.l-grid-hd-cell-sortWrap{cursor:pointer}
 				.l-grid-hd-cell-inner span{
@@ -114,6 +119,7 @@
 			}
 		}
 		.l-grid-header table,.l-grid-header tr,.l-grid-header th{border-top:0 none;border-bottom:0 none}
+		
 		
 		/*行*/
 		.l-grid-row-even{background:@col-grid-row-even;}

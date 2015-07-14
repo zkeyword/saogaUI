@@ -1389,16 +1389,18 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						popup          = g.popup,
 						isHideColumns  = p.isHideColumns,
 						isShow         = true;
-					
+										
 					//排序
 					if( isSort ){
 						grid2Header
 							.find('.l-grid-hd-cell-span')
 							.addClass(function(){
-								var that = $(this);
+								var that    = $(this),
+									parents = that.parents('.l-grid-hd-cell');
 								if( that.attr('data-columnName') ){
 									that.addClass('l-grid-hd-cell-sortWrap')
 										.append('<span class="l-grid-hd-cell-sort"><b class="icon icon-angle-up"></b></span>');
+									parents.addClass('l-grid-hd-cell-sort');
 								}
 							});
 							
@@ -1457,26 +1459,28 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					}//end if isSort
 					
 					if( isHideColumns ){
-						grid2Header.off('contextmenu', '.l-grid-hd-cell').on('contextmenu', '.l-grid-hd-cell', function(e){
-							var self           = $(e.currentTarget),
-								popup          = g.popup,
-								popupWidth     = popup.outerWidth(),
-								grid           = g.grid,
-								gridWidth      = grid.outerWidth(),
-								gridOffsetLeft = g.grid.offset().left,
-								mousePosition  = saogaUI.ui.mousePosition(e),
-								x              = mousePosition.positionX - gridOffsetLeft;
+						grid2Header
+							.off('contextmenu', '.l-grid-hd-cell')
+							.on('contextmenu', '.l-grid-hd-cell', function(e){
+								var self           = $(e.currentTarget),
+									popup          = g.popup,
+									popupWidth     = popup.outerWidth(),
+									grid           = g.grid,
+									gridWidth      = grid.outerWidth(),
+									gridOffsetLeft = g.grid.offset().left,
+									mousePosition  = saogaUI.ui.mousePosition(e),
+									x              = mousePosition.positionX - gridOffsetLeft;
+									
+								if( gridWidth - x > popupWidth ){
+									popup.css({'left':x});
+								}else{
+									popup.css({'left':x - popupWidth});
+								}
 								
-							if( gridWidth - x > popupWidth ){
-								popup.css({'left':x});
-							}else{
-								popup.css({'left':x - popupWidth});
-							}
-							
-							isShow = true;
-							popup.show();
-							return false;
-						});
+								isShow = true;
+								popup.show();
+								return false;
+							});
 						
 						popup
 							.off('click')
@@ -1544,57 +1548,61 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						isSelectSingleRow = p.isSelectSingleRow,
 						isOnRowFn         = saogaUI.base.isFunction(onRowFn);
 						
-					grid2Body.off('mouseover', '.l-grid-row-cell').on('mouseover', '.l-grid-row-cell', function(){
-						var self = $(this),
-							arrt = self.attr('data-cell');
-						
-						self.parent().attr('data-cell', arrt);
-					});
+					grid2Body
+						.off('mouseover', '.l-grid-row-cell')
+						.on('mouseover', '.l-grid-row-cell', function(){
+							var self = $(this),
+								arrt = self.attr('data-cell');
+							
+							self.parent().attr('data-cell', arrt);
+						});
 					
-					grid2Body.off('click', '.l-grid-row').on('click', '.l-grid-row', function(){
-						var self          = $(this),
-							pageIndex     = p.pageIndex,
-							//selected      = grid2Body.find('.l-grid-row-selected'),
-							selfDetail    = self.next('.l-grid-row-detail'),
-							i             = self.attr('data-row'),
-							currentArr    = _cache.rowSelected[pageIndex-1],
-							grid1Row      = grid1Body.find('.l-grid-row').eq(i),
-							grid1Checkbox = grid1Body.find('.l-checkbox').eq(i);
-											
-						if( !self.hasClass('l-grid-row-selected') ){
-							if( !onRowFn || isSelectSingleRow ){
-								self.siblings().removeClass('l-grid-row-selected');
-								grid1Row.siblings().removeClass('l-grid-row-selected');
-							}
-							if( isOnRowCheckbox ){
-								grid1Checkbox.addClass('l-checkbox-selected');									
-							}
-														
-							self.addClass('l-grid-row-selected');
-							selfDetail.addClass('l-grid-row-selected');
-							grid1Row.addClass('l-grid-row-selected');
-
-						}else{
-							if( !isSelectSingleRow ){
-								self.removeClass('l-grid-row-selected');
-								selfDetail.removeClass('l-grid-row-selected');
-								grid1Row.removeClass('l-grid-row-selected');
-							}
-							if( isOnRowCheckbox ){
-								grid1Checkbox.removeClass('l-checkbox-selected');								
-							}
-						}
-						
-						if( isOnRowFn ){
+					grid2Body
+						.off('click', '.l-grid-row')
+						.on('click', '.l-grid-row', function(){
+							var self          = $(this),
+								pageIndex     = p.pageIndex,
+								//selected      = grid2Body.find('.l-grid-row-selected'),
+								selfDetail    = self.next('.l-grid-row-detail'),
+								i             = self.attr('data-row'),
+								currentArr    = _cache.rowSelected[pageIndex-1],
+								grid1Row      = grid1Body.find('.l-grid-row').eq(i),
+								grid1Checkbox = grid1Body.find('.l-checkbox').eq(i);
+												
 							if( !self.hasClass('l-grid-row-selected') ){
-								currentArr[i] = that.getRowData(i);
-								
+								if( !onRowFn || isSelectSingleRow ){
+									self.siblings().removeClass('l-grid-row-selected');
+									grid1Row.siblings().removeClass('l-grid-row-selected');
+								}
+								if( isOnRowCheckbox ){
+									grid1Checkbox.addClass('l-checkbox-selected');									
+								}
+															
+								self.addClass('l-grid-row-selected');
+								selfDetail.addClass('l-grid-row-selected');
+								grid1Row.addClass('l-grid-row-selected');
+
 							}else{
-								_cache.rowSelected[pageIndex-1][i] = null;
+								if( !isSelectSingleRow ){
+									self.removeClass('l-grid-row-selected');
+									selfDetail.removeClass('l-grid-row-selected');
+									grid1Row.removeClass('l-grid-row-selected');
+								}
+								if( isOnRowCheckbox ){
+									grid1Checkbox.removeClass('l-checkbox-selected');								
+								}
 							}
-							onRowFn(that.getRowData(i), self);
-						}
-					});
+							
+							if( isOnRowFn ){
+								if( !self.hasClass('l-grid-row-selected') ){
+									currentArr[i] = that.getRowData(i);
+									
+								}else{
+									_cache.rowSelected[pageIndex-1][i] = null;
+								}
+								onRowFn(that.getRowData(i), self);
+							}
+						});
 				},
 				
 				/**

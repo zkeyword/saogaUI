@@ -498,9 +498,26 @@ define(['core/saogaUI'], function(saogaUI){
 											return true;
 											
 										}else if( name && allName.length ){
-											oThat.handleError(allName);
 											oSelf.attr('data-validate-result','true');
-											return true;
+											
+											return (function(){
+												var i    = 0,
+													len  = allName.length,
+													obj  = null,
+													isOK = true; 
+													
+												for(; i<len; i++){
+													obj = allName.eq(i);
+													console.log( obj.attr('data-validate-result') === "false", oRoute.html )
+													if( obj.attr('data-validate-result') === "false" ){
+														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
+														return true;
+													}
+												}
+												
+												oThat.handleError(allName);
+												return true;
+											})();
 										}
 																				
 										oThat.handleError(oSelf);
@@ -522,7 +539,7 @@ define(['core/saogaUI'], function(saogaUI){
 											allName      = oTarget.find('[data-validate-name="'+ name +'"]'),
 											errorLen     = allName.parents('.ui-form').find('.l-form-error').length;
 
-										if( sHideError === "true" && sHideError ){1
+										if( sHideError === "true" && sHideError ){
 											hideErrorCls = " l-form-hideError";
 										}
 

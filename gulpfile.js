@@ -30,6 +30,11 @@ gulp.task('less', function () {
         .pipe(gulp.dest(path.dest+'css'));
 });
 
+var onError = function(err) {
+        notify.onError({message: "Failed\n<%= error.message %>", sound: true})(err);
+        this.emit('end');
+}
+
 gulp.task('b', function (){
 	gulp
 		.src(path.dev+'js/config.js')
@@ -38,28 +43,25 @@ gulp.task('b', function (){
 	gulp
 		.src(path.dev+'js/app/ZeroClipboard.swf')
 		.pipe(gulp.dest(path.dest+'js/app/'));
-		
-    gulp
-		.src(path.dev+'js/**.js')
-		.pipe(plumber(function(error){
-			console.log(error);
-			console.log('--------------------------  js Syntax Error! --------------------------');
-		}))
-		.pipe(
-			rjs({
-				name: 'app/main',
-				baseUrl: path.dev+'js/lib/',
-				paths: {
-					core: '../core',
-					app:  '../app'
-				},
-				mainConfigFile:path.dev+'js/common.js',
-				out: 'main.js',
-				optimize:true
-			})
-			.pipe(maps.write('./'))
-			.pipe(gulp.dest(path.dest+'js/app/'))
-		)
+	
+	rjs({
+        name: 'app/main',
+        baseUrl: path.dev+'js/lib/',
+		paths: {
+			core: '../core',
+			app:  '../app'
+		},
+		mainConfigFile:path.dev+'js/common.js',
+        out: 'main.js',
+		optimize:false
+    })
+	.on('error',function(error){
+		console.log(error);
+	})
+	.pipe(plumber())
+	.pipe(maps.write('./'))
+    .pipe(gulp.dest(path.dest+'js/app/'));
+
 });
 
 //requirejs
