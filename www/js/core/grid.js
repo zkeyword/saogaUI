@@ -95,7 +95,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				columns:         o.columns || {},
 				statis:          o.statis || [],                                         //统计
 				detail:          o.detail || null,
-				bottomBtns:      o.bottomBtns || {},                                     //底部按钮
+				bottomBtns:      o.bottomBtns === undefined ? null : o.bottomBtns,       //底部按钮
 				isPage:          o.isPage === undefined ? true : o.isPage,               //是否显示分页
 				isHead:          o.isHead === undefined ? true : o.isHead,               //是否显示头部
 				showAllRow:      o.showAllRow ? true : false,                            //显示所有数据，默认false，以分页和显示条数互斥 ，isPage=false、pageSize = total
