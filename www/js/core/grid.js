@@ -107,6 +107,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				isPageCache:     o.isPageCache === undefined ? true : o.isPageCache,     //翻页时是否缓存当页数据
 				isMemory:        o.isMemory ? true : false,                              //翻页是否记住选择记录，默认false
 				checkbox:        o.checkbox === undefined ? true : o.checkbox,           //是否有checkbox
+				isHeadCheckbox:  o.isHeadCheckbox === undefined ? true : o.isHeadCheckbox, //是否有表头checkbox
 				onCheckFn:       o.onCheckFn || null,                                    //点击checkbox事件
 				onRowFn:         o.onRowFn || null,                                      //点击行事件
 				isSelectSingleRow: o.isSelectSingleRow === undefined ? false : o.isSelectSingleRow, //点击是否选中单行
@@ -145,18 +146,19 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 表格表头内容
 				*/
 				tHeadCreateHtml: function(){
-					var isHideColumns = p.isHideColumns,
-						columns       = p.columns,
-						detail        = p.detail,   //表格明细
-						checkbox      = p.checkbox, //复选框
-						popup         = g.popup,
-						grid1         = g.grid1,
-						grid2         = g.grid2,
-						isInit        = g.isInit,
-						i             = 0,
-						s1            = '',
-						s2            = '',
-						s3            = '';
+					var isHideColumns  = p.isHideColumns,
+						columns        = p.columns,
+						detail         = p.detail,   //表格明细
+						checkbox       = p.checkbox, //复选框
+						isHeadCheckbox = p.isHeadCheckbox,
+						popup          = g.popup,
+						grid1          = g.grid1,
+						grid2          = g.grid2,
+						isInit         = g.isInit,
+						i              = 0,
+						s1             = '',
+						s2             = '',
+						s3             = '';
 						
 					/*grid1*/
 					s1 += '<table>';
@@ -165,7 +167,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						s1 += '<th class="l-grid-hd-cell l-grid-hd-detail"><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn"></span></div></th>';
 					}
 					if( checkbox ){
-						s1 += '<th class="l-grid-hd-cell l-grid-hd-checkbox"><div class="l-grid-hd-cell-inner"><span class="l-checkbox l-grid-hd-checkbox"></span></div></th>';
+						s1 += '<th class="l-grid-hd-cell l-grid-hd-checkbox"><div class="l-grid-hd-cell-inner">';
+							if( isHeadCheckbox ){
+								s1 += '<span class="l-checkbox l-grid-hd-checkbox"></span>';
+							}
+						s1 += '</div></th>';
 					}
 					s1 += '</tr>';
 					s1 += '</table>';
@@ -980,7 +986,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								grid2Row    = grid2Body.find('.l-grid-row').eq(i),
 								grid2Detail = grid2Row.next('.l-grid-row-detail'),
 								tmpData     = _cache.tmpData[p.pageIndex - 1];
-												
+							
+							/*返回选择数据*/
+							if( saogaUI.base.isFunction(onCheckFn) ){
+								if( !onCheckFn(tmpData[i], grid1Row, grid2Row) ){
+									return false;
+								}
+							}
+							
 							if( !self.hasClass('l-checkbox-selected') ){
 								self.addClass('l-checkbox-selected');
 								grid1Row.addClass('l-grid-row-selected');
@@ -1003,10 +1016,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								btnWrap.find('.l-checkbox').removeClass('l-checkbox-selected');
 							}
 							
-							/*返回选择数据*/
-							if( saogaUI.base.isFunction(onCheckFn) ){
-								onCheckFn(tmpData[i], grid1Row, grid2Row);
-							}
 						});
 					
 					/*全选*/
@@ -1025,6 +1034,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								i           = 0,
 								j           = len - 1,
 								tmpData     = _cache.tmpData[p.pageIndex - 1];
+							
+							/*返回选择数据*/
+							if( saogaUI.base.isFunction(onCheckFn) ){
+								if( !onCheckFn(tmpData, grid1Rows, grid2Rows) ){
+									return false;
+								}
+							}
 							
 							if( !self.hasClass('l-checkbox-selected') ){
 								self.addClass('l-checkbox-selected');
@@ -1046,11 +1062,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								for(; j > -1; j--){
 									arr[j] = null;
 								}
-							}
-							
-							/*返回选择数据*/
-							if( saogaUI.base.isFunction(onCheckFn) ){
-								onCheckFn(tmpData, grid1Rows, grid2Rows);
 							}
 							
 						});
