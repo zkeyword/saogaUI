@@ -94,6 +94,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				isFixedWidth:    o.isFixedWidth  === undefined ? false : o.isFixedWidth, //表宽度是否为固定宽度，默认为false，为true时会去对比width和grid外框的宽度
 				columns:         o.columns || {},
 				statis:          o.statis || [],                                         //统计
+				statisToFixed:   o.statisToFixed === undefined ? 2 : o.statisToFixed,    //统计精确的位数
 				detail:          o.detail || null,
 				bottomBtns:      o.bottomBtns === undefined ? null : o.bottomBtns,       //底部按钮
 				isPage:          o.isPage === undefined ? true : o.isPage,               //是否显示分页
@@ -395,16 +396,16 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 												if( statis[n].type === arr[d] ){
 													switch(arr[d]){
 														case 'sum':
-															dStr = ssVal.toFixed(2);
+															dStr = ssVal.toFixed(p.statisToFixed);
 															break;
 														case 'avg':
-															dStr = ( (ssVal*1.0)/x ).toFixed(2);
+															dStr = ( (ssVal*1.0)/x ).toFixed(p.statisToFixed);
 															break;
 														case 'min':
-															dStr = Math.min.apply(Math, sData).toFixed(2);
+															dStr = Math.min.apply(Math, sData).toFixed(p.statisToFixed);
 															break;
 														case 'max':
-															dStr = Math.max.apply(Math, sData).toFixed(2);
+															dStr = Math.max.apply(Math, sData).toFixed(p.statisToFixed);
 															break;
 													};
 													
@@ -1915,6 +1916,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				}
 			}
 		};*/
+		
+		g.resetStatisToFixed = function(num){
+			p.statisToFixed = num;
+		}
 		
 		/**
 		* grid 跳出执行
