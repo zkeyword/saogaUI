@@ -72,10 +72,10 @@
 				//checkbox:false,
 				//pageSizeOptions:null,
 				columns: [
-					{ display: 'id', name: 'id', width: 150},
+					{ display: 'id', name: 'id', width: 150, statisWrap:true},
 					{ display: '姓名', name: 'name', width: 150},
 					{ display: '性别', name: 'sex', width: 150},
-					{ display: '电话', name: 'tel', width: 150},
+					{ display: '电话', name: 'tel', width: 150, statisType:'sum'},
 					{ display: '邮箱', name: 'email', width: 150},
 					{ display: '操作', name: '', width: 150, render: function(rdata, rindex, value){
 							return saogaUI.template('btnHtml',rdata);
@@ -84,6 +84,9 @@
 							return '自定义内容'+rdata.sex;
 						}
 					}
+				],
+				statis:[
+					{display:'总计',type:'sum'}
 				],
 				detail:{
 					render:function(rdata){
