@@ -448,7 +448,9 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 															break;
 													};
 													
-													dStr = dStr.toFixed(p.statisToFixed);
+													//if( parseInt(dStr, 10) !== dStr ){
+														dStr = dStr.toFixed(p.statisToFixed);
+													//}
 													
 													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;
 												}
@@ -1024,7 +1026,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							
 							/*返回选择数据*/
 							if( saogaUI.base.isFunction(onCheckFn) ){
-								if( !onCheckFn(tmpData[i], grid1Row, grid2Row) ){
+								if( !onCheckFn.apply(this, [tmpData[i], grid1Row, grid2Row]) ){
 									return false;
 								}
 							}

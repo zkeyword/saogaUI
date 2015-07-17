@@ -62,7 +62,7 @@
 				},
 				isMemory:true,
                 isSort:true,
-				width:500,
+				//width:500,
 				pageSize:10,
 				initSelected:function(data){
 					if( data.name == '张三1' ){
@@ -75,7 +75,8 @@
 					{ display: 'id', name: 'id', width: 150, statisWrap:true},
 					{ display: '姓名', name: 'name', width: 150},
 					{ display: '性别', name: 'sex', width: 150},
-					{ display: '电话', name: 'tel', width: 150, statisType:'sum'},
+					{ display: '份额', name: 'part', width: 150, statisType:'sum'},
+					{ display: '数量', name: 'num', width: 150, statisType:'sum'},
 					{ display: '邮箱', name: 'email', width: 150},
 					{ display: '操作', name: '', width: 150, render: function(rdata, rindex, value){
 							return saogaUI.template('btnHtml',rdata);
@@ -117,7 +118,19 @@
 							console.log(this)
 						}
 					}
-				]
+				],
+				onCheckFn:function(d){
+					var data       = grid.getSelectData(),
+						reg        = /l-checkbox-selected/g,
+						isSelected = reg.test(this.className);
+					if( data.total > 1 && !isSelected ){
+						console.log(d)
+						return false;
+					}else{
+						console.log(2)
+						return true;
+					}
+				}
 			});
 			/*
 			grid.refresh({
