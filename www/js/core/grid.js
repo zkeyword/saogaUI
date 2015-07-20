@@ -253,7 +253,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						that       = this;
 					
 					/*修改索引值，从1开始，所以减1*/
-					index = index !== undefined ? index - 1 : 0;
+					//index = index !== undefined ? index - 1 : 0;
+					index = index - 1 >>> 0;
 
 					/*grid1*/
 					if( checkbox || detail ){
@@ -337,7 +338,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									s2 += '<td class="l-grid-row-cell'+ lastCls +'" data-cell="'+ h +'"><div class="l-grid-row-cell-inner'+ columnAlign +'">';
 
 									if( columnsStatis ){
-										if( columnsObj.statisRender !== undefined ){
+										if( saogaUI.base.isFunction(columnsObj.statisRender) ){
 											s2 += columnsObj.statisRender(rowStatis);
 										}else{
 											s2 += rowStatis;

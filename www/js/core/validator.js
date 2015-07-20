@@ -508,7 +508,7 @@ define(['core/saogaUI'], function(saogaUI){
 													
 												for(; i<len; i++){
 													obj = allName.eq(i);
-													console.log( obj.attr('data-validate-result') === "false", oRoute.html )
+													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute )
 													if( obj.attr('data-validate-result') === "false" ){
 														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
 														return true;

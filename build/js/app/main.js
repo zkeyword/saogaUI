@@ -5922,7 +5922,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 													
 												for(; i<len; i++){
 													obj = allName.eq(i);
-													console.log( obj.attr('data-validate-result') === "false", oRoute.html )
+													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute )
 													if( obj.attr('data-validate-result') === "false" ){
 														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
 														return true;
@@ -7621,7 +7621,8 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						that       = this;
 					
 					/*修改索引值，从1开始，所以减1*/
-					index = index !== undefined ? index - 1 : 0;
+					//index = index !== undefined ? index - 1 : 0;
+					index = index - 1 >>> 0;
 
 					/*grid1*/
 					if( checkbox || detail ){
@@ -7705,7 +7706,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 									s2 += '<td class="l-grid-row-cell'+ lastCls +'" data-cell="'+ h +'"><div class="l-grid-row-cell-inner'+ columnAlign +'">';
 
 									if( columnsStatis ){
-										if( columnsObj.statisRender !== undefined ){
+										if( saogaUI.base.isFunction(columnsObj.statisRender) ){
 											s2 += columnsObj.statisRender(rowStatis);
 										}else{
 											s2 += rowStatis;
@@ -7816,7 +7817,9 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 															break;
 													};
 													
-													dStr = dStr.toFixed(p.statisToFixed);
+													//if( parseInt(dStr, 10) !== dStr ){
+														dStr = dStr.toFixed(p.statisToFixed);
+													//}
 													
 													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;
 												}
@@ -8392,7 +8395,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 							
 							/*返回选择数据*/
 							if( saogaUI.base.isFunction(onCheckFn) ){
-								if( !onCheckFn(tmpData[i], grid1Row, grid2Row) ){
+								if( !onCheckFn.apply(this, [tmpData[i], grid1Row, grid2Row]) ){
 									return false;
 								}
 							}
