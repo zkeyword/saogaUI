@@ -8,8 +8,6 @@ Icon classes can be used entirely standalone. They are named after their origina
 <!-- `display: inline-block` sprite -->
 <img class="icon-home" />
 ```
-
-
 */
 .icon-eat {
   background-image: url(../img/sprite.png);

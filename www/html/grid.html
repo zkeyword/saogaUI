@@ -65,8 +65,10 @@
 				//width:500,
 				pageSize:10,
 				initSelected:function(data){
-					if( data.name == '张三1' ){
-						//return true;
+					if( data.name == '张三' ){
+						return true;
+					}else if(data.name == "张三"){
+						return true;
 					}
 				},
 				//checkbox:false,
@@ -118,17 +120,18 @@
 							console.log(this)
 						}
 					}
-				],
+				]
+				/**,
 				onCheckFn:function(d){
 					var data       = grid.getSelectData(),
 						reg        = /l-checkbox-selected/g,
 						isSelected = reg.test(this.className);
 					if( data.total > 1 && !isSelected ){
-						return false;
+						//return false;
 					}else{
-						return true;
+						//return true;
 					}
-				}
+				}*/
 			});
 			/*
 			grid.refresh({

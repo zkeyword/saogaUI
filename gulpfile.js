@@ -7,8 +7,8 @@ var gulp        = require('gulp'),
 	sprite      = require('gulp.spritesmith'),
 	clean       = require('gulp-clean'),
 	plumber     = require('gulp-plumber'),
-	amdOptimize = require('amd-optimize'),
-	concat      = require('gulp-concat'),
+	//amdOptimize = require('amd-optimize'),
+	//concat      = require('gulp-concat'),
 	tmodjs      = require('gulp-tmod'),
 	path        = {
 					dev: 'www/',
@@ -28,40 +28,6 @@ gulp.task('less', function () {
 		.pipe(minifycss({compatibility: 'ie7'}))
 		.pipe(maps.write('./'))
         .pipe(gulp.dest(path.dest+'css'));
-});
-
-var onError = function(err) {
-        notify.onError({message: "Failed\n<%= error.message %>", sound: true})(err);
-        this.emit('end');
-}
-
-gulp.task('b', function (){
-	gulp
-		.src(path.dev+'js/config.js')
-		.pipe(gulp.dest(path.dest+'js'));
-		
-	gulp
-		.src(path.dev+'js/app/ZeroClipboard.swf')
-		.pipe(gulp.dest(path.dest+'js/app/'));
-	
-	rjs({
-        name: 'app/main',
-        baseUrl: path.dev+'js/lib/',
-		paths: {
-			core: '../core',
-			app:  '../app'
-		},
-		mainConfigFile:path.dev+'js/common.js',
-        out: 'main.js',
-		optimize:false
-    })
-	.on('error',function(error){
-		console.log(error);
-	})
-	.pipe(plumber())
-	.pipe(maps.write('./'))
-    .pipe(gulp.dest(path.dest+'js/app/'));
-
 });
 
 //requirejs
@@ -91,6 +57,7 @@ gulp.task('r', function() {
 
 });
 
+//tmod.js
 gulp.task('tmod', function() {
 	gulp.src(path.dev + '/tpl/**/*.html')
 		.pipe(tmodjs({

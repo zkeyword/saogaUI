@@ -1101,6 +1101,7 @@ define(['core/saogaUI'], function(saogaUI){
 		* 代码重载
 		*/
 		g.reload = function(){
+			t.selectedData = [];
 			c.init(o);
 		}
 		
