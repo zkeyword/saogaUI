@@ -198,7 +198,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							s3 += '<div class="l-grid-popup-item fn-clear"><span class="l-checkbox'+ popupSelected +'"></span><span class="l-grid-popup-text">'+ p.columns[h].display +'</span></div>';
 						}
 						
-						popup.html(s3)
+						popup.html(s3);
 					}
 					
 					s2 += '<table>';
@@ -239,7 +239,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						checkbox   = p.checkbox, //复选框
 						nullText   = g.loding.is(':visible') ? p.requestText : p.nullText,
 						pageSize   = p.pageSize,
-						popup      = g.popup,
+						//popup      = g.popup,
 						grid       = g.grid,
 						grid1      = g.grid1,
 						grid2      = g.grid2,
@@ -415,11 +415,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										var sData = statisData[m],
 											ssLen = sData.length,
 											ssVal = 0,
-											x     = 0,
-											sum   = 0,
-											avg   = 0,
-											min   = 0,
-											max   = 0;
+											x     = 0;
+											//sum   = 0,
+											//avg   = 0,
+											//min   = 0,
+											//max   = 0;
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
@@ -448,7 +448,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 														case 'max':
 															dStr = Math.max.apply(Math, sData);
 															break;
-													};
+													}
 													
 													//if( parseInt(dStr, 10) !== dStr ){
 														dStr = dStr.toFixed(p.statisToFixed);
@@ -527,12 +527,12 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							grid2
 								.find('.l-grid-row-detail'+index)
 								.removeClass('l-grid-row-hover');
-						})
+						});
 					
 					/*set size*/
 					if( checkbox || detail ){
 						if( checkbox && detail ){
-							grid1.width(68)
+							grid1.width(68);
 						}else{
 							grid1.width(34);
 						}
@@ -739,9 +739,9 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							checkbox.trigger('click');
 							
 							if( checkbox.hasClass('l-checkbox-selected') ){
-								self.addClass('l-checkbox-selected')
+								self.addClass('l-checkbox-selected');
 							}else{
-								self.removeClass('l-checkbox-selected')
+								self.removeClass('l-checkbox-selected');
 							}
 							
 						});
@@ -765,11 +765,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						total        = 0,
 						isFixedWidth = p.isFixedWidth,
 						_fixedWidth  = function(width){
-										var j = 0;
-										
+
 										width = width === undefined ? p.width : width;
 
-										for(; j<len; j++){
+										for(var j = 0; j<len; j++){
 											grid2.find('.l-grid-hd-cell').eq(j).width(columns[j].width);
 											grid2.find('.l-grid-row-cell').eq(j).width(columns[j].width);
 										}
@@ -828,37 +827,32 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 设置行高
 				*/
 				setRowsHeight: function(){
-					var grid1    = g.grid1,
-						grid2    = g.grid2,
-						pageSize = p.statis ? p.pageSize + p.statis.length : p.pageSize,
-						i        = 0;
+					var grid1     = g.grid1,
+						grid2     = g.grid2,
+						pageSize  = p.statis ? p.pageSize + p.statis.length : p.pageSize,
+						i         = 0,
+						grid1_row = null,
+						grid2_row = null,
+						height    = 0;
 					
 					grid1.find('.l-grid-hd-row').height( grid2.find('.l-grid-hd-row').outerHeight() );
 					
 					if( pageSize ){
 						for(; i<pageSize; i++){
-							var grid1_row       = grid1.find('.l-grid-row').eq(i),
-								grid2_row       = grid2.find('.l-grid-row').eq(i),
-								grid2_rowDetail = grid2.find('.l-grid-row-detail'+i),
-								height          = grid2_row.outerHeight(),
-								detailHeight    = 0;
+							
+							grid1_row = grid1.find('.l-grid-row').eq(i);
+							grid2_row = grid2.find('.l-grid-row').eq(i);
+							height    = grid2_row.outerHeight();
 
 							if(!height){return;}
-							
-							for(var j = 0; j<grid2_rowDetail.length; j++){
-								detailHeight += grid2_rowDetail[j].offsetHeight;
-							}
 
-							if( _cache.browser.ie <= 7 ){
-								grid1_row.height(height + detailHeight - 1); //变态ie7多算1px
-							}else{
-								grid1_row.height(height + detailHeight);
-							}
+							height = height + grid2.find('.l-grid-row-detail'+i).outerHeight() - (_cache.browser.ie <= 7 ? 1 : 0);
+							grid1_row.height(height);
 						}
 					}else{
-						var grid1_row = grid1.find('.l-grid-row').eq(0),
-							grid2_row = grid2.find('.l-grid-row').eq(0),
-							height    = grid2_row.outerHeight();
+						grid1_row = grid1.find('.l-grid-row').eq(0);
+						grid2_row = grid2.find('.l-grid-row').eq(0);
+						height    = grid2_row.outerHeight();
 						grid1_row.height(height);
 					}
 					
@@ -952,8 +946,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 初始化checkbox
 				*/
 				initCheckbox: function(){
-					var that           = this,
-						pageSize       = p.pageSize,                        //每页显示多少个
+					var pageSize       = p.pageSize,                        //每页显示多少个
 						pageIndex      = p.pageIndex,                       //起始位置
 						grid1          = g.grid1,
 						gridHeader     = grid1.find('.l-grid-header'),        //表格头
@@ -1107,7 +1100,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					var	pageIndex = p.pageIndex,
 						data      = _cache.tmpData[pageIndex - 1]; //表格数据
 	
-					if( index === -1 ){
+					if( index === -1 && !data.length ){
 						return false;
 					}
 					
@@ -1116,15 +1109,12 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				
 				/**
 				* 明细按钮事件
-				* @param {object} init 和 refresh共享的对象
 				*/
-				detailBtnFn: function(options){
-					var that        = this,
-						grid1       = g.grid1,
+				detailBtnFn: function(){
+					var grid1       = g.grid1,
 						grid2       = g.grid2,
 						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
-						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
-						pageSize    = p.pageSize;
+						grid2Body   = grid2.find('.l-grid-body');   //表格主体
 						
 					grid1Body
 						.off('click','.l-grid-row-detailbtn')
@@ -1140,11 +1130,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								detail.show();
 								self.removeClass('l-grid-row-detailbtn-close')
 									.addClass('l-grid-row-detailbtn-open');
-								
-								for(var i = 0; i<detail.length; i++){
-									detailHeight += detail[i].offsetHeight;
-								}
-								parents.height(grid2_row[0].offsetHeight + detailHeight);
+
+								parents.height(grid2_row[0].offsetHeight + detail.outerHeight());
 							}else{
 								detail.hide();
 								self.removeClass('l-grid-row-detailbtn-open')
@@ -1176,14 +1163,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					
                     /*解析URL并转换为json形式，防止特殊字符问题*/
 					var args = {},
-						argsStr = [],
+						//argsStr = [],
 						param,
 						name,
 						value;
 					
 					for (var i = 0; i < data.length; i++) {
 						param = data[i].split('=');
-						name = param[0],
+						name  = param[0];
 						value = param[1];
 						if(name === ""){
 							name = "unkown";
@@ -1321,7 +1308,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						arr       = []; //临时数组
 				
 					/*初始化*/
-					isGetData = isGetData == undefined ? true : isGetData;
+					isGetData = isGetData === undefined ? true : isGetData;
 					if( isGetData ){
 						that.getData(); //获取数据并重载 Html
 					}
@@ -1367,8 +1354,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				*/
 				compareData: function(name, sortType){
 					var index = p.pageIndex - 1,
-						arr   = _cache.tmpData[index],
-						len   = arr.length;
+						arr   = _cache.tmpData[index];
+						//len   = arr.length;
 					
 					arr.sort( getJsPercentDataComparator(name) );
 					
@@ -1404,7 +1391,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							}
 							
 							return result;
-						}
+						};
 					}
 					
 				},
@@ -1414,14 +1401,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				*/
 				tHeadFn: function(){
 					var that           = this,
-						pageSize       = p.pageSize,                  //每页显示多少个
-						pageIndex      = p.pageIndex,                 //起始位置
-						grid1          = g.grid1,
+						//pageSize       = p.pageSize,                  //每页显示多少个
+						//pageIndex      = p.pageIndex,                 //起始位置
+						//grid1          = g.grid1,
 						grid2          = g.grid2,
-						grid1Header    = grid1.find('.l-grid-header'),        //表格头
-						grid1Body      = grid1.find('.l-grid-body'),          //表格主体
+						//grid1Header    = grid1.find('.l-grid-header'),        //表格头
+						//grid1Body      = grid1.find('.l-grid-body'),          //表格主体
 						grid2Header    = grid2.find('.l-grid-header'),        //表格头
-						grid2Body      = grid2.find('.l-grid-body'),          //表格主体
+						//grid2Body      = grid2.find('.l-grid-body'),          //表格主体
 						isSort         = p.isSort,
 						isSortCurrent  = p.isSortCurrent,
 						popup          = g.popup,
@@ -1502,8 +1489,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						grid2Header
 							.off('contextmenu', '.l-grid-hd-cell')
 							.on('contextmenu', '.l-grid-hd-cell', function(e){
-								var self           = $(e.currentTarget),
-									popup          = g.popup,
+								var popup          = g.popup,
 									popupWidth     = popup.outerWidth(),
 									grid           = g.grid,
 									gridWidth      = grid.outerWidth(),
@@ -1579,10 +1565,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						grid1             = g.grid1,
 						grid2             = g.grid2,
 						grid1Body         = grid1.find('.l-grid-body'),   //表格主体						
-						grid2Header       = grid2.find('.l-grid-header'), //表格头
+						//grid2Header       = grid2.find('.l-grid-header'), //表格头
 						grid2Body         = grid2.find('.l-grid-body'),   //表格主体
-						onCheckFn         = p.onCheckFn,
-						pageSize          = p.pageSize,
+						//onCheckFn         = p.onCheckFn,
+						//pageSize          = p.pageSize,
 						onRowFn           = p.onRowFn,
 						isOnRowCheckbox   = p.isOnRowCheckbox,
 						isSelectSingleRow = p.isSelectSingleRow,
@@ -1648,7 +1634,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 列事件
 				* TODO
 				*/
-				cellFn: function(){
+				/*cellFn: function(){
 					var grid1           = g.grid1,
 						grid2           = g.grid2,
 						grid1Body       = grid1.find('.l-grid-body'),   //表格主体						
@@ -1659,7 +1645,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						onRowFn         = p.onRowFn,
 						isOnRowCheckbox = p.isOnRowCheckbox,
 						isOnRowFn       = saogaUI.base.isFunction(onRowFn);
-				},
+				},*/
 				
 				/**
 				* 运行 grid 控件
@@ -1778,7 +1764,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				return _cache.columns;
 			}
 			return p.columns;
-		},
+		};
 
 		/**
 		* grid 重设列头
@@ -1932,7 +1918,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
                             subLen         = subSelectedArr.length,
                             subIndex       = 0;
                         for(; subIndex<subLen; subIndex++){
-                            if( subSelectedArr[subIndex] && subSelectedArr[subIndex].id == id ){
+                            if( subSelectedArr[subIndex] && subSelectedArr[subIndex].id === id ){
                                 subSelectedArr[subIndex] = null;
                                 return subIndex;
                             }
@@ -1957,7 +1943,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		g.resetStatisToFixed = function(num){
 			p.statisToFixed = num;
-		}
+		};
 		
 		/**
 		* grid 跳出执行

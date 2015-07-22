@@ -2,13 +2,14 @@ var gulp        = require('gulp'),
 	less        = require('gulp-less'),
 	rjs         = require('gulp-requirejs'),
 	uglify      = require('gulp-uglify'),
+	jshint      = require('gulp-jshint'),
 	maps        = require('gulp-sourcemaps'),
 	minifycss   = require('gulp-minify-css'),
 	sprite      = require('gulp.spritesmith'),
 	clean       = require('gulp-clean'),
 	plumber     = require('gulp-plumber'),
-	//amdOptimize = require('amd-optimize'),
-	//concat      = require('gulp-concat'),
+	amdOptimize = require('amd-optimize'),
+	concat      = require('gulp-concat'),
 	tmodjs      = require('gulp-tmod'),
 	path        = {
 					dev: 'www/',
@@ -29,6 +30,14 @@ gulp.task('less', function () {
 		.pipe(maps.write('./'))
         .pipe(gulp.dest(path.dest+'css'));
 });
+
+//jshint
+gulp.task('jshint', function() {
+	gulp
+		.src(path.dev+'js/core/grid.js')
+        .pipe(jshint('.jshintrc'))
+        .pipe(jshint.reporter('default'));	
+})
 
 //requirejs
 gulp.task('r', function() {

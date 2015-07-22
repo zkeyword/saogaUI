@@ -64,7 +64,7 @@ define(['core/saogaUI'], function(saogaUI){
 					createHtml: function(){
 						var data       = p.data,
 							target     = p.target,
-							isMultiple = p.isMultiple,
+							//isMultiple = p.isMultiple,
 							isCheckBox = p.check === 'checkbox',
 							isRadio    = p.check === 'radio',
 							isFirst    = true,
@@ -72,7 +72,7 @@ define(['core/saogaUI'], function(saogaUI){
 							
 								if( data ){
 									var html  = '';
-									var lll = level
+									
 									level++;
 																		
 									for(var i = 0; i<data.length; i++){
@@ -174,7 +174,7 @@ define(['core/saogaUI'], function(saogaUI){
 								}
 								
 								return '';
-							}
+							};
 						
 						target.html( '<ul class="l-tree">'+ tree(data, 0, 0) +'</ul>' );
 					},
@@ -184,12 +184,13 @@ define(['core/saogaUI'], function(saogaUI){
 					*/
 					handleData: function(){
 						var data   = p.data,
-							array  = [],
 							format = function(data, pid){
-								var pid = pid === undefined ? 0 : pid,
-									arr = [],
+								var arr = [],
 									son = [],
 									h   = 0;
+									
+								//pid = pid === undefined ? 0 : pid,
+								pid = pid >>> 0;
 								
 								for(var i = 0; i<data.length; i++){
 									if( Number(data[i].pid) === Number(pid) ){
@@ -197,13 +198,13 @@ define(['core/saogaUI'], function(saogaUI){
 										if( son.length ){
 											data[i].children = son;
 										}
-										arr[h] = data[i]
+										arr[h] = data[i];
 										h++;
 									}
 								}
 								
 								return arr;
-							}
+							};
 							p.data = format(data);
 					},
 					
@@ -219,7 +220,7 @@ define(['core/saogaUI'], function(saogaUI){
 							cache: false,
 							dataType: "json",
 							data: ajax.data,
-							beforeSend: function(data){
+							beforeSend: function(){
 								if( saogaUI.base.isFunction(ajax.beforeSend) ){
 									ajax.beforeSend();
 								}
@@ -233,7 +234,6 @@ define(['core/saogaUI'], function(saogaUI){
 								}
 							},
 							error: function(data){
-								console.log(data);
 								if( saogaUI.base.isFunction(ajax.error) ){
 									ajax.error(data);
 								}
@@ -356,7 +356,7 @@ define(['core/saogaUI'], function(saogaUI){
 													var isChecked      = obj.hasClass('l-tree-checkbox-checked'),
 														isPartChecked  = obj.hasClass('l-tree-checkbox-checked-part'),
 														checkNum       = null,
-														partCheckNum   = null,
+														//partCheckNum   = null,
 														parentWrap     = obj.parents('.l-tree-level-' + level ),
 														parentsWrap    = obj.parents('.l-tree-level-' + (level-1) ),
 														parentCheck    = parentsWrap.find('.l-tree-check-' + (level-1)),
@@ -428,7 +428,7 @@ define(['core/saogaUI'], function(saogaUI){
 														checkFn(parentCheck, level, false);
 													}
                                                     
-												}
+												};
 								
 								saogaUI.ui.onselectstart(that);
 								
@@ -465,10 +465,10 @@ define(['core/saogaUI'], function(saogaUI){
 														//parentCheck.removeClass('l-tree-radio-checked');
 													}
 													if( level >= 1 ){
-														level--
+														level--;
 														checkFn(parents);
 													}
-												}
+												};
 								
 								saogaUI.ui.onselectstart(that);
 								
@@ -582,13 +582,14 @@ define(['core/saogaUI'], function(saogaUI){
                 _cache.selected = [];
                 
                 for(; i<len; i++){
-                    var item = checkbox.eq(i)
+                    var item = checkbox.eq(i);
                     if( item.hasClass('l-tree-checkbox-checked') || item.hasClass('l-tree-checkbox-checked-part') ){
                         var node = item.next('.l-tree-node'),
                             id   = node.attr('data-id'),
                             pid  = node.attr('data-pid'),
                             name = node.attr('data-name'),
-                            obj  = {'pid':pid, 'id':id, 'name':name, 'checked':true}
+                            obj  = {'pid':pid, 'id':id, 'name':name, 'checked':true};
+							
                         _cache.selected.push(obj);
                     }
                 }
