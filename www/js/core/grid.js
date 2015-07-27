@@ -1119,26 +1119,28 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					grid1Body
 						.off('click','.l-grid-row-detailbtn')
 						.on('click','.l-grid-row-detailbtn',function(){
-							var self         = $(this),
-								parents      = self.parents('.l-grid-row'),
-								index        = parents.attr('data-row'),
-								grid2_row    = grid2Body.find('.l-grid-row').eq(index),
-								detail       = grid2Body.find('.l-grid-row-detail'+index),
-								detailHeight = 0;
+							var self      = $(this),
+								parents   = self.parents('.l-grid-row'),
+								index     = parents.attr('data-row'),
+								grid2_row = grid2Body.find('.l-grid-row').eq(index),
+								detail    = grid2Body.find('.l-grid-row-detail'+index),
+								height    = 0;
 
 							if( self.hasClass('l-grid-row-detailbtn-close') ){
 								detail.show();
 								self.removeClass('l-grid-row-detailbtn-close')
 									.addClass('l-grid-row-detailbtn-open');
-
-								parents.height(grid2_row[0].offsetHeight + detail.outerHeight());
+									
+								height = grid2_row[0].offsetHeight + detail.outerHeight();
 							}else{
 								detail.hide();
 								self.removeClass('l-grid-row-detailbtn-open')
 									.addClass('l-grid-row-detailbtn-close');
-									
-								parents.height(grid2_row[0].offsetHeight);
+								
+								height = grid2_row[0].offsetHeight;
 							}
+							
+							parents.height(height);
 						});
 				},
 				
@@ -1547,12 +1549,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								e.stopPropagation();
 							});
 						
-						$(window).on('click', function(){
-							if( isShow ){
-								popup.hide();
-								isShow = false;
-							}
-						});
+						$(window)
+							.on('click', function(){
+								if( isShow ){
+									popup.hide();
+									isShow = false;
+								}
+							});
 					}
 				},
 						
@@ -1603,7 +1606,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								if( isOnRowCheckbox ){
 									grid1Checkbox.addClass('l-checkbox-selected');									
 								}
-															
+
 								self.addClass('l-grid-row-selected');
 								selfDetail.addClass('l-grid-row-selected');
 								grid1Row.addClass('l-grid-row-selected');

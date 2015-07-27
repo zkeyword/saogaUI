@@ -53,7 +53,7 @@ define(['core/saogaUI'], function(saogaUI){
 											url: p.close.ajax.url,
 											data: p.close.ajax.data,
 											async: false,
-											success: function(html){
+											success: function(){
 												if( isFunction(p.open.run) ){
 													p.close.run();
 												}
@@ -77,7 +77,7 @@ define(['core/saogaUI'], function(saogaUI){
 											url: p.open.ajax.url,
 											data: p.open.ajax.data,
 											async: false,
-											success: function(html){
+											success: function(){
 												if( isFunction(p.open.run) ){
 													p.open.run();
 												}

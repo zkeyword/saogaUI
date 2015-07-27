@@ -9,7 +9,17 @@
 </head>
 <body>
 <form name="test" id="test" class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
-<!--
+	<!--
+	<div class="ui-form fn-clear ui-mt10" id="requiredWrap">
+		<label>
+			<i class="ui-label ui-w400">隐藏后校验，如select模拟(data-ishideValidte="true")：</i>
+			<input class="ui-input fn-hide" id="dd2" type="text" data-ishideValidte="true" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
+			<span class="ui-form-message" id="dd">xx</span>
+		</label>
+	</div>
+	-->
+
+	<!--
     <div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">下拉框(select=0)：</i>
@@ -140,13 +150,6 @@
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
-	<div class="ui-form fn-clear ui-mt10" id="requiredWrap">
-		<label>
-			<i class="ui-label ui-w400">隐藏后校验，如select模拟(data-ishideValidte="true")：</i>
-			<input class="ui-input fn-hide" id="dd2" type="text" data-ishideValidte="true" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
-			<span class="ui-form-message" id="dd">xx</span>
-		</label>
-	</div>
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">radio校验(check)：</i>
@@ -161,6 +164,7 @@
 		</label>
 		<span class="ui-form-message"></span>
 	</div>
+	-->
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">checkbox校验(check)：</i>
@@ -175,8 +179,6 @@
 		</label>
 		<span class="ui-form-message"></span>
 	</div>
-	-->
-	
 	
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
@@ -256,10 +258,10 @@ require(['app/main'], function(saogaUI){
 		.on('click','#submitLink', function(){
 			
 			if( validator.validatorAll() ){
-				
+				console.log('提交')
 			}
 			//$('#test').submit();
-			
+			console.log(validator.getStatus())
 		});
 	    
     $('#reset').click(function(){

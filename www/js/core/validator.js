@@ -73,8 +73,10 @@ define(['core/saogaUI'], function(saogaUI){
                         if( !sVal.length ){
                             return false;
                         }
+						
+						// XXX
                         
-                        if( oItem[0].type === 'checkbox' && !oItem.attr('checked') ){
+                        if( oItem[0].type === 'checkbox' && !$("input:checkbox[name='"+ oItem[0].name +"']:checked").attr('checked') ){
                             return c.handleText(oItem, 'check');
                         }
 
@@ -108,7 +110,6 @@ define(['core/saogaUI'], function(saogaUI){
                         }
                         
                         if( sVal.length !== Number(sParam) ){
-                            var text = oItem.attr('data-validate-requiredText');
                             return c.handleText(oItem, 'length', sParam);
                         }
                     },
@@ -151,7 +152,7 @@ define(['core/saogaUI'], function(saogaUI){
                             return false;
                         }
                         
-                        if(!(!isNaN(f) && f.toString() == sVal && Math.round(f) == f)){
+                        if(!(!isNaN(f) && f.toString() === sVal && Math.round(f) === f)){
                             return c.handleText(oItem, 'integer');
                         }
                     },
@@ -259,7 +260,7 @@ define(['core/saogaUI'], function(saogaUI){
                         var regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
                         if (!regex.test(sVal)) return false;
                         var d = new Date(sVal.replace(regex, '$2/$1/$3'));
-                        return ( parseInt(RegExp.$2, 10) == (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) == d.getDate()) && (parseInt(RegExp.$3, 10) == d.getFullYear() );
+                        return ( parseInt(RegExp.$2, 10) === (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) === d.getDate()) && (parseInt(RegExp.$3, 10) === d.getFullYear() );
                     },
                     
                     format: function(sVal, oItem, sParam){
@@ -430,7 +431,6 @@ define(['core/saogaUI'], function(saogaUI){
 						oTarget    = p.target,
                         fRules     = p.rules,
                         fAjax      = p.ajax,
-						bPass      = false,
 						fAction    = function(oSelf){
 										var sVal         = oSelf.val(),
 											sRule        = oSelf.attr('data-validate'),
@@ -503,12 +503,11 @@ define(['core/saogaUI'], function(saogaUI){
 											return (function(){
 												var i    = 0,
 													len  = allName.length,
-													obj  = null,
-													isOK = true; 
+													obj  = null; 
 													
 												for(; i<len; i++){
 													obj = allName.eq(i);
-													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute )
+													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute );
 													if( obj.attr('data-validate-result') === "false" ){
 														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
 														return true;
@@ -532,8 +531,7 @@ define(['core/saogaUI'], function(saogaUI){
                                         }
 									},
 						fUnAction  = function(oSelf){
-										var sVal         = oSelf.val(),
-											sHideError   = oSelf.attr('data-ishideValidte'),
+										var sHideError   = oSelf.attr('data-ishideValidte'),
 											hideErrorCls = '',
 											name         = oSelf.attr('data-validate-name'),
 											allName      = oTarget.find('[data-validate-name="'+ name +'"]'),
@@ -569,7 +567,7 @@ define(['core/saogaUI'], function(saogaUI){
 												fUnAction( oItem.eq(i) );
 											}
 										}
-									}
+									};
 					
 					oTarget.on('blur', '[data-validate]', function(e){
 						fAction( $(e.currentTarget) );
@@ -641,7 +639,7 @@ define(['core/saogaUI'], function(saogaUI){
                     .removeClass('l-form-error');
                 oMessage.eq(i).empty();
             }
-		}
+		};
 		
 		g.getStatus = function(){
 			var oTarget       = p.target,
@@ -654,19 +652,21 @@ define(['core/saogaUI'], function(saogaUI){
 				len           = oVisibleError.length + oHideError.length;
 			
 			if( oVisibleError.length ){
-				$('body').animate({scrollTop:oVisibleError[0].scrollTop},500);
+				console.log(oVisibleError);
+				
+				$('body').animate({scrollTop:oVisibleError[0].offsetTop},500);
 			}
 			
 			//else if( oHideError.length ){
 				//$('body').animate({scrollTop:oHideError[0].scrollTop},500);
 			//}
 			return !len;
-		}
+		};
 		
 		g.validatorAll = function(){
 			p.target.triggerHandler('all');
             return g.getStatus();
-		}
+		};
 		
 		g.reload = function(){
 			//if( p.target.length ){
@@ -675,7 +675,7 @@ define(['core/saogaUI'], function(saogaUI){
 				console.log('target overloaded');
 				c.init(o);
 			//} 
-		}
+		};
 
 		return c.init(o);
 	};

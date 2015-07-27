@@ -34,7 +34,7 @@ gulp.task('less', function () {
 //jshint
 gulp.task('jshint', function() {
 	gulp
-		.src(path.dev+'js/core/grid.js')
+		.src(path.dev+'js/core/drag.js')
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('default'));	
 })

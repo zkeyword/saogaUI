@@ -3494,7 +3494,7 @@ define('core/saogaUI',[],function(){
 });
 /*!art-template - Template Engine | http://aui.github.com/artTemplate/*/
 !function(){function a(a){return a.replace(t,"").replace(u,",").replace(v,"").replace(w,"").replace(x,"").split(/^$|,+/)}function b(a){return"'"+a.replace(/('|\\)/g,"\\$1").replace(/\r/g,"\\r").replace(/\n/g,"\\n")+"'"}function c(c,d){function e(a){return m+=a.split(/\n/).length-1,k&&(a=a.replace(/[\n\r\t\s]+/g," ").replace(/<!--.*?-->/g,"")),a&&(a=s[1]+b(a)+s[2]+"\n"),a}function f(b){var c=m;if(j?b=j(b,d):g&&(b=b.replace(/\n/g,function(){return m++,"$line="+m+";"})),0===b.indexOf("=")){var e=l&&!/^=[=#]/.test(b);if(b=b.replace(/^=[=#]?|[\s;]*$/g,""),e){var f=b.replace(/\s*\([^\)]+\)/,"");n[f]||/^(include|print)$/.test(f)||(b="$escape("+b+")")}else b="$string("+b+")";b=s[1]+b+s[2]}return g&&(b="$line="+c+";"+b),r(a(b),function(a){if(a&&!p[a]){var b;b="print"===a?u:"include"===a?v:n[a]?"$utils."+a:o[a]?"$helpers."+a:"$data."+a,w+=a+"="+b+",",p[a]=!0}}),b+"\n"}var g=d.debug,h=d.openTag,i=d.closeTag,j=d.parser,k=d.compress,l=d.escape,m=1,p={$data:1,$filename:1,$utils:1,$helpers:1,$out:1,$line:1},q="".trim,s=q?["$out='';","$out+=",";","$out"]:["$out=[];","$out.push(",");","$out.join('')"],t=q?"$out+=text;return $out;":"$out.push(text);",u="function(){var text=''.concat.apply('',arguments);"+t+"}",v="function(filename,data){data=data||$data;var text=$utils.$include(filename,data,$filename);"+t+"}",w="var $utils=this,$helpers=$utils.$helpers,"+(g?"$line=0,":""),x=s[0],y="return new String("+s[3]+");";r(c.split(h),function(a){a=a.split(i);var b=a[0],c=a[1];1===a.length?x+=e(b):(x+=f(b),c&&(x+=e(c)))});var z=w+x+y;g&&(z="try{"+z+"}catch(e){throw {filename:$filename,name:'Render Error',message:e.message,line:$line,source:"+b(c)+".split(/\\n/)[$line-1].replace(/^[\\s\\t]+/,'')};}");try{var A=new Function("$data","$filename",z);return A.prototype=n,A}catch(B){throw B.temp="function anonymous($data,$filename) {"+z+"}",B}}var d=function(a,b){return"string"==typeof b?q(b,{filename:a}):g(a,b)};d.version="3.0.0",d.config=function(a,b){e[a]=b};var e=d.defaults={openTag:"<%",closeTag:"%>",escape:!0,cache:!0,compress:!1,parser:null},f=d.cache={};d.render=function(a,b){return q(a,b)};var g=d.renderFile=function(a,b){var c=d.get(a)||p({filename:a,name:"Render Error",message:"Template not found"});return b?c(b):c};d.get=function(a){var b;if(f[a])b=f[a];else if("object"==typeof document){var c=document.getElementById(a);if(c){var d=(c.value||c.innerHTML).replace(/^\s*|\s*$/g,"");b=q(d,{filename:a})}}return b};var h=function(a,b){return"string"!=typeof a&&(b=typeof a,"number"===b?a+="":a="function"===b?h(a.call(a)):""),a},i={"<":"&#60;",">":"&#62;",'"':"&#34;","'":"&#39;","&":"&#38;"},j=function(a){return i[a]},k=function(a){return h(a).replace(/&(?![\w#]+;)|[<>"']/g,j)},l=Array.isArray||function(a){return"[object Array]"==={}.toString.call(a)},m=function(a,b){var c,d;if(l(a))for(c=0,d=a.length;d>c;c++)b.call(a,a[c],c,a);else for(c in a)b.call(a,a[c],c)},n=d.utils={$helpers:{},$include:g,$string:h,$escape:k,$each:m};d.helper=function(a,b){o[a]=b};var o=d.helpers=n.$helpers;d.onerror=function(a){var b="Template Error\n\n";for(var c in a)b+="<"+c+">\n"+a[c]+"\n\n";"object"==typeof console&&console.error(b)};var p=function(a){return d.onerror(a),function(){return"{Template Error}"}},q=d.compile=function(a,b){function d(c){try{return new i(c,h)+""}catch(d){return b.debug?p(d)():(b.debug=!0,q(a,b)(c))}}b=b||{};for(var g in e)void 0===b[g]&&(b[g]=e[g]);var h=b.filename;try{var i=c(a,b)}catch(j){return j.filename=h||"anonymous",j.name="Syntax Error",p(j)}return d.prototype=i.prototype,d.toString=function(){return i.toString()},h&&b.cache&&(f[h]=d),d},r=n.$each,s="break,case,catch,continue,debugger,default,delete,do,else,false,finally,for,function,if,in,instanceof,new,null,return,switch,this,throw,true,try,typeof,var,void,while,with,abstract,boolean,byte,char,class,const,double,enum,export,extends,final,float,goto,implements,import,int,interface,long,native,package,private,protected,public,short,static,super,synchronized,throws,transient,volatile,arguments,let,yield,undefined",t=/\/\*[\w\W]*?\*\/|\/\/[^\n]*\n|\/\/[^\n]*$|"(?:[^"\\]|\\[\w\W])*"|'(?:[^'\\]|\\[\w\W])*'|[\s\t\n]*\.[\s\t\n]*[$\w\.]+/g,u=/[^\w$]+/g,v=new RegExp(["\\b"+s.replace(/,/g,"\\b|\\b")+"\\b"].join("|"),"g"),w=/^\d[^,]*|,\d[^,]*/g,x=/^,+|,+$/g;e.openTag="{{",e.closeTag="}}";var y=function(a,b){var c=b.split(":"),d=c.shift(),e=c.join(":")||"";return e&&(e=", "+e),"$helpers."+d+"("+a+e+")"};e.parser=function(a,b){a=a.replace(/^\s/,"");var c=a.split(" "),e=c.shift(),f=c.join(" ");switch(e){case"if":a="if("+f+"){";break;case"else":c="if"===c.shift()?" if("+c.join(" ")+")":"",a="}else"+c+"{";break;case"/if":a="}";break;case"each":var g=c[0]||"$data",h=c[1]||"as",i=c[2]||"$value",j=c[3]||"$index",k=i+","+j;"as"!==h&&(g="[]"),a="$each("+g+",function("+k+"){";break;case"/each":a="});";break;case"echo":a="print("+f+");";break;case"print":case"include":a=e+"("+c.join(",")+");";break;default:if(-1!==f.indexOf("|")){var l=b.escape;0===a.indexOf("#")&&(a=a.substr(1),l=!1);for(var m=0,n=a.split("|"),o=n.length,p=l?"$escape":"$string",q=p+"("+n[m++]+")";o>m;m++)q=y(q,n[m]);a="=#"+q}else a=d.helpers[e]?"=#"+e+"("+c.join(",")+");":"="+a}return a},"function"==typeof define?define('app/template',[],function(){return d}):"undefined"!=typeof exports?module.exports=d:this.template=d}();
-define('core/drag',['core/saogaUI'],function(saogaUI){
+define('core/drag',[],function(){
 	
 	
 	
@@ -3507,7 +3507,7 @@ define('core/drag',['core/saogaUI'],function(saogaUI){
     * @param {String} options.dragItem 拖拽触发对象选择器
     * @param {String} options.dragWrap 拖拽移动对象选择器
 	*/
-	var drag = function(options){         //IE下 iframe内的的拖动还是有问题
+	var Drag = function(options){         //IE下 iframe内的的拖动还是有问题
 	
 		var o = options || {};
 		if( !o.dragItem ){return false;}
@@ -3517,41 +3517,40 @@ define('core/drag',['core/saogaUI'],function(saogaUI){
 			mouse    = {x:0,y:0};
 			
 		function _moveDialog(e){
-	        e = window.event || e;
 	        
 	        var top  = dragWrap.css('top') === 'auto' ? 0 : dragWrap.css('top'),
 				left = dragWrap.css('left') === 'auto' ? 0 : dragWrap.css('left');
 				
-	        dragWrap.css({
-				top  : parseInt(top) + (e.clientY - mouse.y),
-				left : parseInt(left) + (e.clientX - mouse.x)
-			});
+	        dragWrap
+				.css({
+					top  : parseInt(top) + (e.clientY - mouse.y),
+					left : parseInt(left) + (e.clientX - mouse.x)
+				});
 	        
 	        mouse.x = e.clientX;
 	        mouse.y = e.clientY;
 	    }
 		
-	    dragItem.mousedown(function(e){
-	        e = window.event || e;
-	        mouse.x = e.clientX;
-	        mouse.y = e.clientY;
-	        $(win).bind('mousemove', _moveDialog);
-	        
-	        if(e.preventDefault){
-	        	e.preventDefault();
-        	}else{
-        		e.returnValue = false;
-        	}
-	    });
+	    dragItem
+			.on('mousedown', function(e){
+				mouse.x = e.clientX;
+				mouse.y = e.clientY;
+				$(win).on('mousemove', _moveDialog);
+				
+				if(e.preventDefault){
+					e.preventDefault();
+				}else{
+					e.returnValue = false;
+				}
+			});
 	    
-	    $(win).mouseup(function(event){
-	        $(win).unbind('mousemove', _moveDialog);
-	    });
+	    $(win)
+			.on('mouseup', function(){
+				$(win).off('mousemove', _moveDialog);
+			});
 	};
 	
-	saogaUI.drag = drag;
-	
-	return drag;
+	return Drag;
 });
 /**
  * @license RequireJS i18n 2.0.4 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -5487,8 +5486,10 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                         if( !sVal.length ){
                             return false;
                         }
+						
+						// XXX
                         
-                        if( oItem[0].type === 'checkbox' && !oItem.attr('checked') ){
+                        if( oItem[0].type === 'checkbox' && !$("input:checkbox[name='"+ oItem[0].name +"']:checked").attr('checked') ){
                             return c.handleText(oItem, 'check');
                         }
 
@@ -5522,7 +5523,6 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                         }
                         
                         if( sVal.length !== Number(sParam) ){
-                            var text = oItem.attr('data-validate-requiredText');
                             return c.handleText(oItem, 'length', sParam);
                         }
                     },
@@ -5565,7 +5565,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                             return false;
                         }
                         
-                        if(!(!isNaN(f) && f.toString() == sVal && Math.round(f) == f)){
+                        if(!(!isNaN(f) && f.toString() === sVal && Math.round(f) === f)){
                             return c.handleText(oItem, 'integer');
                         }
                     },
@@ -5673,7 +5673,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                         var regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
                         if (!regex.test(sVal)) return false;
                         var d = new Date(sVal.replace(regex, '$2/$1/$3'));
-                        return ( parseInt(RegExp.$2, 10) == (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) == d.getDate()) && (parseInt(RegExp.$3, 10) == d.getFullYear() );
+                        return ( parseInt(RegExp.$2, 10) === (1 + d.getMonth()) ) && (parseInt(RegExp.$1, 10) === d.getDate()) && (parseInt(RegExp.$3, 10) === d.getFullYear() );
                     },
                     
                     format: function(sVal, oItem, sParam){
@@ -5844,7 +5844,6 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 						oTarget    = p.target,
                         fRules     = p.rules,
                         fAjax      = p.ajax,
-						bPass      = false,
 						fAction    = function(oSelf){
 										var sVal         = oSelf.val(),
 											sRule        = oSelf.attr('data-validate'),
@@ -5917,12 +5916,11 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 											return (function(){
 												var i    = 0,
 													len  = allName.length,
-													obj  = null,
-													isOK = true; 
+													obj  = null; 
 													
 												for(; i<len; i++){
 													obj = allName.eq(i);
-													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute )
+													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute );
 													if( obj.attr('data-validate-result') === "false" ){
 														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
 														return true;
@@ -5946,8 +5944,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                                         }
 									},
 						fUnAction  = function(oSelf){
-										var sVal         = oSelf.val(),
-											sHideError   = oSelf.attr('data-ishideValidte'),
+										var sHideError   = oSelf.attr('data-ishideValidte'),
 											hideErrorCls = '',
 											name         = oSelf.attr('data-validate-name'),
 											allName      = oTarget.find('[data-validate-name="'+ name +'"]'),
@@ -5983,7 +5980,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 												fUnAction( oItem.eq(i) );
 											}
 										}
-									}
+									};
 					
 					oTarget.on('blur', '[data-validate]', function(e){
 						fAction( $(e.currentTarget) );
@@ -6055,7 +6052,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                     .removeClass('l-form-error');
                 oMessage.eq(i).empty();
             }
-		}
+		};
 		
 		g.getStatus = function(){
 			var oTarget       = p.target,
@@ -6068,19 +6065,21 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 				len           = oVisibleError.length + oHideError.length;
 			
 			if( oVisibleError.length ){
-				$('body').animate({scrollTop:oVisibleError[0].scrollTop},500);
+				console.log(oVisibleError);
+				
+				$('body').animate({scrollTop:oVisibleError[0].offsetTop},500);
 			}
 			
 			//else if( oHideError.length ){
 				//$('body').animate({scrollTop:oHideError[0].scrollTop},500);
 			//}
 			return !len;
-		}
+		};
 		
 		g.validatorAll = function(){
 			p.target.triggerHandler('all');
             return g.getStatus();
-		}
+		};
 		
 		g.reload = function(){
 			//if( p.target.length ){
@@ -6089,7 +6088,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 				console.log('target overloaded');
 				c.init(o);
 			//} 
-		}
+		};
 
 		return c.init(o);
 	};
@@ -6323,7 +6322,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							itemOffsetTop2 = item.offset().top - obj.offset().top;           
 							
 						//console.log(itemOffsetTop,clientHeight,offsetTop, item.offset().top - obj.offset().top );
-						console.log( itemOffsetTop,itemOffsetTop2,clientHeight, Math.ceil(scrollHeight / clientHeight) )
+						console.log( itemOffsetTop,itemOffsetTop2,clientHeight, Math.ceil(scrollHeight / clientHeight) );
 						
 						if( item.offset().top - obj.offset().top > clientHeight ){
 							//scrollTop = ;
@@ -6337,7 +6336,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							obj.scrollTop(obj.scrollTop() + itemHeight);
 						}
 						if( itemOffsetTop2 < itemHeight ){
-							console.log(obj.scrollTop(),itemHeight)
+							console.log(obj.scrollTop(),itemHeight);
 							obj.scrollTop(obj.scrollTop() - itemHeight);
 						}
 						
@@ -6529,7 +6528,8 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							})
                             .on('click','.l-select-single-arrow',function(e){
                                 var self       = $(e.currentTarget),
-                                    singleInit = self.siblings('.l-select-single-init')
+                                    singleInit = self.siblings('.l-select-single-init');
+									
                                 singleInit.trigger('click');
                                 e.stopPropagation();
                             });
@@ -6625,7 +6625,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							textWidth   = p.width - 48;
 
 						if( checkbox ){
-							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>'
+							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>';
 							for(; i<dataLen; i++){
 								str += '<li class="l-select-multiple-down-li'+ (i === 0 ? ' on' : '') +' fn-clear" data-id="'+ data[i].id +'" data-val="'+ data[i].val +'" data-index="'+ i +'">'+ 
 											'<span class="l-checkbox fn-left l-checkbox-'+ i +'"></span>' +
@@ -6665,7 +6665,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							checkbox     = p.checkbox,
 							radio        = p.radio,
 							reg          = new RegExp((inputVal?inputVal:'').toLowerCase()),
-							val          = null,
+							//val          = null,
 							name         = null,
 							isSelected   = false;
 							
@@ -6675,8 +6675,8 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 
 						for(; y<dataLen; y++){
 						
-							//val        = data[y].val ? data[y].val + '' : '',
-							name       = data[y].name ? data[y].name + '' : '',
+							//val        = data[y].val ? data[y].val + '' : '';
+							name       = data[y].name ? data[y].name + '' : '';
 							isSelected = false;
 							
 							//过滤已选数据
@@ -6795,7 +6795,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										for(; i<dataLen; i++){
 											if( Number(data[i].id) === Number(id) ){
 												if( radio ){
-													t.selectedData = []
+													t.selectedData = [];
 												}
 												t.selectedData.push(data[i]);
 											}
@@ -6833,7 +6833,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										isRefresh = false;
 									}
 									
-									console.log(t.selectedData, p.data, t.data)
+									console.log(t.selectedData, p.data, t.data);
 									
 									coreFn.initSelected(inputVal, isRefresh);
 								},
@@ -6864,10 +6864,11 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									for(; i<len; i++){
 
 										if( checkbox || radio ){
+											var downAllItem = down.find('.l-select-multiple-down-li'),
+												downItemLen = downAllItem.length;
+											
 											for(var j = 0; j<dataLen; j++){
-												var downAllItem = down.find('.l-select-multiple-down-li'),
-													downItem    = downAllItem.eq(j),
-													downItemLen = downAllItem.length;
+												var downItem = downAllItem.eq(j);
 	
 												if( Number(downItem.attr('data-id')) === Number(selectedData[i].id) ){
 													downItem
@@ -6971,9 +6972,9 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							.on('click', '.l-checkbox', function(e){
 								e.stopPropagation();
 								var self        = $(e.currentTarget),
-									index       = self.parent().attr('data-index'),
+									//index       = self.parent().attr('data-index'),
 									downItem    = down.find('.l-select-multiple-down-li'),
-									downLen     = downItem.length,
+									//downLen     = downItem.length,
 									allCheckbox = down.find('.l-checkbox');
 									
 								if( self.hasClass('l-checkbox-selected') ){
@@ -7028,9 +7029,9 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								var self            = $(e.currentTarget),
 									code            = e.keyCode,
 									val             = self.val(),
-									i               = 0,
-									selectedData    = t.selectedData,
-									selectedDataLen = selectedData.length,
+									//i               = 0,
+									//selectedData    = t.selectedData,
+									//selectedDataLen = selectedData.length,
 									valReg          = /\\|\[|\]|\*|\(|\)|\+|\?/,
 									itemLast        = selected.find('.l-select-multiple-selected-li:last');
 
@@ -7090,7 +7091,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									isShow = false;
 									that.close();
 								}
-							})
+							});
 							/*.on('keydown', function(e){
 								if(isShow){
 									var li    = down.find('.l-select-multiple-down-li'),
@@ -7221,7 +7222,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								isShow = true;
 								that.show(wrap);
 							})
-                            .on('keyup', input, function(e){
+                            .on('keyup', input, function(){
                                 target.val('');
 								tree.refresh({
                                     selected:[]
@@ -7234,7 +7235,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									isShow = false;
 									that.close();
 								}
-							})
+							});
 					},
 					
 					/**
@@ -7250,7 +7251,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							//async: false,
 							dataType: "json",
 							data: ajax.data,
-							beforeSend: function(data){
+							beforeSend: function(){
 								if( saogaUI.base.isFunction(ajax.beforeSend) ){
 									ajax.beforeSend();
 								}
@@ -7355,7 +7356,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 		g.reload = function(){
 			t.selectedData = [];
 			c.init(o);
-		}
+		};
 		
 		return c.init(o);
 	};
@@ -8488,26 +8489,28 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					grid1Body
 						.off('click','.l-grid-row-detailbtn')
 						.on('click','.l-grid-row-detailbtn',function(){
-							var self         = $(this),
-								parents      = self.parents('.l-grid-row'),
-								index        = parents.attr('data-row'),
-								grid2_row    = grid2Body.find('.l-grid-row').eq(index),
-								detail       = grid2Body.find('.l-grid-row-detail'+index),
-								detailHeight = 0;
+							var self      = $(this),
+								parents   = self.parents('.l-grid-row'),
+								index     = parents.attr('data-row'),
+								grid2_row = grid2Body.find('.l-grid-row').eq(index),
+								detail    = grid2Body.find('.l-grid-row-detail'+index),
+								height    = 0;
 
 							if( self.hasClass('l-grid-row-detailbtn-close') ){
 								detail.show();
 								self.removeClass('l-grid-row-detailbtn-close')
 									.addClass('l-grid-row-detailbtn-open');
-
-								parents.height(grid2_row[0].offsetHeight + detail.outerHeight());
+									
+								height = grid2_row[0].offsetHeight + detail.outerHeight();
 							}else{
 								detail.hide();
 								self.removeClass('l-grid-row-detailbtn-open')
 									.addClass('l-grid-row-detailbtn-close');
-									
-								parents.height(grid2_row[0].offsetHeight);
+								
+								height = grid2_row[0].offsetHeight;
 							}
+							
+							parents.height(height);
 						});
 				},
 				
@@ -8916,12 +8919,13 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								e.stopPropagation();
 							});
 						
-						$(window).on('click', function(){
-							if( isShow ){
-								popup.hide();
-								isShow = false;
-							}
-						});
+						$(window)
+							.on('click', function(){
+								if( isShow ){
+									popup.hide();
+									isShow = false;
+								}
+							});
 					}
 				},
 						
@@ -8972,7 +8976,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 								if( isOnRowCheckbox ){
 									grid1Checkbox.addClass('l-checkbox-selected');									
 								}
-															
+
 								self.addClass('l-grid-row-selected');
 								selfDetail.addClass('l-grid-row-selected');
 								grid1Row.addClass('l-grid-row-selected');
@@ -10222,7 +10226,7 @@ define('core/btnSwitch',['core/saogaUI'], function(saogaUI){
 											url: p.close.ajax.url,
 											data: p.close.ajax.data,
 											async: false,
-											success: function(html){
+											success: function(){
 												if( isFunction(p.open.run) ){
 													p.close.run();
 												}
@@ -10246,7 +10250,7 @@ define('core/btnSwitch',['core/saogaUI'], function(saogaUI){
 											url: p.open.ajax.url,
 											data: p.open.ajax.data,
 											async: false,
-											success: function(html){
+											success: function(){
 												if( isFunction(p.open.run) ){
 													p.open.run();
 												}

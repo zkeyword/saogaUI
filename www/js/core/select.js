@@ -71,7 +71,7 @@ define(['core/saogaUI'], function(saogaUI){
 							itemOffsetTop2 = item.offset().top - obj.offset().top;           
 							
 						//console.log(itemOffsetTop,clientHeight,offsetTop, item.offset().top - obj.offset().top );
-						console.log( itemOffsetTop,itemOffsetTop2,clientHeight, Math.ceil(scrollHeight / clientHeight) )
+						console.log( itemOffsetTop,itemOffsetTop2,clientHeight, Math.ceil(scrollHeight / clientHeight) );
 						
 						if( item.offset().top - obj.offset().top > clientHeight ){
 							//scrollTop = ;
@@ -85,7 +85,7 @@ define(['core/saogaUI'], function(saogaUI){
 							obj.scrollTop(obj.scrollTop() + itemHeight);
 						}
 						if( itemOffsetTop2 < itemHeight ){
-							console.log(obj.scrollTop(),itemHeight)
+							console.log(obj.scrollTop(),itemHeight);
 							obj.scrollTop(obj.scrollTop() - itemHeight);
 						}
 						
@@ -277,7 +277,8 @@ define(['core/saogaUI'], function(saogaUI){
 							})
                             .on('click','.l-select-single-arrow',function(e){
                                 var self       = $(e.currentTarget),
-                                    singleInit = self.siblings('.l-select-single-init')
+                                    singleInit = self.siblings('.l-select-single-init');
+									
                                 singleInit.trigger('click');
                                 e.stopPropagation();
                             });
@@ -373,7 +374,7 @@ define(['core/saogaUI'], function(saogaUI){
 							textWidth   = p.width - 48;
 
 						if( checkbox ){
-							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>'
+							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>';
 							for(; i<dataLen; i++){
 								str += '<li class="l-select-multiple-down-li'+ (i === 0 ? ' on' : '') +' fn-clear" data-id="'+ data[i].id +'" data-val="'+ data[i].val +'" data-index="'+ i +'">'+ 
 											'<span class="l-checkbox fn-left l-checkbox-'+ i +'"></span>' +
@@ -413,7 +414,7 @@ define(['core/saogaUI'], function(saogaUI){
 							checkbox     = p.checkbox,
 							radio        = p.radio,
 							reg          = new RegExp((inputVal?inputVal:'').toLowerCase()),
-							val          = null,
+							//val          = null,
 							name         = null,
 							isSelected   = false;
 							
@@ -423,8 +424,8 @@ define(['core/saogaUI'], function(saogaUI){
 
 						for(; y<dataLen; y++){
 						
-							//val        = data[y].val ? data[y].val + '' : '',
-							name       = data[y].name ? data[y].name + '' : '',
+							//val        = data[y].val ? data[y].val + '' : '';
+							name       = data[y].name ? data[y].name + '' : '';
 							isSelected = false;
 							
 							//过滤已选数据
@@ -543,7 +544,7 @@ define(['core/saogaUI'], function(saogaUI){
 										for(; i<dataLen; i++){
 											if( Number(data[i].id) === Number(id) ){
 												if( radio ){
-													t.selectedData = []
+													t.selectedData = [];
 												}
 												t.selectedData.push(data[i]);
 											}
@@ -581,7 +582,7 @@ define(['core/saogaUI'], function(saogaUI){
 										isRefresh = false;
 									}
 									
-									console.log(t.selectedData, p.data, t.data)
+									console.log(t.selectedData, p.data, t.data);
 									
 									coreFn.initSelected(inputVal, isRefresh);
 								},
@@ -612,10 +613,11 @@ define(['core/saogaUI'], function(saogaUI){
 									for(; i<len; i++){
 
 										if( checkbox || radio ){
+											var downAllItem = down.find('.l-select-multiple-down-li'),
+												downItemLen = downAllItem.length;
+											
 											for(var j = 0; j<dataLen; j++){
-												var downAllItem = down.find('.l-select-multiple-down-li'),
-													downItem    = downAllItem.eq(j),
-													downItemLen = downAllItem.length;
+												var downItem = downAllItem.eq(j);
 	
 												if( Number(downItem.attr('data-id')) === Number(selectedData[i].id) ){
 													downItem
@@ -719,9 +721,9 @@ define(['core/saogaUI'], function(saogaUI){
 							.on('click', '.l-checkbox', function(e){
 								e.stopPropagation();
 								var self        = $(e.currentTarget),
-									index       = self.parent().attr('data-index'),
+									//index       = self.parent().attr('data-index'),
 									downItem    = down.find('.l-select-multiple-down-li'),
-									downLen     = downItem.length,
+									//downLen     = downItem.length,
 									allCheckbox = down.find('.l-checkbox');
 									
 								if( self.hasClass('l-checkbox-selected') ){
@@ -776,9 +778,9 @@ define(['core/saogaUI'], function(saogaUI){
 								var self            = $(e.currentTarget),
 									code            = e.keyCode,
 									val             = self.val(),
-									i               = 0,
-									selectedData    = t.selectedData,
-									selectedDataLen = selectedData.length,
+									//i               = 0,
+									//selectedData    = t.selectedData,
+									//selectedDataLen = selectedData.length,
 									valReg          = /\\|\[|\]|\*|\(|\)|\+|\?/,
 									itemLast        = selected.find('.l-select-multiple-selected-li:last');
 
@@ -838,7 +840,7 @@ define(['core/saogaUI'], function(saogaUI){
 									isShow = false;
 									that.close();
 								}
-							})
+							});
 							/*.on('keydown', function(e){
 								if(isShow){
 									var li    = down.find('.l-select-multiple-down-li'),
@@ -969,7 +971,7 @@ define(['core/saogaUI'], function(saogaUI){
 								isShow = true;
 								that.show(wrap);
 							})
-                            .on('keyup', input, function(e){
+                            .on('keyup', input, function(){
                                 target.val('');
 								tree.refresh({
                                     selected:[]
@@ -982,7 +984,7 @@ define(['core/saogaUI'], function(saogaUI){
 									isShow = false;
 									that.close();
 								}
-							})
+							});
 					},
 					
 					/**
@@ -998,7 +1000,7 @@ define(['core/saogaUI'], function(saogaUI){
 							//async: false,
 							dataType: "json",
 							data: ajax.data,
-							beforeSend: function(data){
+							beforeSend: function(){
 								if( saogaUI.base.isFunction(ajax.beforeSend) ){
 									ajax.beforeSend();
 								}
@@ -1103,7 +1105,7 @@ define(['core/saogaUI'], function(saogaUI){
 		g.reload = function(){
 			t.selectedData = [];
 			c.init(o);
-		}
+		};
 		
 		return c.init(o);
 	};
