@@ -600,9 +600,11 @@ define(['core/saogaUI'], function(saogaUI){
 					}
 					
 					p.target = $(p.target);
+					
 					if( !p.target.length ){
 						console.log('target not find');
 					}
+					
 					c.run();
 				}
 			};
