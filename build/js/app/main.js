@@ -5724,19 +5724,22 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                 
                 },
 				
-				route: function(sVal, sRule, oItem){
+				route: function(oItem){
+					
+					if( !oItem.length ){ return; }
+					
 					var oThat      = this,
-						aRule      = sRule.split(';'),
+						sVal       = oItem.val(),
+						aRule      = oItem.attr('data-validate').split(';'),
 						len        = aRule.length,
 						i          = 0,
 						rCode      = /\=/,
 						rFormat    = /format\=|ajax\=/,
-						isFunction = saogaUI.base.isFunction,
-						oReturn    = {};
+						isFunction = saogaUI.base.isFunction;
 						
 					for(; i<len; i++){
-						var sText    = '',
-							fRule    = null,
+						var fRule    = null,
+							sText    = '',
 							sType    = '',
 							sTypeVal = '';
 						
@@ -5773,14 +5776,15 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 						}
 
 						if( sText ){
-							oReturn.html    = sText;
-							oReturn.type    = sType;
-							oReturn.typeVal = sTypeVal;
-							return oReturn;
+							return {
+								html: sText,
+								type: sType,
+								typeVal: sTypeVal
+							};
 						}
 					}
 					
-					return oReturn;
+					return null;
 				},
 				
                 handleText: function(oItem, sMark, sParam){
@@ -5799,7 +5803,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 						error    = parents.find('.l-form-error'),
 						oItems   = parents.find('[data-validate]'),
 						html     = sContents;
-						
+
 					if( !message.length ){
 						if( oSelf.next('.ui-form-message').length ){
 							message = oSelf.next('.ui-form-message');
@@ -5820,23 +5824,29 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 				},
 				
 				handleError: function(oSelf, type, html, typeVal){
-					var oThat        = this,
-						sHideError   = oSelf.attr('data-ishideValidte'),
-						hideErrorCls = (sHideError === "true" && sHideError) ? ' l-form-hideError' :'';
+					var oThat      = this,
+						sHideError = oSelf.attr('data-ishideValidte'),
+						errorCls   = (sHideError === "true" && sHideError) ? 'l-form-error l-form-hideError' :'l-form-error';
 
 					if( html ){
-						oSelf.addClass('l-form-error'+hideErrorCls);
-						oSelf.parents('.l-select-wrap')
-							 .find('.l-select-single-init')
-							 .addClass('l-form-error' + hideErrorCls);
+						oSelf
+							.addClass(errorCls)
+							.attr('data-validate-result', 'false')
+							.parents('.l-select-wrap')
+							.find('.l-select-single-init')
+							.addClass(errorCls);
 						oThat.handleMessage(oSelf, '<span class="error">'+html+'</span>', type, typeVal);
 					}else{
-						oSelf.removeClass('l-form-error' + hideErrorCls);
-						oSelf.parents('.l-select-wrap')
-							 .find('.l-select-single-init')
-							 .removeClass('l-form-error' + hideErrorCls);
+						oSelf
+							.removeClass(errorCls)
+							.attr('data-validate-result', 'true')
+							.parents('.l-select-wrap')
+							.find('.l-select-single-init')
+							.removeClass(errorCls);
 						oThat.handleMessage(oSelf, '<span class="success"></span>', type);
 					}
+					
+					return html;
 				},
 				
 				run: function(){
@@ -5845,23 +5855,16 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                         fRules     = p.rules,
                         fAjax      = p.ajax,
 						fAction    = function(oSelf){
-										var sVal         = oSelf.val(),
-											sRule        = oSelf.attr('data-validate'),
-											sHideError   = oSelf.attr('data-ishideValidte'),
-											hideErrorCls = '',
-											oRoute       = {},
-											name         = oSelf.attr('data-validate-name'),
-											allName      = oTarget.find('[data-validate-name="'+ name +'"]'),
-											errorLen     = allName.parents('.ui-form').find('.l-form-error').length,
-											isOK         = oTarget.find('[data-validate-result="true"]').length;
-											
-										if( sHideError === "true" && sHideError ){
-											hideErrorCls = " l-form-hideError";
-										}
+										var sVal     = oSelf.val(),
+											sRule    = oSelf.attr('data-validate'),
+											name     = oSelf.attr('data-validate-name'),
+											allName  = oTarget.find('[data-validate-name="'+ name +'"]'),
+											errorLen = allName.parents('.ui-form').find('.l-form-error').length,
+											isOK     = oTarget.find('[data-validate-result="true"]').length,
+											oRoute   = null;
 
                                         if( saogaUI.base.isFunction(fRules) && sRule === 'process' ){
-                                            processHandle('process', fRules(oSelf), true );
-                                            return true;
+                                            return processHandle('process', fRules(oSelf), true );
                                         }
                                         
                                         if( saogaUI.base.isFunction(fAjax) && sRule === 'ajax' ){
@@ -5872,90 +5875,78 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
                                             return true;
                                         }
 
-										oRoute = oThat.route(sVal, sRule, oSelf);
+										oRoute = oThat.route(oSelf);
 										
-										if( oRoute.html ){
-											
-											if( name && allName.length ){
-												
+										if( name ){
+											if( oRoute ){
 												if( oRoute.type !== 'required' ){
-													oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-													oSelf.attr('data-validate-result','false');
-													return true;
+													return sVal && oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
 												}else if( errorLen && !sVal ){
-													return ;
+													return allNameHandle();
 												}
-												
 												if( isOK && oRoute.type === 'required' ){
-													if( oSelf.attr('data-validate-result') === 'true' && !oSelf.val() && !oSelf.hasClass('l-form-error') && !allName.val() ){
-														oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-														oSelf.attr('data-validate-result','false');
-														return true;
+													if( oSelf.attr('data-validate-result') === 'true' &&
+															!sVal &&
+															!oSelf.hasClass('l-form-error') &&
+															!allName.val() 
+													){
+														return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
 													}
-													if( oSelf.hasClass('l-form-error') && !oSelf.val() ){
-														oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-														oSelf.attr('data-validate-result','false');
-														return true;
+													if( oSelf.hasClass('l-form-error') && !sVal ){
+														return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
 													}
-													oThat.handleError(allName);
-													oSelf.attr('data-validate-result','true');
-													return true;
-												}
-												
-												oThat.handleError(allName, oRoute.type, oRoute.html, oRoute.typeVal);
-												return true;
-
-											}
-
-											oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-											return true;
-											
-										}else if( name && allName.length ){
-											oSelf.attr('data-validate-result','true');
-											
-											return (function(){
-												var i    = 0,
-													len  = allName.length,
-													obj  = null; 
 													
-												for(; i<len; i++){
-													obj = allName.eq(i);
-													console.log( obj.attr('data-validate-result') === "false", oRoute.html, oRoute );
-													if( obj.attr('data-validate-result') === "false" ){
-														oThat.handleError(obj, oRoute.type, oRoute.html, oRoute.typeVal);
-														return true;
-													}
+													return oThat.handleError(allName);
 												}
-												
-												oThat.handleError(allName);
-												return true;
-											})();
+
+												return oThat.handleError(allName, oRoute.type, oRoute.html, oRoute.typeVal);
+											}
 										}
-																				
-										oThat.handleError(oSelf);
-                                        return true;
-                                        
+										
+										return oRoute ? 
+													oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal) : 
+													oThat.handleError(oSelf);
+										
+										function allNameHandle(){
+											var nullObj = allName.filter(function(){
+																return !this.value;
+															}),
+												okObj   = allName.filter(function(){
+																return this.getAttribute('data-validate-result') === 'true';
+															});
+
+											if( nullObj.length && okObj.length > 0 ){
+												return oThat.handleError(allName);
+											}
+											
+											if( errorLen ){
+												return ;
+											}
+											
+											return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
+										}
+
                                         function processHandle(type, status, isShow){
-                                            if( !status ){
-												oThat.handleError(oSelf, type, isShow ? oSelf.attr('data-validate-'+ type +'Text') : '');
-                                            }else{
-                                                oThat.handleError(oSelf);
-                                            }
+											return !status ?
+														oThat.handleError(
+															oSelf, 
+															type, 
+															isShow ? oSelf.attr('data-validate-'+ type +'Text') : ''
+														):
+														oThat.handleError(oSelf);
                                         }
 									},
 						fUnAction  = function(oSelf){
 										var sHideError   = oSelf.attr('data-ishideValidte'),
-											hideErrorCls = '',
+											hideErrorCls = sHideError === "true" && sHideError ?
+																'l-form-error l-form-hideError' :
+																'l-form-error',
 											name         = oSelf.attr('data-validate-name'),
 											allName      = oTarget.find('[data-validate-name="'+ name +'"]'),
 											errorLen     = allName.parents('.ui-form').find('.l-form-error').length;
 
-										if( sHideError === "true" && sHideError ){
-											hideErrorCls = " l-form-hideError";
-										}
-
                                         if( oSelf[0].type === 'checkbox' || oSelf[0].type === 'radio' ){
-                                            $("input[name='"+ oSelf[0].name +"']").removeClass('l-form-error' + hideErrorCls);
+                                            $("input[name='"+ oSelf[0].name +"']").removeClass(hideErrorCls);
                                         }
 										
 										if( allName.length && errorLen ){
@@ -5969,31 +5960,36 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 										}
 									},
 						fActionAll = function(){
-										var oItem   = oTarget.find('[data-validate]'),
-											len     = oItem.length,
-											i       = 0,
-											bSumbit = false;
+										var oItem = oTarget.find('[data-validate]'),
+											len   = oItem.length,
+											i     = 0;
 											
 										for(; i<len; i++){
-											bSumbit = !fAction( oItem.eq(i) );
-											if( bSumbit ){
+											if( !fAction( oItem.eq(i) ) ){
 												fUnAction( oItem.eq(i) );
 											}
 										}
+										
+										return g.getStatus();
 									};
 					
-					oTarget.on('blur', '[data-validate]', function(e){
-						fAction( $(e.currentTarget) );
-					});
-					
-					oTarget.on('focus', '[data-validate]', function(e){
-						fUnAction( $(e.currentTarget) );
-					});
-					
-					oTarget.on('change', 'select', function(e){
-						fAction( $(e.currentTarget) );
-					});
-					
+					oTarget
+						.on('blur', '[data-validate]', function(e){
+							fAction( $(e.currentTarget) );
+						})
+						.on('focus', '[data-validate]', function(e){
+							fUnAction( $(e.currentTarget) );
+						})
+						.on('change', 'select', function(e){
+							fAction( $(e.currentTarget) );
+						})
+						.on('submit', function(){
+							return fActionAll();
+						})
+						.on('all', function(){
+							return fActionAll();
+						});
+						
 					/*oTarget.on('blur', '.l-select-single-init', function(e){
 						var obj = $(this).parents('.l-select-wrap').find('[data-validate]');
 						if( obj.length ){
@@ -6007,17 +6003,6 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 							fUnAction( $(e.currentTarget) );
 						}
 					});*/
-					
-					oTarget.on('submit', function(){
-						fActionAll();
-                        if( !g.getStatus() ){
-                            return false;
-                        }
-					});
-					
-					oTarget.on('all', function(){
-						fActionAll();
-					});
 				},
 				
 				init: function(o){
@@ -6055,49 +6040,37 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 		};
 		
 		g.getStatus = function(){
-			var oTarget       = p.target,
-				oError        = oTarget.find('.l-form-error'),
-				oVisibleError = oError.filter(function(){
-									var that = $(this);
-									return that.filter(':visible').length && that.filter(':enabled').length;
-								}),
-				oHideError    = oError.filter('.l-form-hideError'),
-				len           = oVisibleError.length + oHideError.length;
-			
-			if( oVisibleError.length ){
-				console.log(oVisibleError);
+			var oTarget         = p.target,
+				oError          = oTarget.find('.l-form-error'),
+				oVisibleError   = oError.filter(function(){
+										var that = $(this);
+										return that.filter(':visible').length && that.filter(':enabled').length;
+									}),
+				oHideError      = oError.filter('.l-form-hideError'),
+				len             = oVisibleError.length + oHideError.length,
+				nErrorOffsetTop = oVisibleError.length ? oVisibleError[0].offsetTop : 0;
 				
-				$('body').animate({scrollTop:oVisibleError[0].offsetTop},500);
+			if( oVisibleError.length && nErrorOffsetTop > 400 ){ //XXX
+				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
 			}
 			
-			//else if( oHideError.length ){
-				//$('body').animate({scrollTop:oHideError[0].scrollTop},500);
-			//}
 			return !len;
 		};
 		
 		g.validatorAll = function(){
-			p.target.triggerHandler('all');
-            return g.getStatus();
+            return p.target.triggerHandler('all');
 		};
 		
 		g.reload = function(){
-			//if( p.target.length ){
-			//	c.run();
-			//}else{
-				console.log('target overloaded');
-				c.init(o);
-			//} 
+			console.log('target overloaded');
+			c.init(o);
 		};
 
 		return c.init(o);
 	};
 	
 	return function(o){
-		if( !o ){
-			return {};
-		}
-		return new Validator(o);
+		return o ? new Validator(o) : {};
 	};
 });
 define('core/selectArea',['core/saogaUI'], function(saogaUI){
