@@ -493,7 +493,8 @@ define(['core/saogaUI'], function(saogaUI){
 												var parents = selected
 																.parents(':hidden')
 																.filter(function(){
-																	return this.style.display === 'none';
+																	var oStyle = this.currentStyle ? this.currentStyle : window.getComputedStyle(this, false);
+																	return oStyle.display === 'none';
 																})
 																.show(),
 													height  = selected.outerHeight();

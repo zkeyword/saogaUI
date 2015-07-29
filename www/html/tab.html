@@ -33,14 +33,13 @@
 	
 	</div>
 	<script>
-		require(['app/main2'], function(saogaUI){
+		require(['app/main'], function(saogaUI){
 
-			
 			saogaUI.ui.tab({
 				tabItem:'#tab li',
 				tabWrap:'.tab-main',
 				onclick:function(i){
-					console.log(i)
+					console.log(this)
 				}
 			})
 			

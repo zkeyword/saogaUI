@@ -4942,64 +4942,81 @@ define('core/tab',['core/saogaUI'], function(saogaUI){
 			autoTime  = o.autoTime || 2000,                 //自动播放时间
 			autoSpeed = o.autoSpeed || 0,                   //自动播放速度
 			onclick   = o.onclick ? o.onclick : null;       //切换后执行的函数
-		
+			
 		/*切换动作*/
 		var tabFn = {
 			/*初始化*/
 			init: function(){
-				$(tabWrap).eq(tabIndex).show().siblings(tabWrap).hide();
-				if( tabWrap !== null ){
-					var index = tabIndex;
-					$(tabItem).bind(tabEvent,function(){
-						index = $(tabItem).index(this);
-						tabFn.cutoverFn(index);
+				if( !tabWrap ){ return; }
+				var oTabWrap    = $(tabWrap),
+					index       = tabIndex,
+					oTabItem    = oTabWrap.eq(index),
+					oTabAllItem = $(tabItem);
+					
+				oTabItem
+					.show()
+					.siblings(tabWrap)
+					.hide();
+					
+				oTabAllItem
+					.on(tabEvent, function(){
+						index = oTabAllItem.index(this);
+						tabFn.cutoverFn(index, this);
 					});
-					if( isAuto ){
-						tabFn.autoFn(index);
-					}
-				}
+					
+				isAuto && tabFn.autoFn(index);
 			},
 			
 			/*切换函数*/
-			cutoverFn: function(i){
+			cutoverFn: function(i, that){
+				var oTabWrap = $(tabWrap),
+					oTabItem = oTabWrap.eq(i);
+				
 				//tab切换内容的html不为空才做下面动作
-				if( $(tabWrap).eq(i).html() !== '' ){
+				if( oTabItem.html() ){
 					if( autoSpeed ){
-						$(tabWrap).eq(i).stop(true,true).fadeIn(autoSpeed).siblings(tabWrap).fadeOut(autoSpeed);
+						oTabItem
+							.stop(true,true)
+							.fadeIn(autoSpeed)
+							.siblings(tabWrap)
+							.fadeOut(autoSpeed);
 					}else{
-						$(tabWrap).eq(i).stop(true,true).show().siblings(tabWrap).hide();
+						oTabItem
+							.stop(true,true)
+							.show()
+							.siblings(tabWrap)
+							.hide();
 					}
-					$(tabItem).eq(i).addClass('on').siblings(tabItem).removeClass('on');
+					oTabItem
+						.addClass('on')
+						.siblings(tabItem)
+						.removeClass('on');
 				}else{
-					$(tabWrap).hide();
+					oTabWrap.hide();
 				}
-				//点击tabItem执行函数
-				if( saogaUI.base.isFunction(onclick) ){
-					onclick(i, $(tabWrap));
-				}
+				
+				saogaUI.base.isFunction(onclick) && onclick.apply(that, [i, oTabWrap]);
 			},
 			
 			/*自动播放函数*/
 			autoFn: function(i){
-				var _mun    = $(tabWrap).size(),
-					_MyTime = setInterval(function(){
-						tabFn.cutoverFn(i);
-						i++;
-						if( i === _mun ){
-							i = 0;
-						}
-					},autoTime);
-				$(tabItem).parent().hover(function(){
-					clearInterval(_MyTime);
-				},function(){
-					_MyTime = setInterval(function(){
-						tabFn.cutoverFn(i);
-						i ++;
-						if( i === _mun ){
-							i = 0;
-						}
-					},autoTime);
-				});
+				var mun   = $(tabWrap).size(),
+					fAuto = function(){
+									tabFn.cutoverFn(i);
+									i++;
+									if( i === mun ){
+										i = 0;
+									}
+								},
+					oTime = setInterval(fAuto, autoTime);
+					
+				$(tabItem)
+					.parent()
+					.hover(function(){
+						clearInterval(oTime);
+					},function(){
+						oTime = setInterval(fAuto, autoTime);
+					});
 			}
 		};//end tabfn
 		
@@ -6725,7 +6742,8 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 												var parents = selected
 																.parents(':hidden')
 																.filter(function(){
-																	return this.style.display === 'none';
+																	var oStyle = this.currentStyle ? this.currentStyle : window.getComputedStyle(this, false);
+																	return oStyle.display === 'none';
 																})
 																.show(),
 													height  = selected.outerHeight();
