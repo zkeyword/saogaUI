@@ -199,22 +199,28 @@ define(['core/saogaUI'], function(saogaUI){
 						}
 						
 						var i       = 0,
+							len     = btns.length,
+							html    = '',
 						    btnWrap = popMain.find('.ui-floatCenter'),
 						    btnMain = popMain.find('.ui-sl-floatCenter').html('');
-												
-						$.each(btns,function(i, item){
-							btnMain.append('<a href="javascript:;" class="ui-btn ui-floatCenter-item ui-btn-primary'+ (item.cls ? item.cls :'') +'"><span>'+item.text+'</span></a>');
-							btnMain.find('a').eq(i).click(function(){
-								var that = $(this);
-								if( item.onclick ){
-									item.onclick(id, i, item, that);							
-								}
-								
-								if( item.closePop === undefined || item.closePop === false ){
-									g.close(id);
-								}
+							
+						for(; i<len; i++){
+							var item = btns[i],
+								cls  = 'ui-btn ui-floatCenter-item ui-btn-primary'+ (item.cls ? item.cls :'');
+							html += '<a href="javascript:;" data-index="'+ i +'" class="'+ cls +'"><span>'+item.text+'</span></a>';
+						}
+						
+						btnMain
+							.append(html)
+							.on('click', 'a', function(){
+								var that    = $(this),
+									i       = Number( this.getAttribute('data-index') ),
+									item    = btns[i],
+									isClose = item.closePop === undefined || item.closePop === false;
+									
+								saogaUI.base.isFunction(item.onclick) && item.onclick.apply(this, [id, i, item, that]);
+								isClose && g.close(id);
 							});
-						});
 						
 						_cache.btnWrap = btnWrap;
 					}

@@ -3,9 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>弹出框页面</title>
-<!-- <link rel="stylesheet/less" type="text/less" href="../less/styles.less">
- --><link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
-<script src="../js/lib/jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="../../build/css/styles.css">
 <script data-main="../js/common2" src="../js/lib/require.js"></script>
 </head>
 <body>
@@ -154,14 +152,14 @@
 	<a href="#" id="pop2">客户详细信息</a>
 	</div>
 	<script id="test" type="text/html">
-	<ul class="ui-forms ui-pop-forms fn-left">
-		<li>
-			<span class="ui-label ui-label-75">活动方式：</span><span><label><input type="radio" checked="" value="option1" name="Radios">单次执行</label></span><span><label><input type="radio" checked="" value="option1" name="Radios">循环执行</label></span>
-		</li>
-		<li><span class="ui-label ui-label-75">活动类型： </span><span><label><input type="radio" checked="" value="option1" name="Radios">不限</label></span><span><label><input type="radio" checked="" value="option1" name="Radios">营销类 </label></span><span><label><input type="radio" checked="" value="option1" name="Radios">关怀类 </label></span></li>
-		<li><span class="ui-label ui-label-75">活动名称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-180" required></span></li>
-		<li><span class="ui-label ui-label-75">成本预算：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-180" required></span> </li>
-	</ul>
+		<ul class="ui-forms ui-pop-forms fn-left">
+			<li>
+				<span class="ui-label ui-label-75">活动方式：</span><span><label><input type="radio" checked="" value="option1" name="Radios">单次执行</label></span><span><label><input type="radio" checked="" value="option1" name="Radios">循环执行</label></span>
+			</li>
+			<li><span class="ui-label ui-label-75">活动类型： </span><span><label><input type="radio" checked="" value="option1" name="Radios">不限</label></span><span><label><input type="radio" checked="" value="option1" name="Radios">营销类 </label></span><span><label><input type="radio" checked="" value="option1" name="Radios">关怀类 </label></span></li>
+			<li><span class="ui-label ui-label-75">活动名称：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-180" required></span></li>
+			<li><span class="ui-label ui-label-75">成本预算：</span><span><input type="email" placeholder="Enter email"  class="ui-input ui-input-180" required></span> </li>
+		</ul>
 	</script>
 	<script id="test1" type="text/html">
 	<div class="simple-tip-pop">
@@ -298,7 +296,7 @@
 </div>
 	</script>
 	<script>
-		require(['app/main2'], function(saogaUI){
+		require(['app/main'], function(saogaUI){
 		
 			
 			var html = saogaUI.template('test', null);
@@ -311,17 +309,15 @@
 					btns:[  
 						{
 							text:'保存',
-							closePop:false,
+							closePop:true,
 							onclick:function(){
+								console.log(this)
 								saogaUI.ui.dialog.alert({
 									text:'添加营销活动2'
 								});
 							}
 						},{
-							text:'取消',
-							onclick:function(){
-							
-							}
+							text:'取消'
 						}
 					]
 				});
