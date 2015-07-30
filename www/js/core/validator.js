@@ -463,12 +463,17 @@ define(['core/saogaUI'], function(saogaUI){
 
 										oRoute = oThat.route(oSelf);
 										
-										if( name && oRoute ){
-											if( oRoute.type !== 'required' ){
-												return sVal && oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
+										if( name ){
+											
+											if( oRoute ){
+												if( oRoute.type !== 'required' ){
+													return sVal && oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
+												}
+												
+												return allNameHandle();
 											}
 											
-											return allNameHandle();
+											return oThat.handleError(allName);
 										}
 										
 										return oRoute ? 
@@ -663,13 +668,14 @@ define(['core/saogaUI'], function(saogaUI){
 				oError          = oTarget.find('.l-form-error'),
 				oVisibleError   = oError.filter(function(){
 										var that = $(this);
-										return that.filter(':visible').length && that.filter(':enabled').length;
+										return that.filter(':visible').length && ( that.filter(':enabled').length || that.hasClass('l-select-single-init') );
 									}),
 				oHideError      = oError.filter('.l-form-hideError'),
 				len             = oVisibleError.length + oHideError.length,
-				nErrorOffsetTop = oVisibleError.length ? oVisibleError[0].offsetTop : 0;
-				
-			if( oVisibleError.length && nErrorOffsetTop > 400 ){ //XXX
+				nErrorOffsetTop = oVisibleError.length ? oVisibleError.offset().top : 0;
+			
+			if( oVisibleError.length ){
+				oVisibleError.focus();
 				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
 			}
 			
