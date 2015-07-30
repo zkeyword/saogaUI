@@ -517,9 +517,10 @@ define(['core/saogaUI'], function(saogaUI){
 										valArr  = [];
 										
 									for(; h<len; h++){
-										idArr.push(item.eq(h).attr('data-id'));
-										nameArr.push(item.eq(h).attr('data-name'));
-										valArr.push(item.eq(h).attr('data-val'));
+										var oItem = item.eq(h);
+										idArr.push(oItem.attr('data-id'));
+										nameArr.push(oItem.attr('data-name'));
+										valArr.push(oItem.attr('data-val'));
 									}
 									
 									target

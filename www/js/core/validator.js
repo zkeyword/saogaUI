@@ -446,48 +446,29 @@ define(['core/saogaUI'], function(saogaUI){
 											sRule    = oSelf.attr('data-validate'),
 											name     = oSelf.attr('data-validate-name'),
 											allName  = oTarget.find('[data-validate-name="'+ name +'"]'),
-											errorLen = allName.parents('.ui-form').find('.l-form-error').length,
-											isOK     = oTarget.find('[data-validate-result="true"]').length,
+											errorLen = oSelf.parents('.ui-form').find('.l-form-error').length,
 											oRoute   = null;
 
                                         if( saogaUI.base.isFunction(fRules) && sRule === 'process' ){
-                                            return processHandle('process', fRules(oSelf), true );
+                                            return processHandle(sRule, fRules(oSelf), true );
                                         }
                                         
                                         if( saogaUI.base.isFunction(fAjax) && sRule === 'ajax' ){
-                                            processHandle('ajax');
+                                            processHandle(sRule);
                                             fAjax(oSelf, function(status, isShow){
-                                                processHandle('ajax', status, isShow);
+                                                processHandle(sRule, status, isShow);
                                             });
                                             return true;
                                         }
 
 										oRoute = oThat.route(oSelf);
 										
-										if( name ){
-											if( oRoute ){
-												if( oRoute.type !== 'required' ){
-													return sVal && oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-												}else if( errorLen && !sVal ){
-													return allNameHandle();
-												}
-												if( isOK && oRoute.type === 'required' ){
-													if( oSelf.attr('data-validate-result') === 'true' &&
-															!sVal &&
-															!oSelf.hasClass('l-form-error') &&
-															!allName.val() 
-													){
-														return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-													}
-													if( oSelf.hasClass('l-form-error') && !sVal ){
-														return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
-													}
-													
-													return oThat.handleError(allName);
-												}
-
-												return oThat.handleError(allName, oRoute.type, oRoute.html, oRoute.typeVal);
+										if( name && oRoute ){
+											if( oRoute.type !== 'required' ){
+												return sVal && oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
 											}
+											
+											return allNameHandle();
 										}
 										
 										return oRoute ? 
@@ -495,22 +476,71 @@ define(['core/saogaUI'], function(saogaUI){
 													oThat.handleError(oSelf);
 										
 										function allNameHandle(){
-											var nullObj = allName.filter(function(){
+											
+											var obj     = allName.filter(function(){
+																return this.value;
+															}),
+												nullObj = allName.filter(function(){
 																return !this.value;
 															}),
 												okObj   = allName.filter(function(){
 																return this.getAttribute('data-validate-result') === 'true';
-															});
-
-											if( nullObj.length && okObj.length > 0 ){
-												return oThat.handleError(allName);
-											}
+															}),
+												noObj   = allName.filter(function(){
+																return this.getAttribute('data-validate-result') === 'false';
+															})
+											/*				
+											console.log(
+												errorLen, 
+												nullObj.length, 
+												okObj.length, 
+												!sVal, 
+												oSelf, 
+												noObj, 
+												oSelf.hasClass('l-form-error')
+											)*/			
 											
 											if( errorLen ){
+												
+												//全部不通过
+												if( errorLen === allName.length ){
+													return ;
+												}
+												
+												//当前无值且当前不通过、不是全部空值
+												if( !sVal && oSelf.hasClass('l-form-error') && nullObj.length !== allName.length ){
+													return oThat.handleError(oSelf);
+												}
+												
+												//当前无值且有不通过
+												if( !sVal && noObj.length ){
+													return ;
+												}
+												
+												//当前无值且有通过
+												if( !sVal && okObj.length ){
+													return ;
+												}
+
+												return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
+											}
+											
+											//全部空值
+											if( nullObj.length === allName.length ){
+												return oThat.handleError(allName, oRoute.type, oRoute.html, oRoute.typeVal);
+											}
+											
+											//无错且无空值
+											if( !nullObj.length ){
 												return ;
 											}
 											
-											return oThat.handleError(oSelf, oRoute.type, oRoute.html, oRoute.typeVal);
+											//无错且当前是空值
+											if( !sVal ){
+												return ;
+											}
+											
+											return oThat.handleError(allName, oRoute.type, oRoute.html, oRoute.typeVal);
 										}
 
                                         function processHandle(type, status, isShow){

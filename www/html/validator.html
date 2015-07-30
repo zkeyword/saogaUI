@@ -19,7 +19,7 @@
 	</div>
 	-->
 
-	<!--
+	<!---->
     <div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">下拉框(select=0)：</i>
@@ -164,7 +164,7 @@
 		</label>
 		<span class="ui-form-message"></span>
 	</div>
-	-->
+	
 	
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
@@ -181,12 +181,24 @@
 		<span class="ui-form-message"></span>
 	</div>
 	
+	
+	<div class="ui-form fn-clear ui-mt10">
+		<label>
+			<i class="ui-label ui-w400">ajax(ajax)：</i>
+			<input class="ui-input" type="text" data-validate="ajax=http://127.0.0.1/saogaUI/www/temp/validate2.php?id=1&pid=2&name={{value}}" data-validate-ajaxText="name字段不能为空"  />
+			<span class="ui-form-message"></span>
+		</label>
+	</div>
+	
 	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">多框单项校验(data-validate-name)：</i>
 		</label>
 		<label class="ui-pl10">
 			<input type="text" class="ui-input" data-validate="required;number;floatNumber=2" data-validate-name="xxx" data-validate-requiredText="xxx,必填1"  />
+		</label>
+		<label class="ui-pl10">
+			<input type="text" class="ui-input" data-validate="required;number;floatNumber=2" data-validate-name="xxx" data-validate-requiredText="xxx,必填2"  />
 		</label>
 		<label class="ui-pl10">
 			<input type="text" class="ui-input" data-validate="required;number;floatNumber=2" data-validate-name="xxx" data-validate-requiredText="xxx,必填2"  />
