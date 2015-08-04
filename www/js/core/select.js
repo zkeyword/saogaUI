@@ -609,7 +609,7 @@ define(['core/saogaUI'], function(saogaUI){
 									var data          = p.data,
 										dataLen       = data.length,
 										selectedData  = t.selectedData[index],
-										len           = selectedData.length,
+										len           = selectedData ? selectedData.length : 0,
 										i             = 0,
 										selectedClass = '',
 										selectedIndex = '',
