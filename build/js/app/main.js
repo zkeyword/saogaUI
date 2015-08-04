@@ -6111,8 +6111,8 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 				nErrorOffsetTop = oVisibleError.length ? oVisibleError.offset().top : 0;
 			
 			if( oVisibleError.length ){
-				oVisibleError.focus();
 				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
+				//oVisibleError.focus();
 			}
 			
 			return !len;
@@ -6322,6 +6322,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 					checkbox     : false,  //multiple时设置有效，与radio互斥
 					radio        : false,  //multiple时设置有效，与checkbox互斥
 					isArrow      : true,
+					name         : '',
 					onClick      : null,
 					onRightClick : null,
 					onMouseOver  : null,
@@ -6617,47 +6618,55 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 						var target = p.target,
 							wrap   = target.parent(),
 							width  = p.width,
-							html;
-							
-						if( !wrap.hasClass('l-select-wrap') ){
-							wrap = target.wrap('<div class="l-select-wrap"></div>').parent();
-						}
+							name   = p.name,
+							html   = '<div class="l-select-multiple-selected fn-clear" style="width:'+ width +'px">'+
+										'<ul>'+
+											'<li class="l-select-multiple-selected-input">'+
+												'<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="l-select-multiple-input" />'+
+											'</li>'+
+										'</ul>'+
+									'</div>'+
+									'<div class="l-select-down fn-hide"><ul class="l-select-multiple-down" style="width:'+ (width-2) +'px"></ul></div>';
+								
+						$.each(target, function(i, item){
+							var oItem = $(item),
+								oWrap = oItem.parent();
+							if( !oWrap.hasClass('l-select-wrap') ){
+								oWrap = oItem.wrap('<div class="l-select-wrap" data-index="'+ i +'"></div>').parent();
+							}
+							if( !oWrap.find('.l-select-multiple').length ){
+								if( name ){
+									oWrap.append('<input type="hidden" name="'+ name +'">');
+								}
+								oWrap.append('<div class="l-select-multiple" data-index="'+ i +'">'+ html +'</div>');
+							}else{
+								oWrap.find('.l-select-multiple').html(html);
+							}
+						});
 
-						html = '<div class="l-select-multiple-selected fn-clear" style="width:'+ width +'px">'+
-									'<ul>'+
-										'<li class="l-select-multiple-selected-input">'+
-											'<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="l-select-multiple-input" />'+
-										'</li>'+
-									'</ul>'+
-								'</div>'+
-								'<div class="l-select-down fn-hide"><ul class="l-select-multiple-down" style="width:'+ (width-2) +'px"></ul></div>';
-						
-						if( !wrap.find('.l-select-multiple').length ){
-							wrap.append('<div class="l-select-multiple">'+ html +'</duv>');
-						}else{
-							wrap.find('.l-select-multiple').html(html);
-						}
-						
-						p.wrap = wrap; 
+						p.wrap = target.parent(); 
 					},
 					
 					/**
 					* 刷新multiple 选项html
 					*/
-					refreshMultipleHtml: function(){
-						var wrap        = p.wrap,
+					refreshMultipleHtml: function(index){
+						var wrap        = p.wrap.eq(index),
 							down        = wrap.find('.l-select-multiple-down'),
+							nameObj     = wrap.find('input[name="'+ p.name +'"]'),
 							checkbox    = p.checkbox,
 							radio       = p.radio,
-							input       = p.wrap.find('.l-select-multiple-input'),
+							input       = wrap.find('.l-select-multiple-input'),
 							val         = input.val(),
 							isHasVal    = val === '' || val === undefined,
-							data        = ( checkbox || radio ) ? ( isHasVal ? p.data : t.data ) : t.data,
+							data        = ( checkbox || radio ) ? ( isHasVal ? p.data : t.data[index] ) : t.data[index],
 							dataLen     = data ? data.length : 0,
 							i           = 0,
 							str         = '',
 							textWidth   = p.width - 48;
-
+							
+						//console.log('aa', t.data)
+							
 						if( checkbox ){
 							str += '<li class="fn-clear"><span class="l-checkbox l-checkbox-all fn-left"></span><span class="fn-left">全选</span></li>';
 							for(; i<dataLen; i++){
@@ -6683,52 +6692,55 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							}
 						}
 						down.html( dataLen ? str : '' );
+						nameObj.val( !dataLen ? val : '' );
 					},
 					
 					/**
 					* multiple修改已选数据
 					*/
-					modifyMultipleSelectedData: function(){
-						var data         = p.data,
-							dataLen      = data ? data.length :0,
-							y            = 0,
-							input         = p.wrap.find('.l-select-multiple-input'),
-							selectedData = t.selectedData,
-							len          = selectedData.length,
-							inputVal     = input.val(),
+					modifyMultipleSelectedData: function(index, input){
+						var inputVal     = input.val(),
 							checkbox     = p.checkbox,
-							radio        = p.radio,
-							reg          = new RegExp((inputVal?inputVal:'').toLowerCase()),
-							//val          = null,
-							name         = null,
-							isSelected   = false;
+							radio        = p.radio;
 							
-						
 						if( ( checkbox || radio ) && inputVal === '' ){ return; }
-						t.data = [];
-
-						for(; y<dataLen; y++){
 						
-							//val        = data[y].val ? data[y].val + '' : '';
-							name       = data[y].name ? data[y].name + '' : '';
-							isSelected = false;
+						t.data[index] = dataHandle(t.selectedData[index], input);
+						
+						return;
+						
+						function dataHandle(selectedData, input){
 							
-							//过滤已选数据
-							for(var h = 0; h<len; h++){
-								if( selectedData[h] && selectedData[h].name === data[y].name ){
-									isSelected = true;
+							var data         = p.data,
+								dataLen      = data ? data.length :0,
+								y            = 0,
+								isSelected   = false,
+								tmp          = [],
+								len          = selectedData.length ? selectedData.length : 0,
+								inputVal     = input.val(),
+								reg          = new RegExp((inputVal?inputVal:'').toLowerCase()),
+								name         = null;
+								
+							for(; y<dataLen; y++){
+						
+								//val        = reg.test( (data[y].val ? data[y].val + '' : '').toLowerCase() );
+								name       = reg.test( (data[y].name ? data[y].name + '' : '').toLowerCase() );
+								isSelected = false;
+								
+								//过滤已选数据
+								for(var h = 0; h<len; h++){
+									if( selectedData[h] && selectedData[h].name === data[y].name ){
+										isSelected = true;
+									}
+								}
+								
+								if( /*val || */ name && ( !isSelected || ( checkbox || radio ) ) ){
+									tmp.push(data[y]);
 								}
 							}
 							
-							if( /*reg.test(val.toLowerCase()) ||*/  reg.test(name.toLowerCase()) ){
-								if( !isSelected ){
-									t.data.push(data[y]);
-								}else if( checkbox || radio ){
-									t.data.push(data[y]);
-								}
-							}
+							return tmp;
 						}
-						
 					},
 
 					/**
@@ -6750,7 +6762,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							coreFn    = {
 							
 								/*修改input*/
-								setInputSize: function(){
+								setInputSize: function(index, selected, input, down){
 									var last           = selected.find('.l-select-multiple-selected-li:last'),
 										lastWidth      = last.outerWidth(),
 										lastOffset     = last.offset(),
@@ -6771,7 +6783,6 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									input
 										.focus()
 										.width(width);
-									
 									down.css({
 										top: function(){
 											if( isHidden ){
@@ -6793,13 +6804,13 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								},
 								
 								/*设置已选id，并已字符串返回*/
-								setSelectedInput: function(){
-									var item    = selected.find('.l-select-multiple-selected-li'),
-										len     = item.length,
-										h       = 0,
-										idArr   = [],
-										nameArr = [],
-										valArr  = [];
+								setSelectedInput: function(index, selected, input, down){
+									var item     = selected.find('.l-select-multiple-selected-li'),
+										len      = item.length,
+										h        = 0,
+										idArr    = [],
+										nameArr  = [],
+										valArr   = [];
 										
 									for(; h<len; h++){
 										var oItem = item.eq(h);
@@ -6809,6 +6820,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									}
 									
 									target
+										.eq(index)
 										.val(idArr.join())
 										.attr({
 											'data-name' : nameArr.join(),
@@ -6819,21 +6831,23 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								/*添加已选*/
 								addSelectItem: function(obj, isAll){
 									var id        = obj.attr('data-id'),
+										parents   = obj.parents('.l-select-wrap'),
+										index     = parents.attr('data-index'),
 										i         = 0,
-										inputVal  = input.val(),
+										inputVal  = input.eq(index).val(),
 										checkbox  = p.checkbox,
 										isRefresh = true;
 									
 									if( isAll ){
-										t.selectedData = [];
-										t.selectedData = t.selectedData.concat(data); //浅拷贝
+										t.selectedData[index] = [];
+										t.selectedData[index] = t.selectedData[index].concat(data); //浅拷贝
 									}else{
 										for(; i<dataLen; i++){
 											if( Number(data[i].id) === Number(id) ){
 												if( radio ){
-													t.selectedData = [];
+													t.selectedData[index] = [];
 												}
-												t.selectedData.push(data[i]);
+												t.selectedData[index].push(data[i]);
 											}
 										}
 									}
@@ -6842,13 +6856,15 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										isRefresh = false;
 									}
 									
-									coreFn.initSelected(inputVal, isRefresh);
+									coreFn.initSelected(inputVal, isRefresh, index);
 								},
 								
 								/*删除已选*/
 								removeSelectItem: function(obj, isAll){
 									var id           = obj.attr('data-id'),
-										selectedData = t.selectedData,
+										parents      = obj.parents('.l-select-wrap'),
+										index        = parents.attr('data-index'),
+										selectedData = t.selectedData[index],
 										len          = selectedData.length,
 										i	         = 0,
 										inputVal     = input.val(),
@@ -6856,11 +6872,11 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										
 									//删除已选
 									if( checkbox && isAll ){
-										t.selectedData = [];
+										t.selectedData[index] = [];
 									}else{
 										for(; i<=len; i++){
 											if(selectedData[i] && Number(selectedData[i].id) === Number(id)){
-												t.selectedData.splice(i, 1);
+												t.selectedData[index].splice(i, 1);
 											}
 										}
 									}
@@ -6868,18 +6884,16 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									if( checkbox ){
 										isRefresh = false;
 									}
-									
-									console.log(t.selectedData, p.data, t.data);
-									
-									coreFn.initSelected(inputVal, isRefresh);
+
+									coreFn.initSelected(inputVal, isRefresh, index);
 								},
 								
 								/*选中处理*/
-								initSelected: function(inputVal, isRefresh){
+								initSelected: function(inputVal, isRefresh, index){
 
 									var data          = p.data,
 										dataLen       = data.length,
-										selectedData  = t.selectedData,
+										selectedData  = t.selectedData[index],
 										len           = selectedData.length,
 										i             = 0,
 										selectedClass = '',
@@ -6887,20 +6901,23 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										str           = '',
 										checkbox      = p.checkbox,
 										itemMaxWidth  = p.width - 34, //XXX 暂时写死
-										itemStyleStr  = 'style="max-width:'+ itemMaxWidth +'px"';   
+										itemStyleStr  = 'style="max-width:'+ itemMaxWidth +'px"',
+										selectedObj   = selected.eq(index),
+										inputIObj     = input.eq(index),
+										downObj       = down.eq(index);
 
 									isRefresh = isRefresh === undefined ? true : isRefresh;
 
 									//重获数据
 									if( isRefresh ){
-										that.modifyMultipleSelectedData();
+										that.modifyMultipleSelectedData(index, inputIObj);
 									}
-									that.refreshMultipleHtml();
+									that.refreshMultipleHtml(index);
 									
 									for(; i<len; i++){
 
 										if( checkbox || radio ){
-											var downAllItem = down.find('.l-select-multiple-down-li'),
+											var downAllItem = downObj.find('.l-select-multiple-down-li'),
 												downItemLen = downAllItem.length;
 											
 											for(var j = 0; j<dataLen; j++){
@@ -6919,7 +6936,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 											}
 											
 											if( len === dataLen || (downAllItem && downAllItem.find('.l-checkbox-selected').length === downItemLen) ){
-												down.find('.l-checkbox-all').addClass('l-checkbox-selected');
+												downObj.find('.l-checkbox-all').addClass('l-checkbox-selected');
 											}
 										}
 										
@@ -6937,15 +6954,19 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 												
 									}//end for
 									
-									selected
+
+									
+									selectedObj
 										.find('.l-select-multiple-selected-li')
 										.remove()
 										.end()
 										.find('.l-select-multiple-selected-input').before(str); 
-									input.val(inputVal);
+									inputIObj
+										.eq(index)
+										.val(inputVal);
 
-									coreFn.setInputSize();
-									coreFn.setSelectedInput();
+									coreFn.setInputSize(index, selectedObj, inputIObj, downObj);
+									coreFn.setSelectedInput(index, selectedObj, inputIObj,  downObj);
 									
 								}//end initSelected
 								
@@ -6954,20 +6975,26 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 						/* 初始化 */
 						if( p.data ){
 							if( p.selectedData ){
-								t.selectedData = p.selectedData;
+								t.selectedData[0] = p.selectedData;
 							}
-							coreFn.initSelected();
-							
+							$.each(wrap, function(i){
+								t.selectedData[i] = [];
+								t.data[i] = [];
+								coreFn.initSelected('', true, i);
+							});
+	
 							saogaUI.ui.onselectstart(wrap);
 						}
 						
 						/*给 wrap容器对象 绑定相关事件*/
 						wrap
 							.on('click','.l-select-multiple-selected',function(e){
+								var parents = $(e.currentTarget).parents('.l-select-wrap'),
+									index   = parents.attr('data-index');
 								e.stopPropagation();
-								input.focus();
+								input.eq(index).focus();
 								isShow = true;
-								that.show(wrap);
+								that.show(parents);
 							})
 							.off('click', '.l-select-multiple-down li')
 							.on('click', '.l-select-multiple-down li', function(e){
@@ -7008,7 +7035,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 							.on('click', '.l-checkbox', function(e){
 								e.stopPropagation();
 								var self        = $(e.currentTarget),
-									//index       = self.parent().attr('data-index'),
+									index       = self.parents('.l-select-multiple').attr('data-index'),
 									downItem    = down.find('.l-select-multiple-down-li'),
 									//downLen     = downItem.length,
 									allCheckbox = down.find('.l-checkbox');
@@ -7027,7 +7054,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									}
 								}else{
 									if( self.hasClass('l-checkbox-all') ){
-										t.selectedData = [];
+										t.selectedData[index] = [];
 										//for(var i = 0; i<downLen; i++){
 											coreFn.addSelectItem(downItem, true);
 										//}
@@ -7056,25 +7083,29 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								}
 							})
 							.on('click', '.l-select-multiple-input', function(e){
+								var parents = $(e.currentTarget).parents('.l-select-wrap');
+									
 								e.stopPropagation();
 								isShow = true;
-								that.show(wrap);
+								that.show(parents);
 							})
 							.off('keyup', '.l-select-multiple-input')
 							.on('keyup', '.l-select-multiple-input', function(e){
 								var self            = $(e.currentTarget),
+									parents         = self.parents('.l-select-wrap'),
+									index           = parents.attr('data-index'),
 									code            = e.keyCode,
 									val             = self.val(),
 									//i               = 0,
 									//selectedData    = t.selectedData,
 									//selectedDataLen = selectedData.length,
 									valReg          = /\\|\[|\]|\*|\(|\)|\+|\?/,
-									itemLast        = selected.find('.l-select-multiple-selected-li:last');
+									itemLast        = selected.eq(index).find('.l-select-multiple-selected-li:last');
 
 								if( code !== 38 || code !== 40 || code !== 13 ){
-									t.data = [];
+									t.data[index] = [];
 									isShow = true;
-									that.show(wrap);
+									that.show(parents);
 									
 									//过滤特殊符号
 									if( valReg.test(val) ){
@@ -7084,16 +7115,18 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 									if( code === 8 && val === '' && itemLast.length ){
 										return false;
 									}
-									coreFn.initSelected(val);
+									coreFn.initSelected(val, true, index);
 								}
 							})
 							.off('keydown', '.l-select-multiple-input')
 							.on('keydown', '.l-select-multiple-input', function(e){
 								if( !p.isAllowEnter ){return false;}
 								var self     = $(e.currentTarget),
+									parents  = self.parents('.l-select-wrap'),
+									index    = parents.attr('data-index'),
 									code     = e.keyCode,
 									val      = self.val(),
-									itemLast = selected.find('.l-select-multiple-selected-li:last');
+									itemLast = selected.eq(index).find('.l-select-multiple-selected-li:last');
 								
 								if( code === 8 ){
 									if( val === '' ){
@@ -7107,13 +7140,13 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										/*val只有一个字符时，删除并刷新*/
 										if( val && val.length ){
 											self.val('');
-											coreFn.initSelected(val);
+											coreFn.initSelected(val, true, index);
 										}
 									}
 								}else if(code === 38 || code === 40){
 									self.blur();
 									isShow = true;
-									that.show(wrap);
+									that.show(parents);
 								}else if(code === 13 && val === ''){
 									return false;
 								}
@@ -7348,7 +7381,7 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 						}
 
 						p.target = $(p.target);
-
+						
 						if( !p.data  && !p.ajax ){
 							p.data = [];
 						}

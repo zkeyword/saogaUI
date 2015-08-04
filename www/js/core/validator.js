@@ -675,8 +675,8 @@ define(['core/saogaUI'], function(saogaUI){
 				nErrorOffsetTop = oVisibleError.length ? oVisibleError.offset().top : 0;
 			
 			if( oVisibleError.length ){
-				oVisibleError.focus();
 				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
+				//oVisibleError.focus();
 			}
 			
 			return !len;

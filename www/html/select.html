@@ -10,329 +10,55 @@
 </head>
 <body>
 	<form class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
-		<div class="fn-clear">select兼容处理：</div>
 		<div class="fn-clear">
-			<div class="fn-left">
-				<label for="select" class="fn-left">省</label>
-				<select id="select" name="select" class="ui-select">
-					<option value="0">选项1</option>
-					<option value="1">选项2</option>
-					<option value="2" selected>选项3</option>
-					<option value="3">选项4</option>
-				</select>
-			</div>
-			<div class="fn-left">
-				<label for="select2" class="fn-left">市</label>
-				<select id="select2" name="select2" class="ui-select">
-					<option value="0">选项1</option>
-					<option value="1">选项2</option>
-					<option value="2" selected>选项3</option>
-					<option value="3">选项4</option>
-				</select>
-			</div>
-			<div class="fn-left">
-				<select id="select3" name="select3" class="ui-select">
-					<option value="0">选项1</option>
-					<option value="1">选项2</option>
-					<option value="2" selected>选项3</option>
-					<option value="3">选项4</option>
-				</select>
-			</div>
-			<a href="#" id="test">重置</a>
+			<span id="add">新增</span>
 		</div>
-		<div class="fn-clear">多选：</div>
-		<div class="fn-clear">
-			<div class="fn-clear">
-				<input type="hidden" name="multiple" id="multiple" data-name="xxx" data-val="xx" />
-			</div>
-			<div class="fn-clear">
-				<input type="hidden" name="multiple" id="multiple2" />
-			</div>
-			<div class="fn-clear">
-				<input type="hidden" name="multiple" id="multiple3" />
-			</div>
-			<div class="fn-clear">
-				<input type="hidden" name="multiple" id="multiple4" />
-			</div>
+		<div class="fn-clear" id="wrap">
+			<div class="fn-clear"><input type="hidden" name="multiple" class="multiple4" /></div>
+			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			<div class="fn-clear"><input type="hidden" name="multiple" class="multiple4" /></div>
 		</div>
-		<div class="fn-clear">下拉树</div>
-		<div class="fn-clear">
-            <div class="fn-clear">
-                <input type="hidden" name="tree" id="tree"/>
-			</div>
-            <div class="fn-clear">
-                <input type="hidden" name="tree2" id="tree2"/>
-			</div>
-        </div>
-		<div class="fn-clear"><input type="submit" value="提交"/></div>
-        <div class="fn-clear"><span id="openPop">打开弹窗</span></div>
 	</form>			
 
 	<script>
 		require(['app/main'], function(saogaUI){
-			
-			
-			var selectArea = saogaUI.ui.selectArea({
-				data:areaData,
-				province:'#select',
-				city:'#select2',
-				county:'#select3'
-			});
-			
-			//selectArea.reset();
-			
-			var select = saogaUI.ui.select2({
-				target:'select',
-				type:'single'
-			});
-			
-			$('#test').click(function(){
-				$('#select').find('option').eq(0).attr('selected', true);
-				$('#select').trigger('change');
-			})
-			
-			
-			var data22 = [
-					{
-						name:'选一1',
-						val:'1',
-						id:'1111'
-					},
-					{
-						name:'选二2',
-						val:'2',
-						id:'2222'
-					},{
-						name:'选三3',
-						val:'3',
-						id:'3333'
-					},
-					{
-						name:'选四4',
-						val:'4',
-						id:'444444444'
-					},
-					{
-						name:'项二5',
-						val:'5',
-						id:'55555555'
-					},{
-						name:'项三6',
-						val:'6',
-						id:'6666666'
-					},
-					{
-						name:'项四7',
-						val:'7',
-						id:'7777777'
-					},
-					{
-						name:'选二21',
-						val:'8',
-						id:'88888888'
-					},{
-						name:'选三32',
-						val:'9',
-						id:'99999999'
-					},
-					{
-						name:'选四43',
-						val:'10',
-						id:'110000000'
-					},
-					{
-						name:'项二54',
-						val:'11',
-						id:'11111111'
-					},{
-						name:'项三65',
-						val:'12',
-						id:'3333333333'
-					},
-					{
-						name:'项四76',
-						val:'13',
-						id:'11111111111111111'
-					}
-				]
-			/*
-			var select2 = saogaUI.ui.select2({
-				target:'#multiple',
-				type:'multiple',
-				width:500,
-				selectedData:[
-					{
-						name:'选一1',
-						val:'1',
-						id:'1111'
-					},
-					{
-						name:'选二2',
-						val:'2',
-						id:'2222'
-					},{
-						name:'选三3',
-						val:'3',
-						id:'3333'
-					}
-				]
-			});
-			
-			select2.refresh({
-				ajax:{
-					url: 'http://127.0.0.1/saogaUI/www/temp/select2.php',
-					data:{
-						index:'1'
-					}
-				}
-			});
-			*/
-			
-			var select22 = saogaUI.ui.select2({
-				target:'#multiple2',
-				type:'multiple',
-				width:500,
-				ajax:{
-					url: 'http://127.0.0.1/saogaUI/www/temp/select2.php',
-					data:{
-						index:'1'
-					}
-				},
-				onDel:function(obj){
-					console.log(obj)
-				}
-			});
-			
-			/*var select22 = saogaUI.ui.select2({
-				target:'#multiple2',
-				type:'multiple',
-				width:500,
-				selectedData:[
-					{
-						name:'选一1',
-						val:'1',
-						id:'1111'
-					},{
-						name:'选三3',
-						val:'3',
-						id:'3333'
-					}
-				],
-				data:data22,
-				isAllowEnter:false
-			});*/
-			
-			
-			var select23 = saogaUI.ui.select2({
-				target:'#multiple3',
-				type:'multiple',
-				width:500,
-				checkbox:true,
-				data:data22,
-				selectedData:[
-					{
-						name:'选一1',
-						val:'1',
-						id:'1111'
-					},{
-						name:'选三3',
-						val:'3',
-						id:'3333'
-					}
-				],
-				onDel:function(obj){
-					console.log(this,obj)
-				},
-				onClick:function(obj){
-					console.log(this,obj)
-				}
-			});
-			/*
-			select23.refresh({
-				data: data22,
-				selectedData:[
-					{
-						name:'选二2',
-						val:'2',
-						id:'2222'
-					},{
-						name:'选三3',
-						val:'3',
-						id:'3333'
-					}
-				]
-			});
-			*/
-			var select3 = saogaUI.ui.select2({
-				target:'#tree',
-				type:'tree',
-				ajax:{
-					url: 'http://127.0.0.1/saogaUI/www/temp/treeData.php'
-				},
-				width:330,
-                check:'checkbox',
-				onClick:function(obj, data){
-					
-				}
-			});
-			
+
 			var select4 = saogaUI.ui.select2({
-				target:'#multiple4',
+				target:'.multiple4',
 				type:'multiple',
 				width:500,
 				radio:true,
+				name:'xxxx[]',
 				ajax:{
 					url: 'http://127.0.0.1/saogaUI/www/temp/select2.php',
 					data:{
 						index:'1'
 					}
-				}
+				},
+				selectedData:[
+					{
+						name:'选一1',
+						val:'1',
+						id:'1111'
+					},
+					{
+						name:'选二2',
+						val:'2',
+						id:'2222'
+					},{
+						name:'选三3',
+						val:'3',
+						id:'3333'
+					}
+				]
 			});
 			
-			//tree.refresh({
-			//	data: data2
-			//});
-            
-            var html = '<select name="" id="" class="ui-select pop-select"><option value="1">11111</option><option value="2">11111</option><option value="3">11111</option></select>';
-            
-            
-            $('#openPop').click(function(){
-            
-
-            
-                var pop = saogaUI.ui.pop({
-                    title:'弹窗的标题',
-                    height:240,
-                    width:320,
-                    html:html,
-                    onloadFn:function(){
-
-                        var select = saogaUI.ui.select2({
-                            target:'select',
-                            type:'single'
-                        });
-                        
-                        $('.pop-select').html('<option value="1">222222</option>');
-                    },
-                    btns:[
-                        {
-                            text:'保存修改',
-                            closePop:false,
-                            onclick:function(id){
-                                alert('保存修改')
-                                pop.close(id);
-                            }
-                        },
-                        {
-                            text:'取消',
-                            onclick:function(){
-                    
-                            }
-                        }
-                    ]
-                });
-            })
-
+			$('#add').click(function(){
+				$('#wrap').append('<div class="fn-clear"><input type="hidden" name="multiple" class="multiple4" /></div>')
+				select4.reload()
+			});
+			
+	
 		});
 	</script>
 </body>
