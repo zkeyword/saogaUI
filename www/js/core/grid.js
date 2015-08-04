@@ -423,6 +423,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
+											console.log(typeof(sData[x]), sData[x])
 										}
 										
 										if( statisType ){
@@ -450,8 +451,15 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 															break;
 													}
 													
-													//if( parseInt(dStr, 10) !== dStr ){
+													var nStr = parseInt(dStr, 10);
+													
+													if( nStr === dStr ){
+														
+													}else{
 														dStr = dStr.toFixed(p.statisToFixed);
+													}
+													//if( parseInt(dStr, 10) !== dStr ){
+														//dStr = dStr.toFixed(p.statisToFixed);
 													//}
 													
 													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;

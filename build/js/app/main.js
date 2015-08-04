@@ -6978,8 +6978,6 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 								t.selectedData[0] = p.selectedData;
 							}
 							$.each(wrap, function(i){
-								t.selectedData[i] = [];
-								t.data[i] = [];
 								coreFn.initSelected('', true, i);
 							});
 	
@@ -7862,6 +7860,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
+											console.log(typeof(sData[x]), sData[x])
 										}
 										
 										if( statisType ){
@@ -7889,8 +7888,15 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 															break;
 													}
 													
-													//if( parseInt(dStr, 10) !== dStr ){
+													var nStr = parseInt(dStr, 10);
+													
+													if( nStr === dStr ){
+														
+													}else{
 														dStr = dStr.toFixed(p.statisToFixed);
+													}
+													//if( parseInt(dStr, 10) !== dStr ){
+														//dStr = dStr.toFixed(p.statisToFixed);
 													//}
 													
 													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;

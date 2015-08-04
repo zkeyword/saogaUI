@@ -693,8 +693,6 @@ define(['core/saogaUI'], function(saogaUI){
 								t.selectedData[0] = p.selectedData;
 							}
 							$.each(wrap, function(i){
-								t.selectedData[i] = [];
-								t.data[i] = [];
 								coreFn.initSelected('', true, i);
 							});
 	
