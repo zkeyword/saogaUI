@@ -389,12 +389,13 @@ define(['core/saogaUI'], function(saogaUI){
 						message  = parents.find('.ui-form-message'),
 						error    = parents.find('.l-form-error'),
 						oItems   = parents.find('[data-validate]'),
+						oTarget  = p.target,
 						html     = sContents;
 
 					if( !message.length ){
 						if( oSelf.next('.ui-form-message').length ){
 							message = oSelf.next('.ui-form-message');
-						}else if( message.length === 1 ){
+						}else if( message.length === 0 ){
 							message = oTarget.find('.ui-form-message');
 						}
 					}
@@ -404,7 +405,7 @@ define(['core/saogaUI'], function(saogaUI){
 						return false;
 					}
 					if( oItems.length !== 1 && error.length && sType ){
-						html = '<span class="error">'+ oThat.handleText(error.eq(0), sType, sTypeVal) +'</span>';
+						html = '<span class="error"><i></i>'+ oThat.handleText(error.eq(0), sType, sTypeVal) +'</span>';
 					}
 					
 					message.html( html );
@@ -422,7 +423,7 @@ define(['core/saogaUI'], function(saogaUI){
 							.parents('.l-select-wrap')
 							.find('.l-select-single-init')
 							.addClass(errorCls);
-						oThat.handleMessage(oSelf, '<span class="error">'+html+'</span>', type, typeVal);
+						oThat.handleMessage(oSelf, '<span class="error"><i></i>'+html+'</span>', type, typeVal);
 					}else{
 						oSelf
 							.removeClass(errorCls)
@@ -430,7 +431,7 @@ define(['core/saogaUI'], function(saogaUI){
 							.parents('.l-select-wrap')
 							.find('.l-select-single-init')
 							.removeClass(errorCls);
-						oThat.handleMessage(oSelf, '<span class="success"></span>', type);
+						oThat.handleMessage(oSelf);
 					}
 					
 					return html;
@@ -674,7 +675,7 @@ define(['core/saogaUI'], function(saogaUI){
 				len             = oVisibleError.length + oHideError.length,
 				nErrorOffsetTop = oVisibleError.length ? oVisibleError.offset().top : 0;
 			
-			if( oVisibleError.length ){
+			if( oVisibleError.length && $(window).height() < nErrorOffsetTop ){
 				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
 				//oVisibleError.focus();
 			}

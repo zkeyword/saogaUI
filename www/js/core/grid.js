@@ -451,17 +451,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 															break;
 													}
 													
-													var nStr = parseInt(dStr, 10);
-													
-													if( nStr === dStr ){
-														
-													}else{
+													if( dStr+'' !== dStr ){
 														dStr = dStr.toFixed(p.statisToFixed);
 													}
-													//if( parseInt(dStr, 10) !== dStr ){
-														//dStr = dStr.toFixed(p.statisToFixed);
-													//}
-													
+
 													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;
 												}
 											}// end for
