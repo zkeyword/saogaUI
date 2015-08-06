@@ -397,6 +397,10 @@ define(['core/saogaUI'], function(saogaUI){
 							message = oSelf.next('.ui-form-message');
 						}else if( message.length === 0 ){
 							message = oTarget.find('.ui-form-message');
+							message.html( html );
+							if(!g.getStatus()){
+								return;
+							}
 						}
 					}
 
