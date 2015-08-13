@@ -431,7 +431,7 @@ define(['core/saogaUI'], function(saogaUI){
 								y            = 0,
 								isSelected   = false,
 								tmp          = [],
-								len          = selectedData.length ? selectedData.length : 0,
+								len          = selectedData ? selectedData.length : 0,
 								inputVal     = input.val(),
 								reg          = new RegExp((inputVal?inputVal:'').toLowerCase()),
 								name         = null;
@@ -695,6 +695,7 @@ define(['core/saogaUI'], function(saogaUI){
 							$.each(wrap, function(i){
 								coreFn.initSelected('', true, i);
 							});
+							
 	
 							saogaUI.ui.onselectstart(wrap);
 						}
@@ -709,8 +710,8 @@ define(['core/saogaUI'], function(saogaUI){
 								isShow = true;
 								that.show(parents);
 							})
-							.off('click', '.l-select-multiple-down li')
-							.on('click', '.l-select-multiple-down li', function(e){
+							.off('click', '.l-select-multiple-down-li')
+							.on('click', '.l-select-multiple-down-li', function(e){
 								e.stopPropagation();
 								isShow = true;
 								
@@ -718,31 +719,23 @@ define(['core/saogaUI'], function(saogaUI){
 								
 								if( checkbox ){
 									self.find('.l-checkbox').trigger('click');
-								}else if(radio){
-									self.find('.l-radio').trigger('click');
 								}else{
+									if(radio){
+										down.find('.l-radio')
+											.removeClass('l-radio-selected');
+										self.find('.l-radio').addClass('l-radio-selected');
+									}
 									coreFn.addSelectItem(self);
 								}
-								
 								if( saogaUI.base.isFunction( o.onClick ) ){
 									o.onClick.apply(self, [self]);
 								}
 							})
-							.on('mouseover', '.l-select-multiple-down li', function(e){
+							.on('mouseover', '.l-select-multiple-down-li', function(e){
 								var self     = $(e.currentTarget),
 									siblings = self.siblings();
 								self.addClass('on');
 								siblings.removeClass('on');
-							})
-							.off('click', '.l-radio')
-							.on('click', '.l-radio', function(e){
-								e.stopPropagation();
-								var self     = $(e.currentTarget),
-									allRadio = down.find('.l-radio');
-									
-								allRadio.removeClass('l-radio-selected');
-								self.addClass('l-radio-selected');
-								coreFn.addSelectItem(self.parent());
 							})
 							.off('click', '.l-checkbox')
 							.on('click', '.l-checkbox', function(e){
@@ -750,7 +743,6 @@ define(['core/saogaUI'], function(saogaUI){
 								var self        = $(e.currentTarget),
 									index       = self.parents('.l-select-multiple').attr('data-index'),
 									downItem    = down.find('.l-select-multiple-down-li'),
-									//downLen     = downItem.length,
 									allCheckbox = down.find('.l-checkbox');
 									
 								if( self.hasClass('l-checkbox-selected') ){
@@ -763,14 +755,11 @@ define(['core/saogaUI'], function(saogaUI){
 											.removeClass('l-checkbox-selected');
 										self.removeClass('l-checkbox-selected');
 										coreFn.removeSelectItem(self.parent());
-										//coreFn.removeSelectItem(selected.find('.l-select-multiple-selected-li-'+index));
 									}
 								}else{
 									if( self.hasClass('l-checkbox-all') ){
 										t.selectedData[index] = [];
-										//for(var i = 0; i<downLen; i++){
-											coreFn.addSelectItem(downItem, true);
-										//}
+										coreFn.addSelectItem(downItem, true);
 									}else{
 										self.addClass('l-checkbox-selected');
 										coreFn.addSelectItem(self.parent());
