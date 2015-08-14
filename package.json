@@ -19,6 +19,7 @@
     "gulp-sourcemaps": "*",
     "gulp-tmod": "^0.1.2",
     "gulp-uglify": "*",
-    "gulp.spritesmith": "*"
+    "gulp.spritesmith": "*",
+	"gulp-cache":  "*"
   }
 }

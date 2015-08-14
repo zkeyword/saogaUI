@@ -6,11 +6,12 @@ var gulp        = require('gulp'),
 	maps        = require('gulp-sourcemaps'),
 	minifycss   = require('gulp-minify-css'),
 	sprite      = require('gulp.spritesmith'),
+	imagemin    = require('gulp-imagemin'),
 	clean       = require('gulp-clean'),
 	plumber     = require('gulp-plumber'),
-	amdOptimize = require('amd-optimize'),
 	concat      = require('gulp-concat'),
 	tmodjs      = require('gulp-tmod'),
+	cache       = require('gulp-cache'),
 	path        = {
 					dev: 'www/',
 					dest: 'build/'
@@ -44,11 +45,7 @@ gulp.task('r', function() {
 	gulp
 		.src(path.dev+'js/config.js')
 		.pipe(gulp.dest(path.dest+'js'));
-		
-	gulp
-		.src(path.dev+'js/app/ZeroClipboard.swf')
-		.pipe(gulp.dest(path.dest+'js/app/'));
-		
+
     rjs({
         name: 'app/main',
         baseUrl: path.dev+'js/lib/',
@@ -70,9 +67,9 @@ gulp.task('r', function() {
 gulp.task('tmod', function() {
 	gulp.src(path.dev + '/tpl/**/*.html')
 		.pipe(tmodjs({
-			base:  path.dev + '/tpl',
+			base:  path.dev + 'tpl',
 			combo: true,
-			output: path.dest + '/'
+			output: path.dev + 'js/app/'
 		}));
 });
 
@@ -80,14 +77,14 @@ gulp.task('tmod', function() {
 gulp.task('cleanDefaultImg', function() {
 	gulp
 		.src([
-			path.dest+'img/default/*'
+			path.dest+'img/default/*.{png,jpg,jpeg,gif}'
 		], {read: false})
 		.pipe(clean({force: true}));
 });
 gulp.task('cleanSpriteImg', function() {
 	gulp
 		.src([
-			path.dest+'img/sprite/*'
+			path.dest+'img/sprite/*.{png,jpg}'
 		], {read: false})
 		.pipe(clean({force: true}));
 });
@@ -95,9 +92,15 @@ gulp.task('cleanSpriteImg', function() {
 //¸´ÖÆÎÄ¼þ
 gulp.task('copy', function(){
 	
+	/*
 	gulp
 		.src(path.dev+'less/lib/font-awesome-ie7.min.css')
 		.pipe(gulp.dest(path.dest+'css/'));
+	*/
+	
+	gulp
+		.src(path.dev+'js/app/ZeroClipboard.swf')
+		.pipe(gulp.dest(path.dest+'js/app/'));
 		
 	gulp
 		.src(path.dev+'less/fonts/*')
@@ -107,19 +110,32 @@ gulp.task('copy', function(){
 		.src(path.dev+'js/lib/*')
 		.pipe(gulp.dest(path.dest+'js/lib/'));
 
+	
 	gulp
-		.src(path.dev+'img/default/*')
+		.src(path.dev+'img/default/**/*.{png,jpg,jpeg,gif}')
+		.pipe(cache(imagemin({
+			optimizationLevel: 3,
+			progressive: true,
+			interlaced: true
+		})))
+		.pipe(plumber(function(error){
+			console.log(error);
+			console.log('--------------------------  Copy Error! --------------------------');
+		}))
 		.pipe(gulp.dest(path.dest+'img/'));
 
 });
 
+//sprite
+gulp.task('sprite', ['spritePNG', 'spriteJPG']);
+
 //ºÏ²¢png
-gulp.task('spritePNG', function () {	
+gulp.task('spritePNG', ['cleanSpriteImg'], function () {	
 	var spriteData = gulp
 						.src(path.dev+'img/sprite/**.png')
 						.pipe(sprite({
 							imgName: 'sprite.png',
-							cssName: 'spritePNG.css',
+							cssName: 'sprite-png.css',
 							imgPath: '../img/sprite.png'
 						}));
 		spriteData
@@ -128,16 +144,16 @@ gulp.task('spritePNG', function () {
 		
 		spriteData
 			.css
-			.pipe(gulp.dest(path.dev+'less/'));
+			.pipe(gulp.dest(path.dev+'less/core/'));
 });
 
 //ºÏ²¢jpg
-gulp.task('spriteJPG', function () {
+gulp.task('spriteJPG', ['cleanSpriteImg'], function () {
 	var spriteData = gulp
 						.src(path.dev+'sprite/*.jpg')
 						.pipe(sprite({
 							imgName: 'sprite.jpg',
-							cssName: 'spriteJPG.css',
+							cssName: 'sprite-jpg.css',
 							imgPath: '../img/sprite.jpg'
 						}));
 		spriteData
@@ -146,25 +162,28 @@ gulp.task('spriteJPG', function () {
 		
 		spriteData
 			.css
-			.pipe(gulp.dest(path.dev+'less/'));
+			.pipe(gulp.dest(path.dev+'less/core/'));
 });
 
 
-gulp.task('default', ['cleanSpriteImg', 'spritePNG', 'spriteJPG', 'copy', 'less', 'r'], function(){
+gulp.task('default', ['cleanDefaultImg', 'copy', 'sprite',  'r'], function(){
+	
+	//¼àÌý²»ºÏ²¢Í¼Æ¬
+	gulp.watch(path.dev+'img/default/**', ['copy']);
+	
+	//¼àÌýsprite png
+	gulp.watch(path.dev+'img/sprite/**.png', ['spritePNG']);
+	
+	//¼àÌýsprite jpg
+	gulp.watch(path.dev+'img/sprite/**.jpg', ['spriteJPG']);
+	
+	//¼àÌýtpl
+	gulp.watch(path.dev+'tpl/**', ['tmod']);
 		
 	//¼àÌýjs
     gulp.watch(path.dev+'js/**', ['r']);
 	
     //¼àÌýless
     gulp.watch(path.dev+'less/**', ['less']);
-	
-	//¼àÌý²»ºÏ²¢Í¼Æ¬
-	gulp.watch(path.dev+'img/default/**', ['cleanDefaultImg', 'copy']);
-	
-	//¼àÌýsprite png
-	gulp.watch(path.dev+'img/sprite/**.png', ['cleanSpriteImg', 'spritePNG']);
-	
-	//¼àÌýsprite jpg
-	gulp.watch(path.dev+'img/sprite/**.jpg', ['cleanSpriteImg', 'spriteJPG']);
 	
 });
