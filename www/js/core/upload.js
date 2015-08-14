@@ -15,7 +15,7 @@
 		var g           = this,
 			domFragment = {
 							file: '<input type="file" name="{{name}}" />',
-							params: '<input type="hidden" name="{{key}}" value="{{value}}" />',
+							params: '<input type="hidden" name="{{name}}" value="{{value}}" />',
 							form: '<iframe name="iframe_{{name}}"></iframe><form method="post" enctype="multipart/form-data" name="form_{{name}}" target="iframe_{{name}}" action="{{url}}"></form>'
 						},
 			c           = {
@@ -35,14 +35,11 @@
 								return html;
 							},
 							init:function(){
-								var target = g.target,
-									url    = g.url,
-									name   = g.name,
-									obj    = {},
-									wrap   = '',
-									html   = '',
-									iframe = '',
-									form   = '';
+								var target  = g.target,
+									url     = g.url,
+									name    = g.name,
+									obj     = {},
+									html    = ''
 									
 								if( !url ){
 									return console.log('url is not define');
@@ -51,43 +48,46 @@
 									return console.log('target is not define');
 								}
 								
-								formObj = {
+								obj = {
 									url: url,
 									name: name
 								}
 
-								if( !wrap.length ){
-									target.before('<div class="l-upload-wrap" style="display:none;">'+ c._tpl(domFragment.form, formObj) +'</div>');
+								if( !target.prev('.l-upload-wrap').length ){
+									target.before('<div class="l-upload-wrap" style="display:none;">'+ c._tpl(domFragment.form, obj) +'</div>');
 								}
 								
-								html = c._each(domFragment.params, params) + c._tpl(domFragment.form, formObj);
-								
-								wrap   = target.next('.l-upload-wrap');
-								iframe = wrap.find('iframe');
-								form   = wrap.find('form').html(html);
-								file   = wrap.find('input[type="file"]');
-								
+								html = c._each(domFragment.params, g.params) + c._tpl(domFragment.file, obj);
+
 								target
+									.off('click')
 									.on('click', function(){
-										
+										var target   = $(this),
+											wrap     = target.prev('.l-upload-wrap'),
+											iframe   = wrap.find('iframe'),
+											form     = wrap.find('form').html(html),
+											file     = wrap.find('input[type="file"]'),
+											isRepeat = false;
+
+										/*文件框提交动作*/
+										file.click()
+											.change(function() {
+												form.submit();
+											});
+
 										/*iframe 在提交完成之后*/
 										iframe
 											.load(function() {
+												if( isRepeat ){ return; } //FIXME load 多次重复执行
 												var data = $(this).contents().find('body').html().match(/\{.+?\}/);
-												if( dataType === 'json' ){
+												if( g.dataType === 'json' ){
 													data = $.parseJSON(data);
 												}
-												g.onComplate(data);
-												/*setTimeout(function() {
-													iframe.remove();
-													form.remove();
-												}, 5000);*/
+												if( Object.prototype.toString.call(g.onComplate) === "[object Function]" && data ){
+													g.onComplate.apply(target, [data]);
+												}
+												isRepeat = true;
 											});
-										
-										/*文件框提交动作*/
-										file.change(function() {
-												form.submit();
-											})
 
 									});
 							}
@@ -100,74 +100,22 @@
 		g.dataType   = options.dataType || 'json';
 		g.onSend     = options.onSend || '';
 		g.onComplate = options.onComplate || ''; 
-		
-		g.run = c.init;
-		
-		return;
-		var o = options || {};
-		if( !o.trigger ){ return false; };
-		var noop       = function(){return true;},
-			trigger    = $(o.trigger),                           //触发上传事件的容器
-			url        = o.url || '',                            //上传地址
-			name       = o.name || 'filedata',                   //文件域名字
-			params     = o.params || {},                         //隐藏域数据
-			dataType   = o.dataType || 'json',
-			onSend     = o.onSend || noop,
-			onComplate = o.onComplate || noop,
-			iframe     = '',
-			form       = '';
-		
-		trigger.click(function(){
-			/*添加form数据域*/
-			var formHtml = '<input type="file" id="input-'+ name +'" name="' + name + '" />';
-			
-			for (key in params) {
-				formHtml += '<input type="hidden" name="' + key + '" value="' + params[key] + '" />';
-			}
-			
-			if( !$('#iframe_'+ name).length ){
-				$('body').append('<iframe style="position:absolute;top:-9999px" id="iframe_'+ name +'" name="iframe_'+ name +'"></iframe>');
-				$('body').append('<form method="post" style="display:none;" enctype="multipart/form-data" id="form_'+ name +'" name="form_'+ name +'" target="iframe_'+ name +'" action="'+ url +'"></form>');
-				iframe = $('#iframe_'+ name);
-				form   = $('#form_'+ name).html(formHtml);
-			}
-		
-			if(!onSend){
-				return;
-			}
-						
-			/*iframe 在提交完成之后*/
-			iframe.load(function() {
-				var data = $(this).contents().find('body').html().match(/\{.+?\}/);
-				if( dataType === 'json' ){
-					data = window.eval('(' + data + ')');
-				}
-				onComplate(data);
-				setTimeout(function() {
-					iframe.remove();
-					form.remove();
-				}, 5000);
-			});
-			
-			/*文件框提交动作*/
-			var fileInput = $('#input-'+name);
-			fileInput.change(function() {
-				form.submit();
-			});
-			fileInput.click();
-		});
+		g.run        = c.init;
+
 	};
 
 	Upload.prototype = {
 		
 		constructor: Upload,
 		
-		getData: function(options){
-			
+		setParams: function(options){
+			this.params = options;
 		},
 		
-		reload: function(){
-			
+		load: function(options){
+			this.target = $(options.trigger);
+			this.url    = options.url || '';
+			this.run();
 		}
 	};
 
