@@ -607,7 +607,7 @@ define(['core/saogaUI'], function(saogaUI){
 						.on('focus', '[data-validate]', function(e){
 							fUnAction( $(e.currentTarget) );
 						})
-						.on('change', 'select', function(e){
+						.on('change', 'select[data-validate]', function(e){
 							fAction( $(e.currentTarget) );
 						})
 						.on('submit', function(){
