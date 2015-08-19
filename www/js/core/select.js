@@ -553,8 +553,11 @@ define(['core/saogaUI'], function(saogaUI){
 										checkbox  = p.checkbox,
 										isRefresh = true;
 									
-									if( isAll ){
+									if( !t.selectedData[index] ){
 										t.selectedData[index] = [];
+									}
+									
+									if( isAll ){
 										t.selectedData[index] = t.selectedData[index].concat(data); //浅拷贝
 									}else{
 										for(; i<dataLen; i++){
