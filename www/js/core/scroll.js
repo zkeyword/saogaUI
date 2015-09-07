@@ -10,6 +10,61 @@
 	
 	'use strict';
 	
+	var tool = {
+			
+			/* 获取绝对定位 */
+			getOffset: function( node ) {
+				var nTop  = 0,
+					nLeft = 0;
+				
+			    //var curtopscroll = 0;
+			    if (node.offsetParent) {
+			        do {
+			        	nTop += node.offsetTop;
+			        	nLeft += node.offsetLeft;
+			            //curtopscroll += node.offsetParent ? node.offsetParent.scrollTop : 0;
+			        } while (node = node.offsetParent);
+			    }
+			    
+		        return {
+		        	top: nTop,
+		        	left: nLeft
+	        	}
+			},
+			
+			/* 获取鼠标位置 */
+			getMousePosition: function(e){
+				var x,y;
+				
+				e = e || window.event;
+				x = e.pageX || e.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft);
+				y = e.pageY || e.clientY + (document.documentElement.scrollTop || document.body.scrollTop);   //具有 DTD 时用 document.documentElement.scrollTop 代替 document.body.scrollTop
+				
+				return{
+					positionX : x,
+					positionY : y
+				}
+			},
+			
+			/* 获取左边兄弟 */
+			getPrevSibling: function(el){
+				return el.previousElementSibling ? el.previousElementSibling : el.previousSibling;
+			},
+			
+			/* 设置禁用选中 */
+			setOnselectstart: function(e){
+				document.all ? e.returnValue = false : e.preventDefault();
+				document.onselectstart = function(){return false;};
+			}
+			
+		};
+	
+	/*var SuperScroll = function(){};
+	
+	SuperScroll.prototype.init = function(){
+		
+	};*/
+	
 	var Scroll = function(options){
 		
 		var bMove          = false,
@@ -30,9 +85,8 @@
 								return oScrollWrap.lastChild;
 							})(),
 			oScrollBtn     = oScrollBtnWrap.lastChild,
-			oScrollContent = oScrollBtnWrap.previousElementSibling ? oScrollBtnWrap.previousElementSibling : oScrollBtnWrap.previousSibling;
+			oScrollContent = tool.getPrevSibling(oScrollBtnWrap),
 			nWrapHeight	   = oScrollWrap.offsetHeight - 2, //border的高度
-			nWrapWidth	   = oScrollWrap.offsetWidth,
 			nBtnHeight     = oScrollBtn.offsetHeight,
 			nBtnDiff       = nWrapHeight - nBtnHeight,
 			nContentHeight = oScrollContent.offsetHeight,
@@ -41,45 +95,18 @@
 								oScrollBtn.style.top = y + 'px';
 								oScrollContent.style.marginTop = - (y/nBtnDiff)*nContentDiff +'px';
 							},
-			fMousePosition = function(e){
-								var e = e || window.event,
-									x = e.pageX || e.clientX + (oDoc.documentElement.scrollLeft || oDoc.body.scrollLeft),
-									y = e.pageY || e.clientY + (oDoc.documentElement.scrollTop || oDoc.body.scrollTop);   //具有 DTD 时用 document.documentElement.scrollTop 代替 document.body.scrollTop
-								
-								return{
-									positionX : x,
-									positionY : y
-								}
-							},
-			fOffset        = function( node ) {
-								var nTop = 0;
-								var nLeft = 0;
-							    //var curtopscroll = 0;
-							    if (node.offsetParent) {
-							        do {
-							        	nTop += node.offsetTop;
-							        	nLeft += node.offsetLeft;
-							            //curtopscroll += node.offsetParent ? node.offsetParent.scrollTop : 0;
-							        } while (node = node.offsetParent);
-							    }
-						        return {
-						        	top: nTop,
-						        	left: nLeft
-					        	}
-							},
 			fMove          = function(e){
-								var y = fMousePosition(e).positionY - fOffset(oScrollBtnWrap).top - nBtnHeight/2;
+								var y = tool.getMousePosition(e).positionY - tool.getOffset(oScrollBtnWrap).top - nBtnHeight/2;
 
 								fScrll(y>=nBtnDiff ? nBtnDiff : y<=1 ? 0 : y);
 							},
 			fWheel         = function(e){
-								e = e || window.event;
-								var wheelDelta = e.wheelDelta || e.detail,
-									nDistance  = nBtnDiff*0.1,  //滚动基数
-									nDistances = oScrollBtn.offsetTop;
-									
-								document.all ? e.returnValue = false : e.preventDefault();
-								document.onselectstart = function(){return false;};
+								var wheelDelta,nDistance,nDistances;
+								
+								e          = e || window.event;
+								wheelDelta = e.wheelDelta || e.detail;
+								nDistance  = nBtnDiff*0.1;  //滚动基数
+								nDistances = oScrollBtn.offsetTop;
 
 								if( wheelDelta == -120 || wheelDelta == 3 ){
 									nDistances = nDistances + nDistance;
@@ -91,12 +118,15 @@
 								
 								fScrll( nDistances );
 								
+								if( nDistances === 0 || nDistances === nBtnDiff ) return true;
+								
+								tool.setOnselectstart(e);
 								return false;
 							};
 		
+		oScrollContent.className    = 'l-scroll-contentWrap ' + oScrollContent.className;
+		oScrollContent.style.width  = (oScrollWrap.offsetWidth - 15) + 'px';  //XXX: 短暂的滚动bug
 		oScrollBtnWrap.style.height = nWrapHeight + 'px';
-		oScrollContent.className = 'l-scroll-contentWrap ' + oScrollContent.className;
-		oScrollContent.style.width = (nWrapWidth - 15) + 'px';  //XXX: 短暂的滚动bug
 		
 		if(nWrapHeight > nContentHeight){
 			oScrollBtnWrap.style.display = 'none';
@@ -110,9 +140,7 @@
 		oScrollBtn.onmousedown = function(e){
 			bMove = true;
 			e = e || window.event;
-			
-			document.all ? e.returnValue = false : e.preventDefault();
-			document.onselectstart = function(){return false;};
+			tool.setOnselectstart(e);
 		}
 		
 		oDoc.onmouseup = function(){
@@ -123,8 +151,16 @@
 			if(bMove) fMove(e);
 		}
 		
-		document.onmousewheel === undefined ? oScrollWrap.addEventListener('DOMMouseScroll', fWheel, true) : oScrollWrap.onmousewheel = fWheel;
+		oDoc.onmousewheel === undefined ? oScrollWrap.addEventListener('DOMMouseScroll', fWheel, true) : oScrollWrap.onmousewheel = fWheel;
 
+	};
+	
+	Scroll.prototype.setHeight = function(){
+		
+	};
+	
+	Scroll.prototype.setWidth = function(){
+		
 	};
 
 	return function(o){
