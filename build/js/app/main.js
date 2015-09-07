@@ -6043,7 +6043,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 						.on('focus', '[data-validate]', function(e){
 							fUnAction( $(e.currentTarget) );
 						})
-						.on('change', 'select', function(e){
+						.on('change', 'select[data-validate]', function(e){
 							fAction( $(e.currentTarget) );
 						})
 						.on('submit', function(){
@@ -6843,8 +6843,11 @@ define('core/select',['core/saogaUI'], function(saogaUI){
 										checkbox  = p.checkbox,
 										isRefresh = true;
 									
-									if( isAll ){
+									if( !t.selectedData[index] ){
 										t.selectedData[index] = [];
+									}
+									
+									if( isAll ){
 										t.selectedData[index] = t.selectedData[index].concat(data); //浅拷贝
 									}else{
 										for(; i<dataLen; i++){
