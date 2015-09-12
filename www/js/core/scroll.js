@@ -12,6 +12,27 @@
 	
 	var tool = {
 			
+			append: function(el, html, fn){
+				var tmp      = document.createElement('div'), 
+					fragment = document.createDocumentFragment();
+				 
+				tmp.innerHTML = html;
+	
+				for(var i = 0, children = tmp.children, len = children.length; i<len; i++){
+					fragment.appendChild(children[i]);
+				}
+	
+				el.appendChild(fragment);
+	
+				children = null;
+				fragment = null;
+				tmp      = null;
+				
+				fn.apply(el, []);
+	
+				return el;
+			},
+			
 			/* 获取绝对定位 */
 			getOffset: function( node ) {
 				var nTop  = 0,
@@ -71,19 +92,9 @@
 			//nSpeed         = options.speed,
 			oDoc           = document,
 			oScrollWrap    = oDoc.getElementById(options.scrollWrap),
-			oScrollBtnWrap = (function(){
-								var btnWrap = oDoc.createElement('div'),
-									btn     = oDoc.createElement('div');
-									
+			oScrollBtnWrap = tool.append(oScrollWrap, '<div class="l-scroll-btnWrap"><div class="l-scroll-btn"></div></div>', function(){
 								oScrollWrap.className = 'l-scroll-wrap ' + oScrollWrap.className;
-								btnWrap.className     = 'l-scroll-btnWrap';
-								btn.className         = 'l-scroll-btn';
-								
-								btnWrap.appendChild(btn);
-								oScrollWrap.appendChild(btnWrap);
-								
-								return oScrollWrap.lastChild;
-							})(),
+							}).lastChild,
 			oScrollBtn     = oScrollBtnWrap.lastChild,
 			oScrollContent = tool.getPrevSibling(oScrollBtnWrap),
 			nWrapHeight	   = oScrollWrap.offsetHeight - 2, //border的高度
