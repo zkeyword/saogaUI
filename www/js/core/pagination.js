@@ -1,6 +1,6 @@
 /*
 
-page({
+pagination({
 	cur:17,
 	total:20,
 	target: 'wrap',
@@ -20,13 +20,13 @@ page({
 	} else if (typeof exports === 'object') {
 		module.exports = factory(require('jquery'));
 	} else {
-		root.page = factory(root.jQuery);
+		root.pagination = factory(root.jQuery);
 	}
 }(this, function ($) {
 
 	'use strict';
 
-	var Page = function(options){
+	var Pagination = function(options){
 
 		this.cur      = options.cur || 1;
 		this.total    = options.total || 10;
@@ -44,7 +44,7 @@ page({
 		this.click(this.callback);
 	}
 
-	Page.prototype.init = function() {
+	Pagination.prototype.init = function() {
 
 		var tmp      = '',
 			first    = '<a href="javascript:;" data-index="{{num}}">{{num}}</a>',
@@ -119,7 +119,7 @@ page({
 		this.target.innerHTML = tmp;
 	};
 
-	Page.prototype.click = function(fn){
+	Pagination.prototype.click = function(fn){
 		var that = this,
 			oA   = this.target.getElementsByTagName('a');
 
@@ -134,6 +134,6 @@ page({
 	}
 	
 	return function(o){
-		return o ? new Page(o) : {};
+		return o ? new Pagination(o) : {};
 	};
 }));
