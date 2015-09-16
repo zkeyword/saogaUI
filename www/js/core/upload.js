@@ -16,7 +16,8 @@
 			domFragment = {
 							file: '<input type="file" name="{{name}}" />',
 							params: '<input type="hidden" name="{{name}}" value="{{value}}" />',
-							form: '<iframe name="iframe_{{name}}"></iframe><form method="post" enctype="multipart/form-data" name="form_{{name}}" target="iframe_{{name}}" action="{{url}}"></form>'
+							iframe: '<iframe name="iframe_{{name}}"></iframe>',
+							form: '<form method="post" enctype="multipart/form-data" name="form_{{name}}" target="iframe_{{name}}" action="{{url}}"></form>'
 						},
 			c           = {
 							/* 简单模板替换 */ 
@@ -49,7 +50,7 @@
 								}
 								
 								obj = {
-									url: url,
+									url: url + '?v=' + Math.random(),
 									name: name
 								}
 
@@ -58,17 +59,16 @@
 								}
 								
 								html = c._each(domFragment.params, g.params) + c._tpl(domFragment.file, obj);
-
+								
 								target
 									.off('click')
 									.on('click', function(){
 										var target   = $(this),
 											wrap     = target.prev('.l-upload-wrap'),
-											iframe   = wrap.find('iframe'),
 											form     = wrap.find('form').html(html),
 											file     = wrap.find('input[type="file"]'),
-											isRepeat = false;
-
+											iframe   = null;
+										
 										/*文件框提交动作*/
 										file.click()
 											.change(function() {
@@ -76,19 +76,19 @@
 											});
 
 										/*iframe 在提交完成之后*/
-										iframe
-											.load(function() {
-												if( isRepeat ){ return; } //FIXME load 多次重复执行
-												var data = $(this).contents().find('body').html().match(/\{.+?\}/);
-												if( g.dataType === 'json' ){
-													data = $.parseJSON(data);
-												}
-												if( Object.prototype.toString.call(g.onComplate) === "[object Function]" && data ){
-													g.onComplate.apply(target, [data]);
-												}
-												isRepeat = true;
-											});
-
+										iframe = wrap
+													.append( c._tpl(domFragment.iframe, obj) )
+													.find('iframe')
+													.load(function() {
+														var data = $(this).contents().find('body').html().match(/\{.*\}/g)[0];
+														if( g.dataType === 'json' && typeof data === 'string' ){
+															data = $.parseJSON(data);
+														}
+														if( Object.prototype.toString.call(g.onComplate) === "[object Function]" && data ){
+															g.onComplate.apply(target, [data]);
+														}
+														iframe.remove();
+													});
 									});
 							}
 						}
