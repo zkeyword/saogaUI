@@ -8153,7 +8153,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 							
 							return html;
 						})
-						.off('click', '.ui-btn')
+						.off('click')
 						.on('click',' .ui-btn', function(){
 							var index = this.getAttribute('data-index'),
 								obj   = btns[Number(index)];
@@ -8332,9 +8332,9 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						isShowOptions = p.pageSizeOptions;
 					
 					/*分页事件*/
-					page.off('click', 'a')
+					page.off('click')
 						.on('click', 'a', function(){
-					
+							
 							var index = Number( $(this).attr('data-page') );
 							
 							/*修改页面位置*/
@@ -8367,7 +8367,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					
 					/*下拉框事件*/
 					if( isShowOptions ){
-						page.off('change', 'select')
+						page.off('change')
 							.on('change','select', function(){
 								_cache.tmpData = [];
 								p.pageSize = Number( this.value );
@@ -9101,16 +9101,7 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 					}
 					
 					that.tBodyCreateHtml();
-					
-					if( g.isInit ){
-						that.rowFn();
-						//this.cellFn();
-						that.checkboxFn();
-						that.detailBtnFn();
-						g.isInit = false;
-						saogaUI.ui.onselectstart(g.grid1);
-					}
-					
+
 					if( p.isPage || p.bottomBtns ){
 						if( p.isPage ){
 							that.pageCreateHtml();
@@ -9122,6 +9113,15 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 						}
 					}else{
 						g.footer.remove();
+					}
+					
+					if( g.isInit ){
+						that.rowFn();
+						//this.cellFn();
+						that.checkboxFn();
+						that.detailBtnFn();
+						g.isInit = false;
+						saogaUI.ui.onselectstart(g.grid1);
 					}
 					
 				},

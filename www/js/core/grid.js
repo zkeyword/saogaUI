@@ -423,7 +423,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
-											console.log(typeof(sData[x]), sData[x])
 										}
 										
 										if( statisType ){
@@ -1817,6 +1816,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		g.getCurrentData = function(){
 			var pageIndex = p.pageIndex;
 			return _cache.tmpData[pageIndex - 1];
+		};
+		
+		g.getCurrentAllData = function(){
+			return p.data;
 		};
 
 		/**

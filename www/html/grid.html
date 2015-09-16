@@ -81,6 +81,7 @@
 					{ display: '数量', name: 'num', width: 150, statisType:'sum'},
 					{ display: '邮箱', name: 'email', width: 150},
 					{ display: '操作', name: '', width: 150, render: function(rdata, rindex, value){
+							console.log(grid.getCurrentAllData())
 							return saogaUI.template('btnHtml',rdata);
 						},
 						detailRender: function(rdata, rindex, value){
