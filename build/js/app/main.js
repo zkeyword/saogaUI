@@ -3180,6 +3180,24 @@ define('core/saogaUI',[],function(){
 		}
 		
 		/**
+		 * 转为url形式
+		 * @method encodeURIJson
+		 */
+		Object.prototype.encodeURIJson = function (){
+			var s = [];
+			for( var p in this ){
+				if(this[p]==null) continue;
+				if(this[p] instanceof Array)
+				{
+					for (var i=0;i<this[p].length;i++) s.push( encodeURIComponent(p) + '=' + encodeURIComponent(this[p][i]));
+				}
+				else
+					s.push( encodeURIComponent(p) + '=' + encodeURIComponent(this[p]));
+			}
+			return s.join('&');
+		}
+		
+		/**
 		 * 重写console
 		 */
 		if(!window.console){
@@ -7857,7 +7875,6 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
-											console.log(typeof(sData[x]), sData[x])
 										}
 										
 										if( statisType ){
@@ -9251,6 +9268,10 @@ define('core/grid',['core/saogaUI', 'i18n!core/nls/str', 'core/select'], functio
 		g.getCurrentData = function(){
 			var pageIndex = p.pageIndex;
 			return _cache.tmpData[pageIndex - 1];
+		};
+		
+		g.getCurrentAllData = function(){
+			return p.data;
 		};
 
 		/**
