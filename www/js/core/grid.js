@@ -31,7 +31,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
     * @param {String} o.id 表格id
     * @param {Object} o.pageAjax ajax数据
     * @param {String} o.pageAjax.url ajax请求的url
-    * @param {String} o.pageAjax.type ajax请求类型，默认是post
+    * @param {String} o.pageAjax.type ajax请求类型，默认是GET
     * @param {String} o.pageAjax.data ajax请求的条件
     * @param {Object} o.data 静态数据
     * @param {String|Number} o.width 表格宽度
@@ -1150,7 +1150,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				*/
 				ajaxGetData: function(callback){
 					var pageAjax      = p.pageAjax,
-						type          = pageAjax.type === undefined ? 'POST' : pageAjax.type,
+						type          = pageAjax.type === undefined ? 'GET' : pageAjax.type,
 						showAllRow    = p.showAllRow,
 						pageIndex     = p.pageIndex,
 						pageSize      = p.pageSize,

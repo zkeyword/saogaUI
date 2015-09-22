@@ -36,7 +36,7 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 					pageSizeOptions: [10, 20, 50, 100, 200], //可选择设定的每页结果数
 					data:{}, //静态数据
 					pageAjax:{ //ajax数据源
-						type: 'POST',
+						type: 'GET',
 						dataType: "json",
 						success: function(){},
 						error: function(){},
@@ -56,7 +56,14 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 		_cache = {
 			data: {},
 			tmpData: [],
-			ele: {}
+			ele: {},
+			fragment: {
+				loading: '<div class="l-gridFree-loading"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>',
+				pagination: '<div class="l-gridFree-footer-page ui-pagination"></div>',
+				pageSelect: '<div class="l-gridFree-footer-select"></div>',
+				bottomBtns: '<div class="l-gridFree-footer-btn"></div>',
+				nullWrap: p.nullTemplate ? template(p.nullTemplate, {cls: 'l-gridFree-body-nullWrap'}) :'<div class="l-gridFree-body-nullWrap"></div>'
+			}
 		},
 		
 		/**
@@ -141,13 +148,7 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 				var wrap     = document.getElementById(ele),
 					children = null,
 					footer   = null,
-					fragment = {
-						loading: '<div class="l-gridFree-loading"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>',
-						pagination: '<div class="l-gridFree-footer-page ui-pagination"></div>',
-						pageSelect: '<div class="l-gridFree-footer-select"></div>',
-						bottomBtns: '<div class="l-gridFree-footer-btn"></div>',
-						nullWrap: p.nullTemplate ? template(p.nullTemplate, {cls: 'l-gridFree-body-nullWrap'}) :'<div class="l-gridFree-body-nullWrap"></div>'
-					}
+					fragment = _cache.fragment;
 				
 				if( !wrap.children.length ){
 					wrap.innerHTML ='<div class="l-gridFree">'+ 
@@ -178,14 +179,12 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			createBody: function(){
 				var arr = _cache.tmpData[p.pageIndex - 1];
 				
-				if( !arr.length ) return;
-				
 				/* 扩展template的辅助函数  */
 				for(var i = 0, len = p.templateRender.length; i<len; i++){
 					template.helper(p.templateRender[i].name, p.templateRender[i].handle);
 				}
 			
-				_cache.ele.body.innerHTML = template(p.template, _cache.data);
+				_cache.ele.body.innerHTML = arr.length ? template(p.template, _cache.data) : _cache.fragment.nullWrap;
 				
 			},
 			createFooter: function(){
