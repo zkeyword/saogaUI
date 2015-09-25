@@ -17,13 +17,13 @@
  ******┃┫┫　┃┫┫ 
  ******┗┻┛　┗┻┛  
 */
-define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, lang, select){
+define(['core/cncnERP', 'i18n!core/nls/str', 'core/select'], function(cncnERP, lang, select){
 	
 	'use strict';
 	
 	/**
-	* saogaUI.ui.grid 表格控件
-	* @class saogaUI.ui.grid
+	* cncnERP.ui.grid 表格控件
+	* @class cncnERP.ui.grid
 	* @author norion.z
     * @blog http://zkeyword.com/
     * @param {Object} o 表格参数
@@ -69,7 +69,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
     * @param {Boolean} o.isShowLoading 是否显示loading效果，默认true
     * @param {String} o.countFont 统计文字
     * @param {String} o.refreshIndex 刷新当前页索引pageIndex,默认false
-    * @param {String} o.isHideColumns 是否要隐藏列Columns
+    * @param {String} o.isHideColumns 是否要隐藏列Columns, 隐藏列是请设置ID
 	* @return {Object} grid对象
 	*/
 	var Grid = function(o){
@@ -134,7 +134,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				rowSelected: [],
 				detailSelected: [],
 				width: 0,
-				browser: saogaUI.base.browser
+				browser: cncnERP.base.browser
 			},
 			
 			/**
@@ -180,7 +180,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					s1 += '</table>';
 					
 					/*grid2*/
-					if( isInit && !saogaUI.base.cookie.get(p.id) ){
+					if( isInit && !cncnERP.base.cookie.get(encodeURIComponent(location.pathname)) ){
 						_cache.columns = columns;
 					}
 					
@@ -198,7 +198,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							s3 += '<div class="l-grid-popup-item fn-clear"><span class="l-checkbox'+ popupSelected +'"></span><span class="l-grid-popup-text">'+ p.columns[h].display +'</span></div>';
 						}
 						
-						popup.html(s3);
+						popup.html(s3)
 					}
 					
 					s2 += '<table>';
@@ -239,7 +239,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						checkbox   = p.checkbox, //复选框
 						nullText   = g.loding.is(':visible') ? p.requestText : p.nullText,
 						pageSize   = p.pageSize,
-						//popup      = g.popup,
+						popup      = g.popup,
 						grid       = g.grid,
 						grid1      = g.grid1,
 						grid2      = g.grid2,
@@ -249,26 +249,23 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						tmpData    = _cache.tmpData,
 						total      = p.data.total,
 						rows       = p.data.rows,
-						rowsLen    = rows.length,
 						isInit     = g.isInit,
 						that       = this;
 					
 					/*修改索引值，从1开始，所以减1*/
-					//index = index !== undefined ? index - 1 : 0;
-					index = index - 1 >>> 0;
+					index = index !== undefined ? index - 1 : 0;
 
 					/*grid1*/
 					if( checkbox || detail ){
 						s1 += '<table>';
-						if( total && rowsLen ){
+						if( total && rows.length ){
 							for(var i = 0; i<pageSize; i++){
-								
-								var tmpDataObj = tmpData[index][i],
-									selectCls  = that.initSelected(tmpDataObj, i) ? ' l-grid-row-selected' : '',
-									evenCls    = i%2 ? ' l-grid-row-even' : '';
-									
-								if( tmpDataObj ){
-									s1 += '<tr class="l-grid-row'+ evenCls + selectCls +'" data-row="'+ i +'">';
+								if( tmpData[index][i] ){
+									s1 += '<tr class="l-grid-row'+ 
+											  (i%2 === 0 ? '' : ' l-grid-row-even') +
+											  (that.initSelected( tmpData[index][i] ) ? ' l-grid-row-selected' : '') +
+											  '" data-row="'+ i +'">';
+
 									if( detail ){
 										s1 += '<td><div class="l-grid-row-cell-inner"><span class="l-grid-row-detailbtn l-grid-row-detailbtn-close"></span></div></td>';
 									}
@@ -278,16 +275,17 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									s1 += '</tr>';
 								}
 							}
-							
 							/*判断是否统计*/
 							if( statis ){
-								var sLen        = statis.length,
-									n           = 0,
-									statisGrid1 = '<td style="width:13px"><div class="l-grid-row-cell-inner"></div></td>';
-									
+								var sLen = statis.length,
+									n    = 0;
 								for(; n<sLen; n++){
 									s1 += '<tr class="l-grid-row l-grid-row-statis l-grid-row-'+ statis[n].type +'">';
-									s1 += (checkbox && detail) ? (statisGrid1 + statisGrid1) : statisGrid1;
+									if( checkbox && detail ){
+										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"></div></td><td style="width:13px"><div class="l-grid-row-cell-inner"></div></td>';
+									}else{
+										s1 += '<td style="width:13px"><div class="l-grid-row-cell-inner"></div></td>';
+									}
 									s1 += '</tr>';
 								}
 							}
@@ -300,7 +298,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					/*grid2*/
 					s2 += '<table>';
 					
-					if( total && rowsLen ){
+					if( total && rows.length ){
 						
 						for(var k = 0; k<len; k++){
 							statisData[k] = [];
@@ -310,7 +308,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							
 							var tmpDataObj = tmpData[index][i],
 								selectCls  = that.initSelected(tmpDataObj, i) ? ' l-grid-row-selected' : '',
-								evenCls    = i%2 ? ' l-grid-row-even' : '';
+								evenCls    = i%2 === 0 ? '' : ' l-grid-row-even';
 
 							if( tmpDataObj ){
 								
@@ -323,12 +321,12 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									var columnsObj    = columns[h],
 										lastCls       = h === len - 1 ? ' l-grid-row-cell-last' : '',
 										columnAlign   = columnsObj.align ? ' l-grid-align-' + columnsObj.align : '',
-										columnsStatis = saogaUI.base.isFunction(columnsObj.statis),
+										columnsStatis = cncnERP.base.isFunction(columnsObj.statis),
 										columnsRender = columnsObj.render;
 										
 									/*统计数据*/
 									if( columnsObj.statisType ){
-										var statisRow = Number( tmpDataObj[columnsObj.name] );
+										var statisRow = parseFloat( tmpDataObj[columnsObj.name] );
 										statisData[h][i] = !isNaN(statisRow) ? statisRow : 0;
 										rowStatis += statisData[h][i];
 										if( columnsStatis ){
@@ -339,14 +337,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									s2 += '<td class="l-grid-row-cell'+ lastCls +'" data-cell="'+ h +'"><div class="l-grid-row-cell-inner'+ columnAlign +'">';
 
 									if( columnsStatis ){
-										if( saogaUI.base.isFunction(columnsObj.statisRender) ){
+										if( columnsObj.statisRender !== undefined ){
 											s2 += columnsObj.statisRender(rowStatis);
 										}else{
 											s2 += rowStatis;
 										}
 									}
 									
-									if( saogaUI.base.isFunction(columnsRender) ){
+									if( cncnERP.base.isFunction(columnsRender) ){
 										s2 += columnsRender(tmpDataObj, i, tmpDataObj[columnsObj.name], h);
 									}else{
 										s2 += tmpDataObj[columnsObj.name];
@@ -361,7 +359,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									var chlidren = tmpDataObj.chlidren ? tmpDataObj.chlidren : [],
 										colLen   = columns.length + (checkbox ? 1 : 0) + 1;
 									
-									if( saogaUI.base.isFunction(detail.render) ){
+									if( cncnERP.base.isFunction(detail.render) ){
 										s2 += '<tr class="l-grid-row-detail l-grid-row-detail'+ i + evenCls + selectCls +'" data-row="'+ i +'">';
 										s2 += '<td colspan="'+ colLen +'">'+ 
 												detail.render(chlidren) +
@@ -373,7 +371,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 											for(var h = 0; h < len; h++){
 												var columnsObj = columns[h];
 												s2 += '<td class="l-grid-row-cell" data-cell="'+ h +'"><div class="l-grid-row-cell-inner l-grid-align-'+ (columnsObj.align ? columnsObj.align : 'left') +'">';
-												if( saogaUI.base.isFunction(columnsObj.detailRender) ){
+												if( cncnERP.base.isFunction(columnsObj.detailRender) ){
 													s2 += columnsObj.detailRender(chlidren[m], h, chlidren[m][columnsObj.name], m);
 												}else{
 													s2 += (chlidren[m][columnsObj.name] ? chlidren[m][columnsObj.name] : '');
@@ -415,11 +413,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 										var sData = statisData[m],
 											ssLen = sData.length,
 											ssVal = 0,
-											x     = 0;
-											//sum   = 0,
-											//avg   = 0,
-											//min   = 0,
-											//max   = 0;
+											x     = 0,
+											sum   = 0,
+											avg   = 0,
+											min   = 0,
+											max   = 0;
 										
 										for(; x<ssLen; x++){
 											ssVal += sData[x];
@@ -448,13 +446,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 														case 'max':
 															dStr = Math.max.apply(Math, sData);
 															break;
-													}
+													};
 													
-													if( dStr+'' !== dStr ){
+													//if( parseInt(dStr, 10) !== dStr ){
 														dStr = dStr.toFixed(p.statisToFixed);
-													}
-
-													s2 += saogaUI.base.isFunction(statisRender) ? statisRender(dStr) : dStr;
+													//}
+													
+													s2 += cncnERP.base.isFunction(statisRender) ? statisRender(dStr) : dStr;
 												}
 											}// end for
 											
@@ -487,10 +485,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						.off('mouseover', '.l-grid-row, .l-grid-row-detail')
 						.on('mouseover', '.l-grid-row, .l-grid-row-detail', function(){
 							var index = this.getAttribute('data-row');
-							
-							if( index === null ){
-								return false;
-							}
 								
 							grid
 								.find('.l-grid-row')
@@ -510,10 +504,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						.on('mouseout', '.l-grid-row, .l-grid-row-detail', function(){
 							var index = this.getAttribute('data-row');
 							
-							if( index === null ){
-								return false;
-							}
-							
 							grid1
 								.find('.l-grid-row')
 								.eq(index)
@@ -527,12 +517,12 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							grid2
 								.find('.l-grid-row-detail'+index)
 								.removeClass('l-grid-row-hover');
-						});
+						})
 					
 					/*set size*/
 					if( checkbox || detail ){
 						if( checkbox && detail ){
-							grid1.width(68);
+							grid1.width(68)
 						}else{
 							grid1.width(34);
 						}
@@ -647,7 +637,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							*/
 							getPageSelect: function(pageSizeOptions){
 								
-								if( !saogaUI.base.isArray( pageSizeOptions ) ){ return false; }
+								if( !cncnERP.base.isArray( pageSizeOptions ) ){ return false; }
 								
 								var pageSize = p.pageSize,
 									len      = pageSizeOptions.length,
@@ -707,8 +697,12 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								detail   = p.detail;
 								
 							if( !len || !checkbox ){ return html; }
-
-							html += '<span class="l-checkbox l-grid-footer-checkbox'+ (detail?' l-grid-footer-checkbox-detail':'') +'"></span>';
+								
+							if( detail ){
+								html += '<span class="l-checkbox l-grid-footer-checkbox l-grid-footer-checkbox-detail"></span>';
+							}else{
+								html += '<span class="l-checkbox l-grid-footer-checkbox"></span>';
+							}
 							
 							for(; i<len; i++){
 								var btn = btns[i],
@@ -718,11 +712,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							
 							return html;
 						})
-						.off('click')
+						.off('click', '.ui-btn')
 						.on('click',' .ui-btn', function(){
 							var index = this.getAttribute('data-index'),
-								obj   = btns[Number(index)];
-							saogaUI.base.isFunction(obj.click) && obj.click.call(this);
+								obj   = btns[index];
+							cncnERP.base.isFunction(obj.click) && obj.click.call(this);
 						});
 				},
 				
@@ -735,13 +729,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						.on('click','.l-checkbox',function(){
 							var self = $(this);
 							
-							saogaUI.ui.onselectstart(self);
+							cncnERP.ui.onselectstart(self);
 							checkbox.trigger('click');
 							
 							if( checkbox.hasClass('l-checkbox-selected') ){
-								self.addClass('l-checkbox-selected');
+								self.addClass('l-checkbox-selected')
 							}else{
-								self.removeClass('l-checkbox-selected');
+								self.removeClass('l-checkbox-selected')
 							}
 							
 						});
@@ -765,10 +759,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						total        = 0,
 						isFixedWidth = p.isFixedWidth,
 						_fixedWidth  = function(width){
-
+										var j = 0;
+										
 										width = width === undefined ? p.width : width;
 
-										for(var j = 0; j<len; j++){
+										for(; j<len; j++){
 											grid2.find('.l-grid-hd-cell').eq(j).width(columns[j].width);
 											grid2.find('.l-grid-row-cell').eq(j).width(columns[j].width);
 										}
@@ -827,32 +822,37 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 设置行高
 				*/
 				setRowsHeight: function(){
-					var grid1     = g.grid1,
-						grid2     = g.grid2,
-						pageSize  = p.statis ? p.pageSize + p.statis.length : p.pageSize,
-						i         = 0,
-						grid1_row = null,
-						grid2_row = null,
-						height    = 0;
+					var grid1    = g.grid1,
+						grid2    = g.grid2,
+						pageSize = p.statis ? p.pageSize + p.statis.length : p.pageSize,
+						i        = 0;
 					
 					grid1.find('.l-grid-hd-row').height( grid2.find('.l-grid-hd-row').outerHeight() );
 					
 					if( pageSize ){
 						for(; i<pageSize; i++){
-							
-							grid1_row = grid1.find('.l-grid-row').eq(i);
-							grid2_row = grid2.find('.l-grid-row').eq(i);
-							height    = grid2_row.outerHeight();
+							var grid1_row       = grid1.find('.l-grid-row').eq(i),
+								grid2_row       = grid2.find('.l-grid-row').eq(i),
+								grid2_rowDetail = grid2.find('.l-grid-row-detail'+i),
+								height          = grid2_row.outerHeight(),
+								detailHeight    = 0;
 
 							if(!height){return;}
+							
+							for(var j = 0; j<grid2_rowDetail.length; j++){
+								detailHeight += grid2_rowDetail[j].offsetHeight;
+							}
 
-							height = height + grid2.find('.l-grid-row-detail'+i).outerHeight() - (_cache.browser.ie <= 7 ? 1 : 0);
-							grid1_row.height(height);
+							if( _cache.browser.ie <= 7 ){
+								grid1_row.height(height + detailHeight - 1); //变态ie7多算1px
+							}else{
+								grid1_row.height(height + detailHeight);
+							}
 						}
 					}else{
-						grid1_row = grid1.find('.l-grid-row').eq(0);
-						grid2_row = grid2.find('.l-grid-row').eq(0);
-						height    = grid2_row.outerHeight();
+						var grid1_row = grid1.find('.l-grid-row').eq(0),
+							grid2_row = grid2.find('.l-grid-row').eq(0),
+							height    = grid2_row.outerHeight();
 						grid1_row.height(height);
 					}
 					
@@ -870,7 +870,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						pageIndex    = p.pageIndex,
 						arr          = _cache.rowSelected[pageIndex-1];
 					
-					if( rowData && saogaUI.base.isFunction( initSelected ) ){
+					if( rowData && cncnERP.base.isFunction( initSelected ) ){
 						if( initSelected( rowData ) ){
 							if( isMemory && i !== undefined ){
 								arr[i] = that.getRowData(i); //选中数据
@@ -897,20 +897,20 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						isShowOptions = p.pageSizeOptions;
 					
 					/*分页事件*/
-					page.off('click')
+					page.off('click', 'a')
 						.on('click', 'a', function(){
-							
+					
 							var index = Number( $(this).attr('data-page') );
 							
 							/*修改页面位置*/
 							p.pageIndex = index;
 							
 							/*返回接口，可能修改全局g.o对象，所以前置*/
-							if( saogaUI.base.isFunction(onPageFn) ){
+							if( cncnERP.base.isFunction(onPageFn) ){
 								onPageFn(index, pageSize);
 							}
 							
-							if( !_cache.tmpData[index-1] || !_cache.tmpData.length ){
+							if( !_cache.tmpData[index-1] || !_cache.tmpData[index-1].length || !_cache.tmpData.length ){
 								/*获取数据并重载 Html*/
 								that.getData();
 							}else{
@@ -932,7 +932,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					
 					/*下拉框事件*/
 					if( isShowOptions ){
-						page.off('change')
+						page.off('change', 'select')
 							.on('change','select', function(){
 								_cache.tmpData = [];
 								p.pageSize = Number( this.value );
@@ -946,7 +946,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 初始化checkbox
 				*/
 				initCheckbox: function(){
-					var pageSize       = p.pageSize,                        //每页显示多少个
+					var that           = this,
+						pageSize       = p.pageSize,                        //每页显示多少个
 						pageIndex      = p.pageIndex,                       //起始位置
 						grid1          = g.grid1,
 						gridHeader     = grid1.find('.l-grid-header'),        //表格头
@@ -957,18 +958,29 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						isMemory       = p.isMemory;
 					
 					if( !isMemory ){
+						/*
+						var len = _cache.rowSelected.length,
+							i   = 0;
+							
+						for(; i<len; i++){
+							_cache.rowSelected[i] = []; //修改选中的数组值
+						}
+						*/
+						
 						_cache.rowSelected = [];
+						
 						headerCheckbox.removeClass('l-checkbox-selected');
 						footerCheckbox.removeClass('l-checkbox-selected');
 					}else{
 						var selected = Math.min(pageSize, checkbox.length), //已选数量
 							arr      = _cache.rowSelected[pageIndex-1],
 							len      = arr ? arr.length : 0,
-							i        = 0;
+							i        = 0,
+							j        = 0;
 						
-						for(; i < len; i++){
-							if( arr[i] && checkbox[i] ){
-								checkbox[i].className = checkbox[i].className + ' l-checkbox-selected';
+						for(; i < len; i++, j++){
+							if( arr[i] ){
+								checkbox.eq(j).addClass('l-checkbox-selected');
 							}
 						}
 						
@@ -1013,7 +1025,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								tmpData     = _cache.tmpData[p.pageIndex - 1];
 							
 							/*返回选择数据*/
-							if( saogaUI.base.isFunction(onCheckFn) ){
+							if( cncnERP.base.isFunction(onCheckFn) ){
 								if( !onCheckFn.apply(this, [tmpData[i], grid1Row, grid2Row]) ){
 									return false;
 								}
@@ -1061,7 +1073,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								tmpData     = _cache.tmpData[p.pageIndex - 1];
 							
 							/*返回选择数据*/
-							if( saogaUI.base.isFunction(onCheckFn) ){
+							if( cncnERP.base.isFunction(onCheckFn) ){
 								if( !onCheckFn(tmpData, grid1Rows, grid2Rows) ){
 									return false;
 								}
@@ -1100,7 +1112,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					var	pageIndex = p.pageIndex,
 						data      = _cache.tmpData[pageIndex - 1]; //表格数据
 	
-					if( index === -1 && !data.length ){
+					if( index === -1 ){
 						return false;
 					}
 					
@@ -1109,40 +1121,53 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				
 				/**
 				* 明细按钮事件
+				* @param {object} init 和 refresh共享的对象
 				*/
-				detailBtnFn: function(){
-					var grid1       = g.grid1,
+				detailBtnFn: function(options){
+					var that        = this,
+						grid1       = g.grid1,
 						grid2       = g.grid2,
 						grid1Body   = grid1.find('.l-grid-body'),   //表格主体
-						grid2Body   = grid2.find('.l-grid-body');   //表格主体
+						grid2Body   = grid2.find('.l-grid-body'),   //表格主体
+						pageSize    = p.pageSize;
 						
 					grid1Body
 						.off('click','.l-grid-row-detailbtn')
 						.on('click','.l-grid-row-detailbtn',function(){
-							var self      = $(this),
-								parents   = self.parents('.l-grid-row'),
-								index     = parents.attr('data-row'),
-								grid2_row = grid2Body.find('.l-grid-row').eq(index),
-								detail    = grid2Body.find('.l-grid-row-detail'+index),
-								height    = 0;
+							var self         = $(this),
+								parents      = self.parents('.l-grid-row'),
+								index        = parents.attr('data-row'),
+								grid2_row    = grid2Body.find('.l-grid-row').eq(index),
+								detail       = grid2Body.find('.l-grid-row-detail'+index),
+								detailHeight = 0;
 
 							if( self.hasClass('l-grid-row-detailbtn-close') ){
 								detail.show();
 								self.removeClass('l-grid-row-detailbtn-close')
 									.addClass('l-grid-row-detailbtn-open');
-									
-								height = grid2_row[0].offsetHeight + detail.outerHeight();
+								
+								for(var i = 0; i<detail.length; i++){
+									detailHeight += detail[i].offsetHeight;
+								}
+								parents.height(grid2_row[0].offsetHeight + detailHeight);
 							}else{
 								detail.hide();
 								self.removeClass('l-grid-row-detailbtn-open')
 									.addClass('l-grid-row-detailbtn-close');
-								
-								height = grid2_row[0].offsetHeight;
+									
+								parents.height(grid2_row[0].offsetHeight);
 							}
-							
-							parents.height(height);
 						});
 				},
+				
+				/**
+				* ajax获取数据
+				* @param {Function} callback ajax回调函数
+				*/
+				setAjaxCookieData: function(){
+					
+				},
+				
 				
 				/**
 				* ajax获取数据
@@ -1154,56 +1179,67 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						showAllRow    = p.showAllRow,
 						pageIndex     = p.pageIndex,
 						pageSize      = p.pageSize,
-						data          = pageAjax.data,
-						isShowLoading = p.isShowLoading;
+						data          = '',
+						isShowLoading = p.isShowLoading,
+						args          = [],
+						str           = '',
+						pathname      = encodeURIComponent(location.pathname + 'getGridPrev'),
+						strToData     = function(str){
+											var args = {},
+												data,
+												param,
+												name,
+												value;
+											
+											data = str.split('&');
+											
+											for (var i = 0; i < data.length; i++) {
+												param = data[i].split('=');
+												name  = param[0];
+												value = param[1];
+												if(name === ""){
+													name = "unkown";
+												}
+												if(typeof(args[name]) === "undefined"){ //参数尚不存在
+													args[name] = value;
+												}else if(typeof(args[name]) === "string"){ //参数已经存在则保存为数组
+													args[name] = [args[name]];
+													args[name].push(value);
+												}else{ //已经是数组的
+													args[name].push(value);
+												}
+											}
+											
+											return args;
+										}
 					
-					data += '&pageIndex=' + pageIndex;
-					data += '&pageSize=' + pageSize;
-										
-					data = data.replace(/{{|}}/g,'');
-					data = data.split('&');
-					
-                    /*解析URL并转换为json形式，防止特殊字符问题*/
-					var args = {},
-						//argsStr = [],
-						param,
-						name,
-						value;
-					
-					for (var i = 0; i < data.length; i++) {
-						param = data[i].split('=');
-						name  = param[0];
-						value = param[1];
-						if(name === ""){
-							name = "unkown";
+					if( typeof pageAjax.data ==='string' ){
+						data = pageAjax.data;
+						data += '&pageIndex=' + pageIndex;
+						data += '&pageSize=' + pageSize;
+						
+						args = data.replace(/{{|}}/g,'');
+
+					}else if( typeof pageAjax.data === 'object' || !pageAjax.data ){
+						data = $.extend({}, pageAjax.data);
+						data.pageSize  = p.pageSize;
+						data.pageIndex = p.pageIndex;
+						
+						for( i in data){
+							args.push(i + '=' + data[i])
 						}
-						if(typeof(args[name]) === "undefined"){ //参数尚不存在
-							args[name] = value;
-						}else if(typeof(args[name]) === "string"){ //参数已经存在则保存为数组
-							args[name] = [args[name]];
-							args[name].push(value);
-						}else{ //已经是数组的
-							args[name].push(value);
-						}
+						
+						args = args.join('&');
+					}
+					
+					if( !g.isInit ){
+						cncnERP.base.cookie.set(pathname, args, 200000);
+					}
+					if( /getGridPrev/.test(location.search) ){
+						args = cncnERP.base.cookie.get(pathname) ? cncnERP.base.cookie.get(pathname) : args;
+						p.pageIndex = Number( strToData(args).pageIndex );
 					}
 
-					/*var showArg = function (x) { //转换不同数据的显示方式
-						if (typeof(x) == "string" && !/\d+/.test(x))
-							return "'" + x + "'"; //字符串
-						if (x instanceof Array)
-							return "[" + x + "]"; //数组
-						return x; //数字
-					}*/
-					
-					//console.log(args)
-					
-					/*args.toString = function () { //组装成json格式
-						for (var i in args)
-							argsStr.push(i + ':' + showArg(args[i]));
-						return '{' + argsStr.join(',') + '}';
-					}*/
-					//console.log(args)
-					
 					$.ajax({
 						type: type,
 						url: pageAjax.url,
@@ -1211,7 +1247,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						dataType: "json",
 						data: args,
 						beforeSend: function(){
-							if( saogaUI.base.isFunction(pageAjax.beforeSend) ){
+							if( cncnERP.base.isFunction(pageAjax.beforeSend) ){
 								pageAjax.beforeSend();
 							}
 							if( isShowLoading ){
@@ -1220,10 +1256,10 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							g.onLoaded = false;
 						},
 						success: function(data){
-							if( saogaUI.base.isFunction(pageAjax.success) ){
+							if( cncnERP.base.isFunction(pageAjax.success) ){
 								pageAjax.success(data);
 							}
-							if( saogaUI.base.isFunction(callback) ){
+							if( cncnERP.base.isFunction(callback) ){
 								setTimeout(function(){
 									callback(data);
 									if( isShowLoading ){
@@ -1250,19 +1286,17 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 获取数据
 				*/
 				getData: function(){
-					var that      = this,
-						pageIndex = p.pageIndex,
-						nullText  = p.nullText;
+					var that = this;
 						
 					if( p.pageAjax ){
 						p.data = {rows:[],total:0};
 						that.ajaxGetData(function(data){
 							p.data = data = !data ? p.data : ((!data.rows || !data.total) ? p.data : data);
 							that.handleData(false);
-							that.tBodyCreateHtml(pageIndex);
+							that.tBodyCreateHtml(p.pageIndex);
 							that.pageCreateHtml();
 							if( data.total !== undefined ){
-								g.grid2.find('.l-grid-nullText').html(nullText);
+								g.grid2.find('.l-grid-nullText').html(p.nullText);
 							}
 						});
 					}
@@ -1276,7 +1310,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						len       = columns.length,
 						i         = 0,
 						h         = 0,
-						cookieStr = saogaUI.base.cookie.get(p.id),
+						cookieStr = cncnERP.base.cookie.get( encodeURIComponent(location.pathname) ),
 						cookieArr = cookieStr.split(','),
 						cookieLen = cookieArr.length;
 						
@@ -1308,13 +1342,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						len       = Math.ceil(data.total / pageSize),
 						i         = 0,
 						arr       = []; //临时数组
-				
+					
 					/*初始化*/
-					isGetData = isGetData === undefined ? true : isGetData;
+					isGetData = isGetData == undefined ? true : isGetData;
 					if( isGetData ){
 						that.getData(); //获取数据并重载 Html
 					}
-					
+
 					/*分割数据*/
 					for(; i<len; i++){
 						
@@ -1356,8 +1390,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				*/
 				compareData: function(name, sortType){
 					var index = p.pageIndex - 1,
-						arr   = _cache.tmpData[index];
-						//len   = arr.length;
+						arr   = _cache.tmpData[index],
+						len   = arr.length;
 					
 					arr.sort( getJsPercentDataComparator(name) );
 					
@@ -1393,7 +1427,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							}
 							
 							return result;
-						};
+						}
 					}
 					
 				},
@@ -1403,14 +1437,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				*/
 				tHeadFn: function(){
 					var that           = this,
-						//pageSize       = p.pageSize,                  //每页显示多少个
-						//pageIndex      = p.pageIndex,                 //起始位置
-						//grid1          = g.grid1,
+						pageSize       = p.pageSize,                  //每页显示多少个
+						pageIndex      = p.pageIndex,                 //起始位置
+						grid1          = g.grid1,
 						grid2          = g.grid2,
-						//grid1Header    = grid1.find('.l-grid-header'),        //表格头
-						//grid1Body      = grid1.find('.l-grid-body'),          //表格主体
+						grid1Header    = grid1.find('.l-grid-header'),        //表格头
+						grid1Body      = grid1.find('.l-grid-body'),          //表格主体
 						grid2Header    = grid2.find('.l-grid-header'),        //表格头
-						//grid2Body      = grid2.find('.l-grid-body'),          //表格主体
+						grid2Body      = grid2.find('.l-grid-body'),          //表格主体
 						isSort         = p.isSort,
 						isSortCurrent  = p.isSortCurrent,
 						popup          = g.popup,
@@ -1439,7 +1473,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 									sortType = '',
 									sort     = self.find('.l-grid-hd-cell-sort');
 									
-								saogaUI.ui.onselectstart(self);
+								cncnERP.ui.onselectstart(self);
 								
 								if( isSortCurrent ){
 									
@@ -1469,12 +1503,17 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 											sort.addClass('desc');
 											sortType = 'asc';
 										}
-		
-										if( /&sort=/.test(p.pageAjax.data) ){
-											p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
-											p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
-										}else{
-											p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+										
+										if( typeof p.pageAjax.data === 'string' ){
+											if( /&sort=/.test(p.pageAjax.data) ){
+												p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
+												p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
+											}else{
+												p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+											}
+										}else if( typeof p.pageAjax.data === 'object' ){
+											p.pageAjax.data.name = name;
+											p.pageAjax.data.name = sortType;
 										}
 								
 										that.handleData();
@@ -1491,12 +1530,13 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						grid2Header
 							.off('contextmenu', '.l-grid-hd-cell')
 							.on('contextmenu', '.l-grid-hd-cell', function(e){
-								var popup          = g.popup,
+								var self           = $(e.currentTarget),
+									popup          = g.popup,
 									popupWidth     = popup.outerWidth(),
 									grid           = g.grid,
 									gridWidth      = grid.outerWidth(),
 									gridOffsetLeft = g.grid.offset().left,
-									mousePosition  = saogaUI.ui.mousePosition(e),
+									mousePosition  = cncnERP.ui.mousePosition(e),
 									x              = mousePosition.positionX - gridOffsetLeft;
 									
 								if( gridWidth - x > popupWidth ){
@@ -1535,7 +1575,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								for(; i<len; i++){
 									arr[i] = selected.eq(i).html();
 								}
-								saogaUI.base.cookie.set(p.id, arr.join(), 200000);
+								cncnERP.base.cookie.set(encodeURIComponent(location.pathname), arr.join(), 200000);
 								that.setCacheColumns();
 								that.tHeadCreateHtml();
 								that.tBodyCreateHtml();
@@ -1545,17 +1585,16 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							.on('click', '.l-grid-popup-text', function(e){
 								var self  = $(e.currentTarget);
 								self.prev().trigger('click');
-								saogaUI.ui.onselectstart(self);
+								cncnERP.ui.onselectstart(self);
 								e.stopPropagation();
 							});
 						
-						$(window)
-							.on('click', function(){
-								if( isShow ){
-									popup.hide();
-									isShow = false;
-								}
-							});
+						$(window).on('click', function(){
+							if( isShow ){
+								popup.hide();
+								isShow = false;
+							}
+						});
 					}
 				},
 						
@@ -1568,14 +1607,14 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						grid1             = g.grid1,
 						grid2             = g.grid2,
 						grid1Body         = grid1.find('.l-grid-body'),   //表格主体						
-						//grid2Header       = grid2.find('.l-grid-header'), //表格头
+						grid2Header       = grid2.find('.l-grid-header'), //表格头
 						grid2Body         = grid2.find('.l-grid-body'),   //表格主体
-						//onCheckFn         = p.onCheckFn,
-						//pageSize          = p.pageSize,
+						onCheckFn         = p.onCheckFn,
+						pageSize          = p.pageSize,
 						onRowFn           = p.onRowFn,
 						isOnRowCheckbox   = p.isOnRowCheckbox,
 						isSelectSingleRow = p.isSelectSingleRow,
-						isOnRowFn         = saogaUI.base.isFunction(onRowFn);
+						isOnRowFn         = cncnERP.base.isFunction(onRowFn);
 						
 					grid2Body
 						.off('mouseover', '.l-grid-row-cell')
@@ -1606,7 +1645,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 								if( isOnRowCheckbox ){
 									grid1Checkbox.addClass('l-checkbox-selected');									
 								}
-
+															
 								self.addClass('l-grid-row-selected');
 								selfDetail.addClass('l-grid-row-selected');
 								grid1Row.addClass('l-grid-row-selected');
@@ -1625,6 +1664,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 							if( isOnRowFn ){
 								if( !self.hasClass('l-grid-row-selected') ){
 									currentArr[i] = that.getRowData(i);
+									
 								}else{
 									_cache.rowSelected[pageIndex-1][i] = null;
 								}
@@ -1637,7 +1677,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				* 列事件
 				* TODO
 				*/
-				/*cellFn: function(){
+				cellFn: function(){
 					var grid1           = g.grid1,
 						grid2           = g.grid2,
 						grid1Body       = grid1.find('.l-grid-body'),   //表格主体						
@@ -1647,8 +1687,8 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						pageSize        = p.pageSize,
 						onRowFn         = p.onRowFn,
 						isOnRowCheckbox = p.isOnRowCheckbox,
-						isOnRowFn       = saogaUI.base.isFunction(onRowFn);
-				},*/
+						isOnRowFn       = cncnERP.base.isFunction(onRowFn);
+				},
 				
 				/**
 				* 运行 grid 控件
@@ -1666,7 +1706,16 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 					}
 					
 					that.tBodyCreateHtml();
-
+					
+					if( g.isInit ){
+						that.rowFn();
+						//this.cellFn();
+						that.checkboxFn();
+						that.detailBtnFn();
+						g.isInit = false;
+						cncnERP.ui.onselectstart(g.grid1);
+					}
+					
 					if( p.isPage || p.bottomBtns ){
 						if( p.isPage ){
 							that.pageCreateHtml();
@@ -1678,15 +1727,6 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 						}
 					}else{
 						g.footer.remove();
-					}
-					
-					if( g.isInit ){
-						that.rowFn();
-						//this.cellFn();
-						that.checkboxFn();
-						that.detailBtnFn();
-						g.isInit = false;
-						saogaUI.ui.onselectstart(g.grid1);
 					}
 					
 				},
@@ -1726,7 +1766,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 
 		/**
 		* grid 刷新对象
-		* @method saogaUI.ui.grid.refresh
+		* @method cncnERP.ui.grid.refresh
 		* @param {object} [o] - 刷新grid新的配置项
 		* @return {Object} grid对象
 		*/
@@ -1759,7 +1799,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		/**
 		* grid 获取列头
-		* @method saogaUI.ui.grid.getColumns
+		* @method cncnERP.ui.grid.getColumns
 		* @return {Array} grid对象的列头数据
 		*/
 		g.getColumns = function(){
@@ -1767,23 +1807,22 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 				return _cache.columns;
 			}
 			return p.columns;
-		};
+		},
 
 		/**
 		* grid 重设列头
-		* @method saogaUI.ui.grid.reSetColumns
+		* @method cncnERP.ui.grid.reSetColumns
 		* @param {object} 列对象
 		* @return {Object} grid对象
 		*/
 		g.reSetColumns = function(o){
-			p.columns = _cache.columns = o.columns;
+			 p.columns = _cache.columns = o.columns;
 			_core.run(false);
-			return g;
 		};
 
 		/**
 		* grid 修改列名
-		* @method saogaUI.ui.grid.changeHeaderText
+		* @method cncnERP.ui.grid.changeHeaderText
 		* @param {Number|String} i - 为Number时Columns的引值，checkbox的不算；为string时是Columns的name
 		* @param {String} text - 要修改的文本
 		* @return {Object} grid对象
@@ -1792,6 +1831,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 			var grid2    = g.grid2,
 				isString = isNaN(Number(i));
 				
+			
 			if( isString ){
 				var obj = grid2.find('.l-grid-hd-cell-span'),
 					len = obj.length,
@@ -1810,7 +1850,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 
 		/**
 		* grid 获取当前页数据，只支持静态数据，使用ajax数据时请用pageAjax提供的success方式获取
-		* @method saogaUI.ui.grid.getCurrentData
+		* @method cncnERP.ui.grid.getCurrentData
 		* @return {Object} grid当前页数据对象
 		*/
 		g.getCurrentData = function(){
@@ -1818,13 +1858,17 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 			return _cache.tmpData[pageIndex - 1];
 		};
 		
+		/**
+		* grid 获取当前页所有数据
+		* @method cncnERP.ui.grid.getCurrentAllData
+		*/
 		g.getCurrentAllData = function(){
 			return p.data;
 		};
 
 		/**
 		* grid 获取选中的数据
-		* @method saogaUI.ui.grid.getSelectData
+		* @method cncnERP.ui.grid.getSelectData
 		* @return {object} grid数据，格式与请求的一样
 		*/
 		g.getSelectData = function(){
@@ -1856,7 +1900,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		/**
 		* grid 获取当前页索引
-		* @method saogaUI.ui.grid.getPageIndex
+		* @method cncnERP.ui.grid.getPageIndex
 		* @return {Boolean} 
 		*/
 		g.getPageIndex = function(){
@@ -1865,7 +1909,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		/**
 		* grid 取消的选中的行
-		* @method saogaUI.ui.grid.uncheckRow
+		* @method cncnERP.ui.grid.uncheckRow
 		* @param {Number} i 取消的选中的行，值为当前页
 		* @return {Object} grid对象
 		*/
@@ -1925,7 +1969,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
                             subLen         = subSelectedArr.length,
                             subIndex       = 0;
                         for(; subIndex<subLen; subIndex++){
-                            if( subSelectedArr[subIndex] && subSelectedArr[subIndex].id === id ){
+                            if( subSelectedArr[subIndex] && subSelectedArr[subIndex].id == id ){
                                 subSelectedArr[subIndex] = null;
                                 return subIndex;
                             }
@@ -1950,11 +1994,11 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		g.resetStatisToFixed = function(num){
 			p.statisToFixed = num;
-		};
+		}
 		
 		/**
 		* grid 跳出执行
-		* @method saogaUI.ui.grid.jump
+		* @method cncnERP.ui.grid.jump
 		* @return {Boolean} 
 		*/
 		g.jump = function(data){
@@ -1964,7 +2008,7 @@ define(['core/saogaUI', 'i18n!core/nls/str', 'core/select'], function(saogaUI, l
 		
 		/**
 		* grid 扩展
-		* @method saogaUI.ui.grid.methos
+		* @method cncnERP.ui.grid.methos
 		* @return {object} 
 		*/
 		g.methos = g.methos || {};

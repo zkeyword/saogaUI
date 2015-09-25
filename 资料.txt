@@ -1,0 +1,16 @@
+
+移动端资料：
+https://github.com/imweb/mobile/issues/3
+http://www.cnblogs.com/willian/p/3573353.html 
+http://www.html-js.com/article/Mobile-terminal-H5-mobile-terminal-HD-multi-screen-adaptation-scheme%203041
+http://xiaoyuze88.github.io/blog/2015/05/12/%E9%80%9A%E8%BF%87rem%E5%B8%83%E5%B1%80+media-query%E7%9A%84aspect-ratio%E5%AE%9E%E7%8E%B0%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%85%A8%E6%9C%BA%E5%9E%8B%E9%80%82%E9%85%8D%E8%A6%86%E7%9B%96/
+http://isux.tencent.com/web-app-rem.html
+http://www.html-js.com/article/2402
+https://github.com/amfe/lib-flexible
+http://www.html-js.com/article/3041
+
+
+
+
+css动画：
+http://tympanus.net/Development/HoverEffectIdeas/index2.html

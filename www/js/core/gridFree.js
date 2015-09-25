@@ -57,6 +57,7 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			data: {},
 			tmpData: [],
 			ele: {},
+			isInit: true,
 			fragment: {
 				loading: '<div class="l-gridFree-loading"><div class="l-grid-loadingBg"></div><div class="l-grid-loadingIco"></div></div>',
 				pagination: '<div class="l-gridFree-footer-page ui-pagination"></div>',
@@ -72,35 +73,69 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 		*/
 		_core = {
 			ajax: function(callback){
-				var isShowLoading = p.isShowLoading,
-					data          = p.pageAjax.data,
-					args          = {},
-					argsStr       = [],
-					param,
-					name,
-					value;
+				var pageAjax      = p.pageAjax,
+					type          = pageAjax.type === undefined ? 'GET' : pageAjax.type,
+					pageIndex     = p.pageIndex,
+					pageSize      = p.pageSize,
+					data          = '',
+					isShowLoading = p.isShowLoading,
+					args          = [],
+					str           = '',
+					pathname      = encodeURIComponent(location.pathname + 'getGridPrev'),
+					strToData     = function(str){
+										var args = {},
+											data,
+											param,
+											name,
+											value;
+										
+										data = str.split('&');
+										
+										for (var i = 0; i < data.length; i++) {
+											param = data[i].split('=');
+											name  = param[0];
+											value = param[1];
+											if(name === ""){
+												name = "unkown";
+											}
+											if(typeof(args[name]) === "undefined"){ //参数尚不存在
+												args[name] = value;
+											}else if(typeof(args[name]) === "string"){ //参数已经存在则保存为数组
+												args[name] = [args[name]];
+												args[name].push(value);
+											}else{ //已经是数组的
+												args[name].push(value);
+											}
+										}
+										
+										return args;
+									}
 				
-				data += '&pageIndex=' + p.pageIndex;
-				data += '&pageSize=' + p.pageSize;
-									
-				data = data.replace(/{{|}}/g,'');
-				data = data.split('&');
+				if( typeof pageAjax.data ==='string' ){
+					data = pageAjax.data;
+					data += '&pageIndex=' + pageIndex;
+					data += '&pageSize=' + pageSize;
+					
+					args = data.replace(/{{|}}/g,'');
+
+				}else if( typeof pageAjax.data === 'object' || !pageAjax.data ){
+					data = $.extend({}, pageAjax.data);
+					data.pageSize  = p.pageSize;
+					data.pageIndex = p.pageIndex;
+					
+					for( i in data){
+						args.push(i + '=' + data[i])
+					}
+					
+					args = args.join('&');
+				}
 				
-				for (var i = 0; i < data.length; i++) {
-					param = data[i].split('=');
-					name = param[0],
-					value = param[1];
-					if(name === ""){
-						name = "unkown";
-					}
-					if(typeof(args[name]) === "undefined"){ //参数尚不存在
-						args[name] = value;
-					}else if(typeof(args[name]) === "string"){ //参数已经存在则保存为数组
-						args[name] = [args[name]];
-						args[name].push(value);
-					}else{ //已经是数组的
-						args[name].push(value);
-					}
+				if( !_cache.isInit ){
+					cncnERP.base.cookie.set(pathname, args, 200000);
+				}
+				if( /getGridPrev/.test(location.search) ){
+					args = cncnERP.base.cookie.get(pathname) ? cncnERP.base.cookie.get(pathname) : args;
+					p.pageIndex = Number( strToData(args).pageIndex );
 				}
 				
 				$.ajax({
@@ -178,12 +213,13 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			},
 			createBody: function(){
 				var arr = _cache.tmpData[p.pageIndex - 1];
-				
+
 				/* 扩展template的辅助函数  */
 				for(var i = 0, len = p.templateRender.length; i<len; i++){
 					template.helper(p.templateRender[i].name, p.templateRender[i].handle);
 				}
-			
+				
+				_cache.data.rows          = arr;
 				_cache.ele.body.innerHTML = arr.length ? template(p.template, _cache.data) : _cache.fragment.nullWrap;
 				
 			},
@@ -294,11 +330,16 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			* @param {String} sortType 排序裂隙
 			*/
 			compareAllData: function(name, sortType, callback){
-				if( /&sort=/.test(p.pageAjax.data) ){
-					p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
-					p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
-				}else{
-					p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+				if( typeof p.pageAjax.data === 'string' ){
+					if( /&sort=/.test(p.pageAjax.data) ){
+						p.pageAjax.data = (p.pageAjax.data).replace(/&sort={{\w*}}/, '&sort={{'+ name+ '}}');
+						p.pageAjax.data = (p.pageAjax.data).replace(/&sortType={{\w*}}/, '&sortType={{'+ sortType +'}}');
+					}else{
+						p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
+					}
+				}else if( typeof p.pageAjax.data === 'object' ){
+					p.pageAjax.data.name = name;
+					p.pageAjax.data.name = sortType;
 				}
 				_core.ajax(function(){
 					_core.createBody();
@@ -322,6 +363,7 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			_core.ajax(function(){
 				_core.createBody();
 				_core.createFooter();
+				_cache.isInit = false;
 			});
 		};
 	
