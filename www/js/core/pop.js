@@ -406,6 +406,9 @@ define(['core/saogaUI'], function(saogaUI){
 					p.popWrap = $('#'+p.id);
 					p.popMain = p.popWrap.find('.l-pop-main');
 					
+					p.popWrap.attr('tabindex', '1');
+					p.popWrap.focus();
+					
 					this.run();
 					
 					return g;					

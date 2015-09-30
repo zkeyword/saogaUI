@@ -50,6 +50,9 @@ define(['core/saogaUI', 'core/drag', 'i18n!core/nls/str'], function(saogaUI, dra
 			
 			saogaUI.ui.dialog.setZIndex(id);
 			
+			dialogWrap.attr('tabindex', '1');
+			dialogWrap.focus();
+			
 			/*标题*/
 			if( title ){
 				dialogMain.prepend('<div class="l-dialog-title" id="'+titleId+'">'+ title +'</div>');
