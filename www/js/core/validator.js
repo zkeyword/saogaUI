@@ -76,11 +76,11 @@ define(['core/saogaUI'], function(saogaUI){
 						
 						// XXX
                         
-                        if( oItem[0].type === 'checkbox' && !$("input:checkbox[name='"+ oItem[0].name +"']:checked").attr('checked') ){
+                        if( oItem[0].type === 'checkbox' && !$("input:checkbox[name='"+ oItem[0].name +"']:checked").length ){
                             return c.handleText(oItem, 'check');
                         }
 
-                        if(  oItem[0].type === 'radio' && !$("input:radio[name='"+ oItem[0].name +"']:checked").attr('checked') ){
+                        if(  oItem[0].type === 'radio' && !$("input:radio[name='"+ oItem[0].name +"']:checked").length ){
                             return c.handleText(oItem, 'check');
                         }
                     },
