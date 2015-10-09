@@ -17,7 +17,7 @@
  ******┃┫┫　┃┫┫ 
  ******┗┻┛　┗┻┛  
 */
-define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, template, pagination){
+define(['core/checkbox', 'template', 'core/pagination'], function(checkbox, template, pagination){
 	
 	'use strict';
 	
@@ -131,10 +131,10 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 				}
 				
 				if( !_cache.isInit ){
-					cncnERP.base.cookie.set(pathname, args, 200000);
+					checkbox.base.cookie.set(pathname, args, 200000);
 				}
 				if( /getGridPrev/.test(location.search) ){
-					args = cncnERP.base.cookie.get(pathname) ? cncnERP.base.cookie.get(pathname) : args;
+					args = checkbox.base.cookie.get(pathname) ? checkbox.base.cookie.get(pathname) : args;
 					p.pageIndex = Number( strToData(args).pageIndex );
 				}
 				
@@ -206,6 +206,7 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 					wrap: wrap,
 					loading: children[0],
 					body: children[1],
+					footer: footer,
 					bottomBtns: footer.children[0],
 					pageSelect: footer.children[1],
 					pagination: footer.children[2]
@@ -225,7 +226,11 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 			},
 			createFooter: function(){
 				
-				if( !_cache.tmpData[p.pageIndex - 1].length ) return;
+				if( !_cache.tmpData[p.pageIndex - 1].length ) {
+					 _cache.ele.footer.style.display = 'none';
+				}else{
+					_cache.ele.footer.style.display = '';
+				}
 				
 				var html            = '',
 					pageSize        = p.pageSize,
@@ -338,8 +343,12 @@ define(['core/cncnERP', 'template', 'core/pagination'], function(cncnERP, templa
 						p.pageAjax.data = (p.pageAjax.data) + '&sort={{'+ name+ '}}&sortType={{'+ sortType +'}}';
 					}
 				}else if( typeof p.pageAjax.data === 'object' ){
-					p.pageAjax.data.name = name;
-					p.pageAjax.data.name = sortType;
+					p.pageAjax.data.sort     = name;
+					p.pageAjax.data.sortType = sortType;
+				}else{
+					p.pageAjax.data = {};
+					p.pageAjax.data.sort     = name;
+					p.pageAjax.data.sortType = sortType;
 				}
 				_core.ajax(function(){
 					_core.createBody();

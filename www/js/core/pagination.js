@@ -29,7 +29,7 @@ pagination({
 	var Pagination = function(options){
 
 		this.cur      = options.cur || 1;
-		this.total    = options.total || 10;
+		this.total    = options.total === undefined ? 10 : options.total;
 		this.len      = options.len ? options.len : 5;
 		this.prevText = options.prevText || '上一页';
 		this.nextText = options.nextText || '下一页';
