@@ -20,6 +20,7 @@
     "gulp-tmod": "^0.1.2",
     "gulp-uglify": "*",
     "gulp.spritesmith": "*",
-	"gulp-cache":  "*"
+	"gulp-cache":  "*",
+	"gulp-imagemin":  "*"
   }
 }
