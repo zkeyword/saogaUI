@@ -2925,7 +2925,6 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 												fUnAction( oItem.eq(i) );
 											}
 										}
-										
 										return g.getStatus();
 									};
 					
@@ -3012,7 +3011,7 @@ define('core/validator',['core/saogaUI'], function(saogaUI){
 				$('html, body').animate({scrollTop:nErrorOffsetTop}, 500);
 				//oVisibleError.focus();
 			}
-			
+
 			return !len;
 		};
 		

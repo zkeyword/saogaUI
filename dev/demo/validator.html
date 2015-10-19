@@ -39,10 +39,11 @@
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
-	<div class="fn-clear ui-mt10">
+	<div class="ui-form fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">必填(required)：</i>
 			<input class="ui-input" type="text" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
+			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
@@ -281,7 +282,7 @@ require(['app/main'], function(saogaUI){
 			}
 		});
 		
-	$('input[type="submit"]').click(function(){
+	$('input[type="submit"]').on('submit', function(){
 		if( validator.getStatus() ){
 			console.log('验证通过！');
 		};
