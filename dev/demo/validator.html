@@ -3,17 +3,17 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>测试页面</title>
-	<link rel="stylesheet" type="text/css" href="../dest/css/styles.css">
+	<link rel="stylesheet" type="text/css" href="../../dest/css/styles.css">
 	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script>
 	if( !window.$ && !window.jQuery ){
 		var sc   = document.createElement('script'),
 			head = document.head || document.getElementsByTagName('head')[0];
-		sc.src = '../dest/js/lib/jquery1.10.2.js';
+		sc.src = '../../dest/js/lib/jquery1.10.2.js';
 		head.appendChild(sc);
 	}
 	</script>
-	<script data-main="../dest/js/config" src="../dest/js/lib/require.js"></script>
+	<script data-main="../../dest/js/config" src="../../dest/js/lib/require.js"></script>
 </head>
 <body>
 <form name="test" id="test" class="fn-clear" action="http://127.0.0.1/saogaUI/www/temp/select.php">
@@ -39,11 +39,10 @@
 			<span class="ui-form-message"></span>
 		</label>
 	</div>
-	<div class="ui-form fn-clear ui-mt10">
+	<div class="fn-clear ui-mt10">
 		<label>
 			<i class="ui-label ui-w400">必填(required)：</i>
 			<input class="ui-input" type="text" data-validate="required;number;floatNumber=2" data-validate-requiredText="xxx,必填" />
-			<span class="ui-form-message"></span>
 		</label>
 	</div>
 	<div class="ui-form fn-clear ui-mt10">
