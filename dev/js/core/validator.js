@@ -34,6 +34,8 @@ define(['core/saogaUI'], function(saogaUI){
                     length: '输入字符长度等于{{param}}个字符',
                     minLength: '输入字符长度不小于{{param}}个字符',
                     maxLength: '输入字符长度大小于{{param}}个字符',
+					minValue: '请输入不能小于{{param}}',
+                    maxValue: '请输入不能大于{{param}}',
                     integer: '请输入一个正确的整数值',
                     digits: '请输入一个正确的正整数',
                     floatNumber: '请输入一个精确到{{param}}位小数的数值',
@@ -141,6 +143,32 @@ define(['core/saogaUI'], function(saogaUI){
                             return c.handleText(oItem, 'maxLength', sParam);
                         }
                     },
+					
+					/* 最小值 */
+                    minValue: function(sVal, oItem, sParam){
+                        
+                    	sVal   = Number(sVal);
+                    	sParam = Number(sParam);
+                    	
+                        if( sVal >= sParam ){
+                            return false;
+                        }
+                        
+                        return c.handleText(oItem, 'minValue', sParam);
+                    },
+                    
+                    /* 最大值 */
+                    maxValue: function(sVal, oItem, sParam){
+                        
+                    	sVal   = Number(sVal);
+                    	sParam = Number(sParam);
+                        
+                        if( sVal <= sParam ){
+                            return false;
+                        }
+                        
+                        return c.handleText(oItem, 'maxValue', sParam);
+                    },
                     
                     /* 整数 */
                     integer: function(sVal, oItem){
@@ -191,10 +219,24 @@ define(['core/saogaUI'], function(saogaUI){
                     },
                     
                     /* 数字 */
-                    number: function(sVal, oItem){
+                    number: function(sVal, oItem, sParam){
+                    	var sParamArr = [],
+                    		reg       = '';
+                    	
                         sVal = sVal.trims();
+
                         if( isNaN(Number(sVal)) ){
                             return c.handleText(oItem, 'number');
+                        }
+                        
+                        if( sParam ){
+                        	sParamArr = sParam.split(':');
+                        	if( sParamArr[0] === 'float' ){
+                        		reg = new RegExp('^[0-9]([\.][0-9]{1,'+ sParamArr[1] +'})?$');
+                        		if( !reg.test(sVal) ){
+                                    return c.handleText(oItem, 'floatNumber', sParamArr[1]);
+                                }
+                        	}
                         }
                     },
                     
