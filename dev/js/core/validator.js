@@ -432,7 +432,7 @@ define(['core/saogaUI'], function(saogaUI){
 						error    = parents.find('.l-form-error'),
 						oItems   = parents.find('[data-validate]'),
 						oTarget  = p.target,
-						html     = sContents;
+						html     = '<span class="error"><i></i>'+ sContents +'</span>';
 
 					if( !message.length ){
 						if( oSelf.next('.ui-form-message').length ){
@@ -446,7 +446,7 @@ define(['core/saogaUI'], function(saogaUI){
 						}
 					}
 
-					if( !html ){
+					if( !sContents ){
 						message.empty();
 						return false;
 					}
@@ -469,7 +469,7 @@ define(['core/saogaUI'], function(saogaUI){
 							.parents('.l-select-wrap')
 							.find('.l-select-single-init')
 							.addClass(errorCls);
-						oThat.handleMessage(oSelf, '<span class="error"><i></i>'+html+'</span>', type, typeVal);
+						oThat.handleMessage(oSelf, html, type, typeVal);
 					}else{
 						oSelf
 							.removeClass(errorCls)

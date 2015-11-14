@@ -136,6 +136,8 @@ define(['core/saogaUI', 'template', 'core/pagination'], function(saogaUI, templa
 				if( /getGridPrev/.test(location.search) ){
 					args = saogaUI.base.cookie.get(pathname) ? saogaUI.base.cookie.get(pathname) : args;
 					p.pageIndex = Number( strToData(args).pageIndex );
+				}else{
+					saogaUI.base.cookie.set(pathname, args, 200000);
 				}
 				
 				$.ajax({
