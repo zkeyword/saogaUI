@@ -31,3 +31,35 @@ saogaUIµÄÇ°ÉíÊÇ¸öÈË±àĞ´µÄ[zUI]https://github.com/zkeyword/zUI ,ÓÉÓÚÕâÌ×UIĞ´µÄ²»¹
 less°üº¬£º
 
 	1¡¢³£ÓÃ°´Å¥¡¢±íµ¥¡¢Í¼±ê¡¢CSS3Ô²½Ç¡¢Èı½Ç¡¢CSS3¶¯»­
+	
+saogaUIµÄÄ¿Â¼½á¹¹Îª£º
+	
+    -- dest ´ò°üÑ¹ËõºóµÄÄ¿Â¼
+ 
+        -- js
+           -- main.jsÖ÷ÒµÎñÎÄ¼ş
+        -- css
+        -- images
+ 
+    -- www ¿ª·¢Ä¿Â¼
+ 
+        -- js
+            -- app ÒµÎñ´úÂë
+               -- main.jsÖ÷ÒµÎñÎÄ¼ş
+            -- core Í¨ÓÃ¿ÉÒÆÖ²µÄ´úÂë
+            -- lib µÚÈı·½»ù±¾¿â
+            -- config.js requirejsÅäÖÃÎÄ¼ş
+ 
+        -- less
+            -- app
+                -- mod ¹«ÓÃÄ£¿é
+                -- page Ò³Ãæ¼¶´úÂë
+            -- core Í¨ÓÃ¿ÉÒÆÖ²µÄ´úÂë
+            -- lib µÚÈı·½»ù±¾¿â
+            -- styles.less Í³Ò»Èë¿Ú
+ 
+        -- images
+            -- default
+            -- sprite
+	
+	-- doc ÊµÀıÎÄµµ
