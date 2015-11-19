@@ -206,7 +206,7 @@ define(['core/saogaUI'], function(saogaUI){
 							
 						for(; i<len; i++){
 							var item = btns[i],
-								cls  = 'ui-btn ui-floatCenter-item ui-btn-primary'+ (item.cls ? item.cls :'');
+								cls  = 'ui-btn ui-floatCenter-item ui-btn-primary'+ (item.cls ? ' ' + item.cls :'');
 							html += '<a href="javascript:;" data-index="'+ i +'" class="'+ cls +'"><span>'+item.text+'</span></a>';
 						}
 						

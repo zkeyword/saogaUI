@@ -41,7 +41,7 @@ saogaUI的目录结构为：
         -- css
         -- images
  
-    -- www 开发目录
+    -- dev 开发目录
  
         -- js
             -- app 业务代码
@@ -58,8 +58,8 @@ saogaUI的目录结构为：
             -- lib 第三方基本库
             -- styles.less 统一入口
  
-        -- images
-            -- default
-            -- sprite
+        -- img
+            -- default 一般图片
+            -- sprite 需要合并的图片
 	
 	-- doc 实例文档
