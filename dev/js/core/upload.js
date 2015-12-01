@@ -16,8 +16,7 @@
 			domFragment = {
 							file: '<input type="file" name="{{name}}" />',
 							params: '<input type="hidden" name="{{name}}" value="{{value}}" />',
-							iframe: '<iframe name="iframe_{{name}}"></iframe>',
-							form: '<form method="post" enctype="multipart/form-data" name="form_{{name}}" target="iframe_{{name}}" action="{{url}}"></form>'
+							form: '<iframe name="iframe_{{name}}"></iframe><form method="post" enctype="multipart/form-data" name="form_{{name}}" target="iframe_{{name}}" action="{{url}}"></form>'
 						},
 			c           = {
 							/* 简单模板替换 */ 
@@ -50,7 +49,7 @@
 								}
 								
 								obj = {
-									url: url + '?v=' + Math.random(),
+									url: url,
 									name: name
 								}
 
@@ -59,16 +58,21 @@
 								}
 								
 								html = c._each(domFragment.params, g.params) + c._tpl(domFragment.file, obj);
-								
+
 								target
 									.off('click')
 									.on('click', function(){
 										var target   = $(this),
 											wrap     = target.prev('.l-upload-wrap'),
+											iframe   = wrap.find('iframe'),
 											form     = wrap.find('form').html(html),
 											file     = wrap.find('input[type="file"]'),
-											iframe   = null;
+											isRepeat = false,
+											io       = iframe[0],
+											xml      = {},
+											data     = null;
 										
+
 										/*文件框提交动作*/
 										file.click()
 											.change(function() {
@@ -76,19 +80,31 @@
 											});
 
 										/*iframe 在提交完成之后*/
-										iframe = wrap
-													.append( c._tpl(domFragment.iframe, obj) )
-													.find('iframe')
-													.load(function() {
-														var data = $(this).contents().find('body').html().match(/\{.*\}/g)[0];
-														if( g.dataType === 'json' && typeof data === 'string' ){
-															data = $.parseJSON(data);
-														}
-														if( Object.prototype.toString.call(g.onComplate) === "[object Function]" && data ){
-															g.onComplate.apply(target, [data]);
-														}
-														iframe.remove();
-													});
+										iframe
+											.load(function() {
+												if( isRepeat ){ return; } //FIXME load 多次重复执行
+
+												if (io.contentWindow) {
+								                    xml.responseText = io.contentWindow.document.body ? io.contentWindow.document.body.innerHTML : null;
+								                    xml.responseXML = io.contentWindow.document.XMLDocument ? io.contentWindow.document.XMLDocument : io.contentWindow.document;
+								                } else if (io.contentDocument) {
+								                    xml.responseText = io.contentDocument.document.body ? io.contentDocument.document.body.innerHTML : null;
+								                    xml.responseXML = io.contentDocument.document.XMLDocument ? io.contentDocument.document.XMLDocument : io.contentDocument.document;
+								                }
+												
+												try {
+													data = $.parseJSON(xml.responseText);
+													if( Object.prototype.toString.call(g.onComplate) === "[object Function]" && data ){
+														g.onComplate.apply(target, [data]);
+													}
+												} catch (e) {
+													
+												}
+												isRepeat = true;
+												data     = null;
+												xml      = {};
+											});
+
 									});
 							}
 						}
