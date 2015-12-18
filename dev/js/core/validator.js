@@ -281,6 +281,19 @@ define(['core/saogaUI'], function(saogaUI){
                             return c.handleText(oItem, 'phone');
                         }
                     },
+					
+					/* 身份证 */
+					idCard: function(sVal, oItem){
+                        sVal = sVal.trims();
+
+                        if( !sVal.length ){
+                            return false;
+                        }
+
+                        if( !/(^\d{15}$)|(^\d{17}([0-9]|X|x)$)/.test(sVal) ){
+                            return c.handleText(oItem, 'idCard');
+                        }
+                    },
                     
                     /* 网址 */
                     url: function(sVal, oItem){
